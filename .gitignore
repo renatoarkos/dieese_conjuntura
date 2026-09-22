@@ -1,0 +1,91 @@
+# ==========================================================================
+# DIEESE Conjuntura — .gitignore
+# Projeto poderá utilizar: Python, JavaScript/TypeScript, notebooks,
+# bancos locais, APIs, variáveis de ambiente, ferramentas de IA e
+# grandes bases socioeconômicas.
+#
+# materiais/originais/ está temporariamente fora do versionamento Git
+# convencional — ver seção dedicada mais abaixo para a justificativa e
+# as condições dessa decisão provisória.
+# ==========================================================================
+
+# --- Segredos e variáveis de ambiente ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Notebooks ---
+.ipynb_checkpoints/
+
+# --- JavaScript / TypeScript ---
+node_modules/
+.next/
+dist/
+build/
+coverage/
+
+# --- Sistema operacional ---
+.DS_Store
+Thumbs.db
+
+# --- Logs e temporários ---
+*.log
+*.tmp
+
+# --- Pipeline de dados (RAW → STAGING → CURATED → ANALYTICS) ---
+# Gerados/derivados: não versionar. data/reference/ é preservado (ver exceção abaixo).
+data/raw/
+data/staging/
+data/curated/
+data/analytics/
+
+# --- Bancos de dados locais ---
+*.duckdb
+*.sqlite
+*.sqlite3
+
+# ==========================================================================
+# MATERIAIS ORIGINAIS — decisão provisória de governança
+#
+# Os materiais originais permanecem preservados integralmente no disco
+# local, exatamente onde estão, e continuam acessíveis normalmente para
+# Cowork, Claude Code e Antigravity.
+#
+# Eles NÃO devem ser alterados, movidos, renomeados ou excluídos por
+# nenhum agente — a regra de preservação já estabelecida em CLAUDE.md
+# continua integralmente válida e não é afetada por esta entrada.
+#
+# Estão temporariamente fora do versionamento Git convencional apenas
+# devido ao volume (~710 MB) e à natureza binária dos arquivos.
+#
+# A estratégia definitiva de armazenamento/versionamento desses
+# materiais (ex.: Git LFS, armazenamento externo, outra abordagem) será
+# definida posteriormente por decisão arquitetural registrada em
+# docs/08-decisoes-adr/.
+#
+# Ignorar no Git NÃO significa que agentes podem excluir ou modificar
+# esses arquivos.
+# ==========================================================================
+materiais/originais/
+
+# ==========================================================================
+# EXCEÇÕES — nunca ignorar
+# ==========================================================================
+!CLAUDE.md
+!README.md
+!docs/
+!docs/**
+!research/
+!research/**
+!data/reference/
+!data/reference/**
