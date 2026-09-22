@@ -24,11 +24,13 @@ Compreender materiais existentes, indicadores utilizados pelo DIEESE, fontes, ne
 - `.env.example` criado, sem credenciais reais.
 - Objetos Git órfãos (resultantes de tentativas interrompidas de `git add`) removidos via `git prune`.
 - Primeiro commit realizado: `020d0d8` — "chore: establish DIEESE Conjuntura project baseline" (19 arquivos: documentação e estrutura; nenhum material do DIEESE).
-- `docs/00-visao-geral/VISAO_DO_PRODUTO.md` criado, registrando a visão inicial do produto — **ainda não commitado** (arquivo untracked no momento desta atualização).
+- `docs/00-visao-geral/VISAO_DO_PRODUTO.md` e `docs/03-metodologia/PROTOCOLO_TRABALHO_IA.md` criados, registrando a visão do produto e o protocolo de trabalho entre humanos, Cowork, Claude Code e Antigravity.
+- Segundo commit realizado: `52962c0` — "docs: establish product vision and AI collaboration governance" (inclui `VISAO_DO_PRODUTO.md`, `PROTOCOLO_TRABALHO_IA.md` e este documento).
+- Inventário físico e classificação preliminar de `materiais/originais/` concluídos (339 arquivos, ~708,7 MB), com registro em `research/notas/INVENTARIO_MATERIAIS.md` e `research/notas/inventario_materiais.csv`; Discovery dos materiais formalmente iniciado.
 
 ## Em andamento
 
-Preparação para Discovery dos materiais existentes.
+Discovery dos materiais: inventário inicial concluído; próxima etapa é a análise aprofundada dos materiais classificados como prioridade P1.
 
 ## Próximas etapas
 
@@ -70,7 +72,7 @@ Nenhum bloqueio real identificado no momento.
 
 ## Próxima tarefa recomendada
 
-Inventário estruturado de `materiais/originais/`.
+Análise profunda dos materiais P1 selecionados no inventário (ver `research/notas/INVENTARIO_MATERIAIS.md`, seção 9 — Fila recomendada para Discovery profundo).
 
 ## Regra de atualização
 
