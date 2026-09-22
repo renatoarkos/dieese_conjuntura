@@ -26,11 +26,13 @@ Compreender materiais existentes, indicadores utilizados pelo DIEESE, fontes, ne
 - Primeiro commit realizado: `020d0d8` — "chore: establish DIEESE Conjuntura project baseline" (19 arquivos: documentação e estrutura; nenhum material do DIEESE).
 - `docs/00-visao-geral/VISAO_DO_PRODUTO.md` e `docs/03-metodologia/PROTOCOLO_TRABALHO_IA.md` criados, registrando a visão do produto e o protocolo de trabalho entre humanos, Cowork, Claude Code e Antigravity.
 - Segundo commit realizado: `52962c0` — "docs: establish product vision and AI collaboration governance" (inclui `VISAO_DO_PRODUTO.md`, `PROTOCOLO_TRABALHO_IA.md` e este documento).
-- Inventário físico e classificação preliminar de `materiais/originais/` concluídos (339 arquivos, ~708,7 MB), com registro em `research/notas/INVENTARIO_MATERIAIS.md` e `research/notas/inventario_materiais.csv`; Discovery dos materiais formalmente iniciado.
+- Inventário físico e classificação preliminar de `materiais/originais/` concluídos (339 arquivos, ~708,7 MB), com registro em `research/notas/INVENTARIO_MATERIAIS.md` e `research/notas/inventario_materiais.csv` (commit `ed16e68`).
+- Discovery profundo — rodada 1 concluída sobre os três materiais P1 (dois Excel + apresentação `ATR_Conjuntura_2025.12.pptx`): comparação estrutural dos dois Excel, inventário estrutural do Excel de referência, catálogo preliminar de 33 indicadores, análise integral dos 58 slides da apresentação, reconstrução do fluxo de produção e classificação preliminar de oportunidades de automação. Documentos gerados: `docs/05-indicadores/INVENTARIO_INDICADORES_P1.md`, `research/notas/ANALISE_ESTRUTURAL_EXCEL_P1.md`, `research/notas/ANALISE_APRESENTACAO_CONJUNTURA_2025_12.md`, `research/notas/COMPARACAO_EXCEL_P1.md`, `research/notas/FLUXO_ATUAL_CONJUNTURA.md`, `research/notas/OPORTUNIDADES_AUTOMACAO_P1.md` (ainda não commitados nesta atualização).
+- Discovery profundo — rodada 2 (Validação Técnica dos Materiais P1) concluída: inspeção direta da estrutura interna OOXML dos dois Excel e da apresentação (metadados, visibilidade de abas, nomes definidos, links externos, vínculos de gráfico), sem alterar nenhum arquivo original. Principais achados: os dois Excel P1 compartilham o mesmo arquivo-raiz (mesma autoria e data de criação nos metadados internos); a divergência da aba T14 entre os dois arquivos foi explicada como reorganização de rótulos (o conteúdo de Selic/IPCA/juros real foi realocado para a aba T18a em "dieese"); 43 dos 47 gráficos da apresentação são tecnicamente vinculados a um arquivo Excel externo (predominantemente o próprio arquivo "principal"); a origem do bloco "Cesta Básica" foi identificada com boa confiança (aba T27, presente apenas em "dieese", e um arquivo dedicado no corpus); a origem dos blocos "Greves" e "Negociação Coletiva" permanece não localizada no corpus de 339 materiais, embora haja evidência técnica de que as abas de origem existem em uma versão do arquivo ausente do corpus. Documentos gerados/atualizados: `research/notas/VALIDACAO_TECNICA_P1.md` e `research/notas/MAPA_SLIDE_ABA_P1.md` (novos); `research/notas/COMPARACAO_EXCEL_P1.md`, `research/notas/ANALISE_ESTRUTURAL_EXCEL_P1.md`, `research/notas/ANALISE_APRESENTACAO_CONJUNTURA_2025_12.md`, `research/notas/FLUXO_ATUAL_CONJUNTURA.md` (atualizados com adendos) e `docs/05-indicadores/INVENTARIO_INDICADORES_P1.md` (nota de rodapé adicionada, sem alteração de conteúdo). Nenhum destes arquivos foi commitado nesta atualização.
 
 ## Em andamento
 
-Discovery dos materiais: inventário inicial concluído; próxima etapa é a análise aprofundada dos materiais classificados como prioridade P1.
+Aguardando validação humana dos achados das rodadas 1 e 2 do Discovery profundo antes de prosseguir para pesquisa de fontes/APIs na internet, escolha de tecnologia ou qualquer desenvolvimento de código de plataforma — permanecemos em DISCOVERY.
 
 ## Próximas etapas
 
@@ -72,7 +74,7 @@ Nenhum bloqueio real identificado no momento.
 
 ## Próxima tarefa recomendada
 
-Análise profunda dos materiais P1 selecionados no inventário (ver `research/notas/INVENTARIO_MATERIAIS.md`, seção 9 — Fila recomendada para Discovery profundo).
+Validação humana dos achados das rodadas 1 e 2 do Discovery profundo — em especial: (a) confirmar a conclusão de que "principal" é a referência primária da apresentação 4T/2025, com "dieese" como fonte complementar apenas para a Cesta Básica; (b) fornecer, se possível, os arquivos-fonte de Greves/Negociação Coletiva, Preços de Combustíveis (`20251127 - Preços combustíveis.xlsx`) e ICT (`ICT - Brasil - PNAD Continua - 202503.xls`), hoje ausentes do corpus mas identificados por nome via vínculo técnico. Ver `research/notas/VALIDACAO_TECNICA_P1.md` (seção "Dúvidas que ainda exigem validação humana") para a lista completa.
 
 ## Regra de atualização
 
