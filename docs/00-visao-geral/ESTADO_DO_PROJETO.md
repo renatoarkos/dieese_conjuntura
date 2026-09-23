@@ -80,6 +80,8 @@ Aguardando validação humana das perguntas remanescentes do Discovery de Fontes
 
 - **Motores para fontes DIEESE — pausados por decisão do responsável** (2026-09-23): para indicadores cuja fonte é o próprio DIEESE (Cesta Básica, ICT, Greves, Reajustes/Pisos salariais), não vamos construir nem expandir raspagem/extração agora — esses dados serão eventualmente fornecidos pelo próprio DIEESE (planilhas internas) para atualizar o painel diretamente. Os 2 motores já construídos e testados (Cesta Básica, Negociação Coletiva/Reajustes+Pisos) continuam rodando como estão (coleta do PDF bruto), mas não recebem mais investimento de engenharia (ex. extração de texto em STAGING) até essa decisão ser revista. ICT e Greves permanecem sem motor.
 
+- **Reescrita didática dos 26 motores de coleta, em 5 blocos** (2026-09-23): todos os scripts em `pipelines/ingestao/` (exceto os 2 de fonte DIEESE, pausados) foram reescritos com docstring rica (explicando o protocolo/API da fonte de forma transferível, não só o indicador específico) e código dividido em funções nomeadas por etapa. Cada bloco ganhou um `README.md` próprio com o passo a passo de cada script. Nenhuma mudança de comportamento — todos os 24 scripts foram reexecutados de verdade após a reescrita (URLs, códigos de série/tabela e nomes de arquivo de saída confirmados idênticos aos originais via diff). Coleta histórica de microdados do CAGED (jan/2020 até hoje, ~4,2 GB) iniciada em paralelo.
+
 ## Decisões abertas
 
 - estratégia definitiva para materiais binários (Git LFS, armazenamento externo ou outra abordagem);
