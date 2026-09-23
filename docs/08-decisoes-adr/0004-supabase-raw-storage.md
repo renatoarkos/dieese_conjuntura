@@ -2,7 +2,7 @@
 
 ## Status
 
-Aceito — 2026-09-23. **Implementação parcial**: schema desenhado e migração SQL escrita; aplicação da migração no projeto Supabase real e integração dos scripts de coleta pendentes (dependem de acesso ao SQL Editor do Supabase, que as chaves de API por si só não dão).
+Aceito — 2026-09-23. **Implementação parcial**: migração `0001_criar_raw_ingestoes.sql` aplicada com sucesso no SQL Editor do Supabase pelo responsável do projeto (confirmado via API: `raw_ingestoes` existe e responde HTTP 200); bucket `raw` criado via Storage API (privado, sem acesso público). **Ainda pendente**: integração dos 26 scripts de coleta — nenhum script hoje envia arquivo ao Storage nem grava linha em `raw_ingestoes`, eles continuam gravando apenas em `data/raw/` local.
 
 ## Contexto
 
