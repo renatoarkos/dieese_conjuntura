@@ -2,22 +2,27 @@
 
 Este bloco reúne indicadores sobre a situação da força de trabalho no Brasil:
 quantas pessoas estão desocupadas, quantas participam do mercado de trabalho,
-sob que tipo de vínculo as pessoas ocupadas trabalham e qual a proporção delas
-sindicalizada. Com exceção do script de negociação coletiva (ver nota ao
-final), todos os indicadores deste bloco vêm da mesma pesquisa de origem — a
-PNAD Contínua (Pesquisa Nacional por Amostra de Domicílios Contínua) do IBGE
-— acessada pela API pública do SIDRA. Formam um grupo porque descrevem, em
-conjunto, diferentes ângulos da mesma realidade: quem está trabalhando, quem
-está procurando trabalho, em que condição e com que grau de organização
-coletiva.
+sob que tipo de vínculo as pessoas ocupadas trabalham, qual a proporção delas
+sindicalizada, e a intensidade/natureza do conflito capital-trabalho. Seis
+scripts vêm da mesma pesquisa de origem — a PNAD Contínua (Pesquisa Nacional
+por Amostra de Domicílios Contínua) do IBGE — acessada pela API pública do
+SIDRA. Três outros vêm de boletins institucionais que o próprio DIEESE
+publica (ver seção dedicada mais abaixo). Formam um grupo porque descrevem,
+em conjunto, diferentes ângulos da mesma realidade: quem está trabalhando,
+quem está procurando trabalho, em que condição, com que grau de organização
+coletiva, e como o conflito trabalhista se expressa.
 
-Todos os scripts seguem o mesmo padrão de coleta já usado no restante do
+Os seis scripts SIDRA seguem o mesmo padrão de coleta já usado no restante do
 projeto (ver `pipelines/ingestao/bloco_1_macroeconomia/coleta_pib_sidra.py`,
 o modelo de referência): consultam a API do SIDRA, gravam a resposta bruta
 (sem nenhuma transformação) em `data/raw/ibge_sidra/` e registram a coleta no
-Supabase. Nenhum deles calcula, agrega ou interpreta o dado — isso é trabalho
-das camadas STAGING/CURATED/ANALYTICS, feito depois, a partir dos arquivos
-que estes scripts gravam (ver `CLAUDE.md`, seção DADOS).
+Supabase. Os três scripts de boletins do DIEESE seguem o padrão de "busca por
+edição sequencial + download direto" (ver
+`pipelines/ingestao/bloco_3_inflacao/coleta_cesta_basica_dieese.py` para o
+primeiro exemplo desse padrão no projeto). Nenhum deles calcula, agrega ou
+interpreta o dado — isso é trabalho das camadas STAGING/CURATED/ANALYTICS,
+feito depois, a partir dos arquivos que estes scripts gravam (ver
+`CLAUDE.md`, seção DADOS).
 
 ## Como rodar
 
@@ -123,11 +128,64 @@ nova "fotografia" da série, nunca uma sobrescrita da coleta anterior.
   busca os dados na API (`_buscar_dados`); grava a resposta bruta em disco
   com timestamp (`_salvar_raw`); registra a coleta no Supabase.
 
-## Fora do escopo desta rodada
+## Boletins institucionais do próprio DIEESE
 
-Este bloco também contém `coleta_negociacao_coletiva_dieese.py`, que coleta o
-boletim "De Olho nas Negociações" diretamente do site do DIEESE (não do
-IBGE/SIDRA). Por decisão do responsável do projeto, registrada em
-`docs/00-visao-geral/ESTADO_DO_PROJETO.md`, motores de fontes DIEESE estão
-pausados por enquanto — esse script não foi alterado nem documentado nesta
-rodada.
+Três scripts deste bloco não vêm do IBGE/SIDRA — coletam boletins públicos
+que o próprio DIEESE publica, calculados a partir de fontes que ele mesmo
+processa (Mediador/MTE, PNAD Contínua, notícias de imprensa). Todos os três
+foram reclassificados de "PDF sem automação" (E) para "download estruturado"
+(B) depois de um teste técnico direto (`pdftotext -layout -enc UTF-8`) e,
+nos dois últimos, de uma validação cruzada rigorosa contra a apresentação
+interna do DIEESE (`materiais/originais/`) — os números batem exatamente.
+
+### `coleta_negociacao_coletiva_dieese.py`
+
+- **O que mede**: dois indicadores do mesmo boletim — distribuição dos
+  reajustes salariais negociados em comparação com o INPC, e valor
+  médio/mediano dos pisos salariais por categoria.
+- **De onde vem**: boletim mensal "De Olho nas Negociações", que o DIEESE
+  calcula a partir dos instrumentos coletivos registrados no Mediador (MTE)
+  — o Mediador em si não tem API nem exportação em massa (confirmado em duas
+  rodadas de investigação), mas o boletim do DIEESE já entrega o resultado
+  calculado. Fonte confirmada em `docs/04-fontes/dieese-publicacoes.md`.
+- **Passo a passo**: a partir de uma âncora de edição conhecida, estima e
+  testa a edição mais recente (numeração sequencial, não ano/mês); baixa o
+  PDF; registra a coleta no Supabase.
+
+### `coleta_ict_dieese.py`
+
+- **O que mede**: o Índice da Condição do Trabalho (ICT-DIEESE) — índice
+  sintético (0 a 1) sobre condições de inserção no mercado de trabalho, a
+  partir da PNAD Contínua, combinando inserção ocupacional, desocupação e
+  rendimento.
+- **De onde vem**: boletim trimestral público do DIEESE. **Validado**: valor
+  do 3º tri/2025 no boletim público (0,68) bate exatamente com o mesmo
+  trimestre na apresentação interna do DIEESE (0,6848). Fonte confirmada em
+  `docs/04-fontes/dieese-publicacoes.md`.
+- **Particularidade**: o nome do arquivo do boletim mudou de padrão ao longo
+  do tempo (3 formatos diferentes já observados) — o script tenta os três
+  para cada edição candidata.
+- **Passo a passo**: estima a edição mais recente pela âncora conhecida;
+  tenta os 3 padrões de nome de arquivo; baixa o PDF; registra no Supabase.
+
+### `coleta_greves_dieese.py`
+
+- **O que mede**: três indicadores do mesmo boletim — número de greves,
+  principais categorias grevistas e principais reivindicações, por esfera
+  (privada/funcionalismo público/empresas estatais).
+- **De onde vem**: "Balanço das Greves", série de Estudos e Pesquisas do
+  DIEESE, a partir do Sistema de Acompanhamento de Greves (SAG) — mais de 45
+  mil registros desde 1978, alimentado por notícias de imprensa. **Validado**:
+  total de greves de 2024 (880) e as 5 principais reivindicações (percentuais
+  idênticos até a casa decimal) batem exatamente entre o boletim público e a
+  apresentação interna do DIEESE. Fonte confirmada em
+  `docs/04-fontes/dieese-publicacoes.md`.
+- **Particularidade**: a pasta e o nome do arquivo mudaram ao longo do tempo
+  (`balancodasgreves/` até ~2023, `estudosepesquisas/` depois) — o script
+  tenta as duas combinações para cada edição candidata.
+- **Limitação documentada no próprio boletim**: os números de períodos
+  recentes são revisados retroativamente entre edições — ao montar série
+  histórica, usar sempre o valor da edição mais recente para cada período.
+- **Passo a passo**: tenta primeiro edições mais novas que a âncora conhecida
+  (pode ter saído uma edição nova), depois a própria âncora; baixa o PDF;
+  registra no Supabase.

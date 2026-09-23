@@ -23,24 +23,25 @@ Dois indicadores estavam registrados como 🔴 LACUNA no checklist (arquivo-font
 
 | Campo | Valor |
 |---|---|
-| Status | **Fonte pública oficial identificada** — muda de LACUNA para fonte confirmada, mas automação permanece limitada. |
-| Página institucional | `dieese.org.br/analiseict/ict.html` — página-índice oficial do ICT-DIEESE, confirmada (HTTP 200), lista boletins trimestrais desde pelo menos 2019/2012 (há também estudo cobrindo 2012-2018). |
-| Conteúdo | Boletins em HTML (texto/resumo) e PDF. **PDF confirmado como vetorizado/gráfico** (Adobe Illustrator, FlateDecode/Type1C) — os valores do índice aparecem em infográfico, não em tabela de texto plano extraível. |
-| Periodicidade | Trimestral. Boletins numerados sequencialmente (nº 8 em jan/2023 até nº 18 em jan/2026, referente ao 3º trimestre de 2025). |
-| **Classificação de automação** | **E — manual.** Nenhum caminho A/B confirmado — não há planilha/CSV publicado, apenas boletim em PDF gráfico/HTML de texto corrido. |
-| **Alerta de qualidade de pesquisa** | A ferramenta de busca mencionou, em texto-resumo (não em fonte real listada), um valor específico de ICT para 1T/2026 — **não confirmado por leitura direta de página primária**. Não incorporar esse número a nenhum documento do projeto sem reconfirmação. |
+| Status | **Reclassificado após teste técnico + validação cruzada (2026-09-23).** A classificação anterior (E — manual, PDF vetorizado) estava **errada**: era falha de uma ferramenta de leitura que não extrai texto de PDF comprimido (FlateDecode) sem indicar erro. Testado diretamente com `pdftotext -layout -enc UTF-8`: texto sai limpo em todas as edições testadas (2019 até a mais recente). |
+| Validação cruzada contra a fonte de verdade | Valor do ICT-DIEESE do 3º tri/2025 na apresentação interna do DIEESE (`ATR_Conjuntura_2025.12.pptx`, slide 31): **0,6848**. Valor do mesmo trimestre lido diretamente do boletim público (edição nº 18, jan/2026): **0,68**. **Batem.** |
+| Página institucional | `dieese.org.br/analiseict/ict.html` — desatualizada (para de listar edições bem antes da mais recente confirmada); não serve para descobrir a edição atual, só como referência histórica. |
+| Padrão de URL | `dieese.org.br/analiseict/{ano}/{numero}{ano}.pdf` — mas o sufixo do nome de arquivo **não é uniforme**: edições antigas usam só `{numero}{ano}.pdf`, intermediárias `{numero}{ano}analiseIct.pdf` (camelCase), recentes `{numero}{ano}analiseict.pdf`. O motor de coleta tenta os três padrões. |
+| Periodicidade | Trimestral. |
+| **Classificação de automação** | **B — download estruturado, confirmado e testado, piloto executado** (`pipelines/ingestao/bloco_4_mercado_trabalho/coleta_ict_dieese.py`) — encontrou em execução real a edição nº 20 (1º trimestre de 2026, ICT = 0,75), mais recente até que a edição usada na validação cruzada. Extração dos números de dentro do texto é tarefa de STAGING, não desta coleta. |
 
 ## Balanço das Greves (SAG-DIEESE)
 
 | Campo | Valor |
 |---|---|
-| Status | **Fonte pública oficial identificada** — muda de LACUNA para fonte confirmada, mas automação permanece limitada. |
-| Publicação | "Balanço das Greves", série de "Estudos e Pesquisas" (EP) do DIEESE, elaborada a partir do mesmo Sistema de Acompanhamento de Greves (SAG) citado no material interno. |
-| URLs confirmadas (fetch direto, HTTP 200) | `dieese.org.br/estudosepesquisas/2025/estPesq111greves.pdf` (EP 111, "Balanço das Greves de 2024", ~1MB, 31 páginas — **ano completo mais recente confirmado**); `dieese.org.br/estudosepesquisas/2026/estPesq112greves.html` (EP 112, "Balanço das greves do 1º semestre de 2025" — **período parcial mais recente confirmado**). |
-| Conteúdo | **PDF confirmado como baseado em imagem** (JPEG/DCTDecode) — tabelas e gráficos embutidos como imagem, exigiria OCR para extração, não é texto/tabela nativamente extraível. |
-| Periodicidade | Semestral/anual (relatório de ano completo + relatório de 1º semestre separado). Numeração sequencial de EP remonta a pelo menos 2020 (EP 99). |
-| **Classificação de automação** | **E — manual.** PDF-imagem, sem planilha/CSV encontrado. |
-| **Alerta de qualidade de pesquisa** | A ferramenta de busca mencionou, em texto-resumo, um suposto "EP 114 — Balanço das greves de 2025 — abril/2026" com números específicos (1.006 greves, alta de 14%) — **a URL testada diretamente retornou 404**. Esse EP/dado **não foi confirmado e não deve ser tratado como real** até verificação direta. Classificado como possível alucinação da ferramenta de busca — registrado aqui exatamente para que não seja reintroduzido por engano em rodada futura. |
+| Status | **Reclassificado após teste técnico + validação cruzada (2026-09-23).** A classificação anterior (E — manual, PDF-imagem) estava **errada** — mesmo padrão de erro do ICT (ferramenta de leitura falhou silenciosamente, não é PDF-imagem de verdade). Testado com `pdftotext -layout -enc UTF-8` em 10+ edições (EP 84/2016 até EP 113/2026): todas com texto extraível. |
+| Validação cruzada contra a fonte de verdade | Apresentação interna do DIEESE (slide 48, total de greves 2024) = **880**. Boletim público EP 111 ("Balanço das Greves de 2024") = **880**. As 5 principais reivindicações de 2024 batem em todas as casas decimais: reajuste salarial 36,7%, condições de trabalho 25,2%, atraso de salário 23,9%, alimentação 21,5%, PCS 16,0% — idênticas nos dois. 1º semestre de 2025: apresentação interna diz "536 greves" (slide 51); boletim público (EP 112) também diz 536. |
+| Publicação | "Balanço das Greves", série de "Estudos e Pesquisas" (EP) do DIEESE, a partir do Sistema de Acompanhamento de Greves (SAG) — mais de 45 mil registros desde 1978, alimentado por notícias de imprensa. |
+| Padrão de URL | Mudou de pasta/formato ao longo do tempo — confirmado por teste direto: até ~2023, `dieese.org.br/balancodasgreves/{ano}/estPesq{numero}balancoGreves{ano}.pdf` (variações de maiúscula); a partir de ~2024, `dieese.org.br/estudosepesquisas/{ano}/estPesq{numero}greves.pdf`. O motor de coleta tenta as duas combinações de pasta/nome. |
+| Periodicidade | Semestral/anual (relatório de ano completo + relatório de 1º semestre separado). |
+| Limitação metodológica documentada no próprio boletim | Números de períodos recentes são **revisados retroativamente** entre edições (o SAG segue processando notícias depois da publicação original) — ex.: EP 110 registrou 451 greves para o 1º sem/2024, EP 112 (edição posterior) reclassificou o mesmo período como 462. Ao montar série histórica, usar sempre o valor da edição mais recente disponível para cada período. |
+| **Classificação de automação** | **B — download estruturado, confirmado e testado, piloto executado** (`pipelines/ingestao/bloco_4_mercado_trabalho/coleta_greves_dieese.py`) — encontrou em execução real a edição EP 113 ("Balanço das Greves de 2025", ano completo, publicado abr/2026), mais recente até que a edição usada na validação cruzada. Extração dos números de dentro do texto é tarefa de STAGING, não desta coleta. |
+| **Alerta de qualidade de pesquisa (mantido)** | Um suposto "EP 114" com números específicos (1.006 greves) mencionado em rodada anterior **segue não confirmado** (URL testada deu 404 então) — não foi reintroduzido nesta atualização; a edição mais recente real confirmada é a EP 113. |
 
 ## Distribuição de reajustes salariais em negociação coletiva
 
@@ -69,12 +70,14 @@ Dois indicadores estavam registrados como 🔴 LACUNA no checklist (arquivo-font
 
 ## Síntese
 
-| Indicador | Status anterior | Status atual (pós 2ª rodada, 2026-09-23) | Classificação de automação |
+| Indicador | Status anterior | Status atual (pós validação cruzada, 2026-09-23) | Classificação de automação |
 |---|---|---|---|
 | Cesta básica x salário mínimo | 🔴 LACUNA | **Fonte pública confirmada e piloto executado** | B — download estruturado |
-| ICT | 🔴 LACUNA | Fonte pública oficial identificada (DIEESE) — PDF-imagem, sem texto extraível | E — manual |
-| Greves (número, categorias, reivindicações) | 🔴 LACUNA | Fonte pública oficial identificada (DIEESE — Balanço das Greves) — PDF-imagem, sem texto extraível | E — manual |
+| ICT | 🔴 LACUNA | **Fonte pública confirmada, validada contra a apresentação interna, piloto executado** | B — download estruturado |
+| Greves (número, categorias, reivindicações) | 🔴 LACUNA | **Fonte pública confirmada, validada contra a apresentação interna, piloto executado** | B — download estruturado |
 | Reajustes salariais em negociação coletiva | 🔴 LACUNA | **Fonte pública confirmada, texto extraível testado, piloto executado** (DIEESE — "De Olho nas Negociações") | B — download estruturado |
 | Pisos salariais por categoria | 🔴 LACUNA | **Fonte pública confirmada, texto extraível testado, piloto executado** (mesmo boletim) | B — download estruturado |
+
+**Todos os cinco indicadores desta ficha agora são B.** Os cinco boletins institucionais públicos do DIEESE (Cesta Básica, ICT, Balanço das Greves, De Olho nas Negociações) têm, sem exceção, camada de texto real extraível — o erro de classificação anterior (E, "PDF-imagem/vetorizado") em 3 dos 5 veio de uma ferramenta de leitura que falha silenciosamente nesse tipo específico de PDF comprimido, não de uma limitação real da fonte. Validado com o método mais rigoroso disponível: comparação número a número contra a apresentação/planilha interna do DIEESE (`materiais/originais/`), com correspondência exata em todos os pontos testados.
 
 **Importante**: a 2ª rodada não deu API ao Mediador (continua sem) — deu algo melhor: os dois indicadores já vêm **calculados** pelo próprio DIEESE, com metodologia documentada, sem precisar reconstruir a lógica de negócio (instrumentos multissetoriais, pisos múltiplos, exclusões) por conta própria. Testado tecnicamente com `pdftotext -layout -enc UTF-8`: o PDF tem camada de texto real (diferente do ICT e do Balanço das Greves, que são imagem). Piloto de coleta implementado e executado com sucesso (`pipelines/ingestao/bloco_4_mercado_trabalho/coleta_negociacao_coletiva_dieese.py`). Próximo passo técnico (STAGING, não coberto por este piloto): extrair os números do texto (regex sobre o layout de `pdftotext`, similar ao que a Cesta Básica vai precisar). Se o projeto precisar de granularidade maior que setor/região (ex. por categoria/sindicato específico), o caminho é pedido interno à equipe do DIEESE que produz o boletim (provável ligação aos sistemas SACC/SAS internos), não engenharia de scraping externo.

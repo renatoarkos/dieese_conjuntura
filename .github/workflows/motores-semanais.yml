@@ -99,6 +99,14 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_negociacao_coletiva_dieese.py
 
+      - name: Índice da Condição do Trabalho — ICT (DIEESE)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_ict_dieese.py
+
+      - name: Balanço das Greves (DIEESE/SAG)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_greves_dieese.py
+
       # --- Bloco 5 — Novo CAGED (microdados) ---
       - name: CAGED — microdados brutos (FTP MTE/PDET)
         continue-on-error: true

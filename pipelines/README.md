@@ -88,12 +88,14 @@ pipelines/ingestao/
 │   ├── coleta_taxa_participacao_sidra.py     — Taxa de participação (SIDRA 6461)
 │   ├── coleta_sindicalizacao_sidra.py        — Taxa de sindicalização (SIDRA 8676)
 │   ├── coleta_rendimento_medio_real_sidra.py — Rendimento médio real do trabalho (SIDRA 5440)
-│   └── coleta_negociacao_coletiva_dieese.py  — Reajustes e pisos salariais em negociação coletiva (DIEESE, boletim PDF mensal)
+│   ├── coleta_negociacao_coletiva_dieese.py  — Reajustes e pisos salariais em negociação coletiva (DIEESE, boletim PDF mensal)
+│   ├── coleta_ict_dieese.py                  — Índice da Condição do Trabalho (DIEESE, boletim PDF trimestral)
+│   └── coleta_greves_dieese.py               — Número de greves, categorias e reivindicações (DIEESE/SAG, boletim PDF semestral/anual)
 └── bloco_5_caged/
     └── coleta_caged_microdados_ftp.py        — Novo CAGED, microdados brutos (FTP MTE/PDET — sem API)
 ```
 
-**27 scripts no total**, mais `supabase_raw.py` (helper compartilhado, não é um motor de coleta — ver seção "Integração com Supabase" abaixo).
+**29 scripts no total**, mais `supabase_raw.py` e `google_drive_raw.py` (helpers compartilhados, não são motores de coleta — ver seção "Integração com Supabase" abaixo).
 
 ## Como executar
 
@@ -105,7 +107,7 @@ python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_cambio_bcb.py
 ```
 
 Isso é útil para testar um script sozinho ou rodar uma coleta avulsa. Na
-prática, porém, os 27 scripts já rodam **sozinhos e agendados**, via GitHub
+prática, porém, os 29 scripts já rodam **sozinhos e agendados**, via GitHub
 Actions (`.github/workflows/motores-{diarios,semanais,mensais}.yml` — ver
 ADR 0003), agrupados por frequência de publicação da fonte, não por script
 individual.
@@ -138,7 +140,7 @@ Dois scripts envolvem arquivos grandes (dezenas/centenas de MB) e, neste ambient
 
 ## Integração com Supabase (ADR 0004)
 
-Todos os 27 scripts, além de gravar em `data/raw/` (que continua sendo a cópia local e a
+Todos os 29 scripts, além de gravar em `data/raw/` (que continua sendo a cópia local e a
 fonte de verdade imediata deste piloto), agora também chamam `registrar_coleta()`
 (`pipelines/supabase_raw.py`) ao final de cada execução bem-sucedida:
 
@@ -156,6 +158,6 @@ Testado de ponta a ponta contra o projeto Supabase real, cobrindo os 3 formatos 
 - Nunca transformam o dado — apenas gravam a resposta bruta da fonte.
 - Não têm dependência externa além da biblioteca padrão do Python (exceção documentada: `curl` via subprocess para Comex Stat, por questão de TLS do servidor).
 - Rodam agendados via GitHub Actions (ver ADR 0003) — execução manual (`python3 <script>`) continua funcionando para testes e coletas avulsas.
-- **Motores para fontes DIEESE, pausados por decisão do responsável do projeto** (2026-09-23): indicadores cuja fonte é o próprio DIEESE (Cesta Básica, ICT, Greves, Reajustes/Pisos salariais) serão eventualmente alimentados por planilhas internas fornecidas diretamente pelo DIEESE, não por raspagem de boletim. Os 2 motores já construídos (`coleta_cesta_basica_dieese.py`, `coleta_negociacao_coletiva_dieese.py`) continuam rodando como estão, mas não recebem mais investimento de engenharia (ex. extração de texto, reescrita didática) até essa decisão ser revista. ICT e Greves permanecem sem motor.
+- **Motores para fontes DIEESE — pausa revista (2026-09-23)**: uma pausa geral (2026-09-23, mesma data) havia sido decidida para não investir mais engenharia em fontes DIEESE enquanto se aguardava planilha própria. Testado depois, no mesmo dia, com uma validação rigorosa (comparação número a número contra a apresentação interna do DIEESE em `materiais/originais/`): os boletins públicos de ICT e Greves, que antes pareciam PDF-imagem/vetorizado, na verdade têm texto extraível de verdade e batem exatamente com a fonte interna — erro de uma ferramenta de leitura, não da fonte. Com essa evidência, o responsável do projeto autorizou construir os motores de ICT e Greves também. Hoje os 5 motores de fonte DIEESE (`coleta_cesta_basica_dieese.py`, `coleta_negociacao_coletiva_dieese.py`, `coleta_ict_dieese.py`, `coleta_greves_dieese.py`) estão todos rodando, testados e validados. Só **INDATEND** continua sem motor — não por falta de fonte, mas porque é confirmadamente um processo de trabalho interno do DIEESE (planilha + e-mail), não uma fonte externa (ver `docs/04-fontes/fgv-indatend.md`).
 - **Explicitamente NÃO cobertos** (ambiguidade de fonte não resolvida, ver ADR 0002 e `research/notas/DISCOVERY_FONTES_LOTE_PILOTO_01.md`): NFSP (QF07), PIB per capita (QF08), Rendimento médio real com deflacionamento DIEESE (QF04) — este último, aliás, é o único indicador com fonte 100% confirmada (SIDRA 5440) que ainda não tem motor construído.
 - Qualquer expansão a novos blocos/indicadores requer fonte confirmada primeiro (Discovery de Fontes).

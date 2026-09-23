@@ -328,18 +328,19 @@ Campos seguem `VISAO_DO_PRODUTO.md`, Seção 7: identificação, conceito, fonte
 ## 28. ICT — Índice da Condição do Trabalho
 
 - **Identificação**: Índice da Condição do Trabalho, elaboração própria DIEESE.
-- **Conceito**: índice sintético sobre condições de inserção no mercado de trabalho, a partir da PNAD Contínua.
-- **Fonte**: DIEESE, boletim trimestral público (`dieese.org.br/analiseict/`). Ficha completa em `docs/04-fontes/dieese-publicacoes.md`. Fonte pública confirmada, mas **sem tabela de dados extraível** — apenas PDF vetorizado/gráfico.
+- **Conceito**: índice sintético (0 a 1, quanto maior melhor) sobre condições de inserção no mercado de trabalho, a partir da PNAD Contínua (dimensões: inserção ocupacional, desocupação, rendimento).
+- **Fonte**: DIEESE, boletim trimestral público (`dieese.org.br/analiseict/`). Ficha completa em `docs/04-fontes/dieese-publicacoes.md`. **Atualizado 2026-09-23**: reclassificação corrigida via teste técnico (`pdftotext`) e validação cruzada contra a apresentação interna do DIEESE — valor do 3º tri/2025 bate exatamente (0,6848 na fonte interna vs. 0,68 no boletim público).
 - **Periodicidade**: trimestral.
-- **Status de automação**: **E — manual**. Não há caminho A/B/C confirmado.
+- **Status de automação**: **B — download estruturado, confirmado e testado, piloto executado** (`pipelines/ingestao/bloco_4_mercado_trabalho/coleta_ict_dieese.py`).
 
 ## 29-31. Greves (número, categorias, reivindicações)
 
 - **Identificação**: número de greves, principais categorias grevistas, principais reivindicações.
 - **Conceito**: intensidade e natureza do conflito capital-trabalho no Brasil.
-- **Fonte**: Sistema de Acompanhamento de Greves (SAG), sistema interno do DIEESE; publicado publicamente no "Balanço das Greves" (série de Estudos e Pesquisas). Ficha completa em `docs/04-fontes/dieese-publicacoes.md`. Fonte pública confirmada (EP 111/2024 completo; EP 112/1S2025 parcial), mas **PDF baseado em imagem**, sem tabela extraível sem OCR.
+- **Fonte**: Sistema de Acompanhamento de Greves (SAG), sistema interno do DIEESE; publicado publicamente no "Balanço das Greves" (série de Estudos e Pesquisas). Ficha completa em `docs/04-fontes/dieese-publicacoes.md`. **Atualizado 2026-09-23**: reclassificação corrigida via teste técnico e validação cruzada — total de greves de 2024 (880) e as 5 principais reivindicações (com percentuais idênticos até a casa decimal) batem exatamente entre a apresentação interna do DIEESE e o boletim público EP 111.
 - **Periodicidade**: semestral/anual.
-- **ALERTA — cuidado com dado não confirmado**: a busca mencionou um suposto "EP 114" com número de greves de 2025 — a URL testada deu 404, esse dado NÃO deve ser usado até confirmação direta. Ver `docs/04-fontes/dieese-publicacoes.md`.
+- **Status de automação**: **B — download estruturado, confirmado e testado, piloto executado** (`pipelines/ingestao/bloco_4_mercado_trabalho/coleta_greves_dieese.py`).
+- **ALERTA — cuidado com dado não confirmado (mantido)**: um suposto "EP 114" com número de greves de 2025 mencionado em rodada anterior segue não confirmado (404) — não foi reintroduzido. A edição mais recente real confirmada é a EP 113 ("Balanço das Greves de 2025", ano completo).
 - **Status de automação**: **E — manual**. PDF-imagem, exigiria OCR.
 
 ## 32. Taxa de sindicalização
