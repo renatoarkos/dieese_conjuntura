@@ -1,0 +1,59 @@
+# Motores de coleta mensal — DIEESE Conjuntura
+#
+# Decisão registrada em docs/08-decisoes-adr/0003-agendamento-github-actions.md.
+# Cobre motores de fontes com periodicidade trimestral ou mais espaçada (PIB,
+# PNAD Contínua, SICONFI, FMI, Sindicalização). Rodar mensalmente uma fonte
+# trimestral/semestral/anual é seguro e simples — não exige saber o calendário
+# exato de divulgação de cada fonte.
+
+name: Motores de coleta — mensais
+
+on:
+  schedule:
+    - cron: "0 14 1 * *" # 14:00 UTC no dia 1 de cada mês
+  workflow_dispatch: {}
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: PIB Brasil (SIDRA 5932)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_pib_sidra.py
+
+      - name: PIB Mundial (FMI/SDMX)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_pib_mundial_fmi.py
+
+      - name: Limite fiscal por UF (SICONFI)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_limite_fiscal_siconfi.py
+
+      - name: Taxa de desocupação (SIDRA 4093)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_desocupacao_sidra.py
+
+      - name: Posição na ocupação (SIDRA 4097)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_posicao_ocupacao_sidra.py
+
+      - name: Taxa de participação (SIDRA 6461)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_taxa_participacao_sidra.py
+
+      - name: Taxa de sindicalização (SIDRA 8676)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_sindicalizacao_sidra.py
+
+      - name: Publicar dados coletados como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-mensal-${{ github.run_id }}
+          path: data/raw/
+          retention-days: 90

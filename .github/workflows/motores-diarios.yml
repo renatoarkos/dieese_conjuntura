@@ -1,0 +1,40 @@
+# Motores de coleta diária — DIEESE Conjuntura
+#
+# Decisão registrada em docs/08-decisoes-adr/0003-agendamento-github-actions.md.
+# Cobre as únicas fontes que de fato mudam todo dia: Selic e Expectativas de
+# Mercado (Focus/BCB). Roda uma vez por dia, em dia útil (a Selic/Focus não
+# publicam valor novo em fins de semana/feriado, mas rodar todo dia é inofensivo
+# — os scripts apenas gravam a resposta mais recente da fonte).
+#
+# Scripts não têm dependência externa além da biblioteca padrão do Python
+# (ver ADR 0001) — não é necessário nenhum "pip install".
+
+name: Motores de coleta — diários
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # 12:00 UTC (09:00 horário de Brasília) todos os dias
+  workflow_dispatch: {} # permite disparo manual pela interface do GitHub
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Selic (BCB/SGS 4189 + 432)
+        run: python3 pipelines/ingestao/bloco_2_monetario_credito/coleta_selic_bcb.py
+
+      - name: Expectativas de mercado — Focus (BCB/Olinda, IPCA/INPC)
+        run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_expectativas_focus_bcb.py
+
+      - name: Publicar dados coletados como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-diario-${{ github.run_id }}
+          path: data/raw/
+          retention-days: 90

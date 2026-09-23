@@ -1,0 +1,104 @@
+# Motores de coleta semanal — DIEESE Conjuntura
+#
+# Decisão registrada em docs/08-decisoes-adr/0003-agendamento-github-actions.md.
+# Cobre todos os motores de fontes com periodicidade mensal ou mais frequente
+# (a maior parte do catálogo). Rodar semanalmente uma fonte mensal é seguro —
+# a nova publicação é capturada em até 7 dias, sem precisar saber o dia exato
+# de divulgação de cada fonte.
+#
+# Inclui o motor de raspagem direcionada (CNI/UCI) e o de microdados (CAGED) —
+# ambos já testados e funcionais, mas com maior risco de falha que os motores
+# de API pura (ver docs/02-arquitetura/PLANO_MOTORES_INGESTAO.md, Seção 4).
+# Uma falha isolada em um step não interrompe os demais (continue-on-error).
+
+name: Motores de coleta — semanais
+
+on:
+  schedule:
+    - cron: "0 13 * * 1" # 13:00 UTC toda segunda-feira
+  workflow_dispatch: {}
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # --- Bloco 1 — Macroeconomia ---
+      - name: Câmbio (BCB/SGS)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_cambio_bcb.py
+
+      - name: PMC — comércio (SIDRA 8881)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_pmc_comercio_sidra.py
+
+      - name: PMS — serviços (SIDRA 5906)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_pms_servicos_sidra.py
+
+      - name: PIM — indústria (SIDRA 8888)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_pim_industria_sidra.py
+
+      - name: Balança comercial (Comex Stat)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_balanca_comercial_comexstat.py
+
+      - name: UCI (CNI — raspagem direcionada)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_uci_cni.py
+
+      # --- Bloco 2 — Monetário e Crédito ---
+      - name: Juros por modalidade (BCB/SGS)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_2_monetario_credito/coleta_juros_modalidade_bcb.py
+
+      - name: Endividamento — parte BCB (família RNDBF)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_2_monetario_credito/coleta_endividamento_bcb.py
+
+      - name: Endividamento — parte PEIC (FecomercioSP)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_2_monetario_credito/coleta_endividamento_peic_fecomercio.py
+
+      - name: Saldo de crédito SFN (BCB/SGS)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_2_monetario_credito/coleta_saldo_credito_sfn_bcb.py
+
+      # --- Bloco 3 — Inflação ---
+      - name: IPCA índice geral (SIDRA 7060)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_ipca_sidra.py
+
+      - name: INPC índice geral (SIDRA 7063)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_inpc_sidra.py
+
+      - name: IGP-M (via BCB/SGS 189)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_igpm_bcb.py
+
+      - name: Cesta básica x salário mínimo (DIEESE/Conab)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_cesta_basica_dieese.py
+
+      - name: Preços de combustíveis (ANP)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_combustiveis_anp.py
+
+      # --- Bloco 5 — Novo CAGED (microdados) ---
+      - name: CAGED — microdados brutos (FTP MTE/PDET)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_5_caged/coleta_caged_microdados_ftp.py
+
+      - name: Publicar dados coletados como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-semanal-${{ github.run_id }}
+          path: data/raw/
+          retention-days: 90
