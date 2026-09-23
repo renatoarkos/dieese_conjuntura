@@ -20,9 +20,12 @@ O indicador "INPC, ICV e outros indicadores de inflação (síntese)" do materia
 
 | Campo | Valor |
 |---|---|
-| Status | **Nenhuma fonte pública identificável.** Busca não retornou nenhuma instituição, sistema ou índice publicamente conhecido com esse nome/sigla. |
-| Confirma | O que o material do DIEESE já indicava: "Fonte: INDATEND (PH/e-mail)" — recebimento manual e informal, sem presença pública rastreável. |
-| **Classificação de automação** | **E — manual/específico.** Não há indício de que seja automatizável sem mudança de processo institucional do DIEESE (contato direto com quem fornece o dado por e-mail). |
+| Status | **Identificado com evidência primária direta (2026-09-23)** — não é uma instituição/índice de mercado externo. É o nome de arquivo de uma planilha Excel **interna do próprio DIEESE**, encontrada nos materiais originais do projeto: `materiais/originais/Apresentação de conjuntura/Backup/.../INDATEND {ano}_{mês}.xlsx` (3 cópias localizadas, de 2023, 2024 e 2025 — arquivada mensalmente como backup). |
+| Título real do documento | Gravado nos metadados internos do próprio arquivo (`docProps/core.xml`): **"IBGE - Índices de Preços ao Consumidor"**. Criado em 2003, mantido até pelo menos ago/2025. Autor registrado: conta genérica do setor técnico do DIEESE ("TECNICOS-3"), não pessoa nomeada. |
+| O que a planilha realmente é | Um banco de dados mestre que consolida manualmente, mês a mês, ~11 séries de preços/financeiras já conhecidas: ICV-DIEESE (elaboração própria, geral + 3 estratos), INPC-IBGE, IPCA-IBGE, IPC-FIPE, IPC-FGV, IGP-M, IGP-DI, IPA-DI, câmbio médio, salário mínimo (nominal e necessário), poupança (BCB SGS 196), TR mensal (BCB SGS 7811), BTN+TR. Todas as séries que já têm classificação neste catálogo continuam com a mesma classificação — nada muda para elas. |
+| Citação original confirmada | `research/notas/DISCOVERY_FONTES_LOTE_PILOTO_01.md`, linha 77: a aba T21 da apresentação de conjuntura ("Outros Indicadores de Inflação") cita **"FONTE: INDATEND (PH/email)"** — bate exatamente com o conteúdo da planilha (as mesmas séries "outras" aparecem na aba Banco do arquivo INDATEND). "PH" são provavelmente as iniciais de quem mantém/envia o arquivo por e-mail — não confirmado, não é relevante para automação. |
+| **Conclusão** | INDATEND não é uma fonte a ser automatizada — é o *processo de trabalho* (planilha interna + envio por e-mail) por trás de uma linha do material que já mistura fontes já cobertas por outros motores deste catálogo (INPC, IGP-M) com duas séries sem automação própria (ICV-DIEESE, elaboração própria da instituição; IPC-FIPE, da Fundação Instituto de Pesquisas Econômicas — não pesquisado neste projeto). |
+| **Classificação de automação** | **E — manual, confirmado por evidência primária** (antes: "E, fonte desconhecida"; agora: "E, fonte é processo de trabalho interno do próprio DIEESE, com o dado bruto já identificado nos materiais originais do projeto"). Não é lacuna de pesquisa nem de engenharia — só mudaria se o DIEESE decidisse automatizar o próprio processo interno de atualização dessa planilha. |
 
 ## Síntese
 
@@ -31,4 +34,4 @@ O indicador "INPC, ICV e outros indicadores de inflação (síntese)" do materia
 | INPC (IBGE/SIDRA 7063) | A | Ver `docs/04-fontes/ibge-sidra.md` |
 | Portal FGV — direto | D | Requer contrato/assinatura |
 | IGP-M via BCB/SGS 189 | A | Rota alternativa gratuita, cobre só IGP-M |
-| INDATEND | E | Manual, sem fonte pública — confirma classificação já esperada pelo material |
+| INDATEND | E | Manual — identificado: planilha interna do próprio DIEESE (achada em `materiais/originais/`), não instituição externa |

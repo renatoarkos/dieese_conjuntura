@@ -293,9 +293,9 @@ Campos seguem `VISAO_DO_PRODUTO.md`, Seção 7: identificação, conceito, fonte
 ## 24. INDATEND (parte manual da síntese de inflação)
 
 - **Identificação**: fonte "INDATEND", citada no material do DIEESE como recebida por e-mail.
-- **Conceito**: não determinado — sem presença pública identificável.
-- **Fonte**: desconhecida/informal — busca não localizou nenhuma instituição ou sistema público com esse nome. Ficha completa em `docs/04-fontes/fgv-indatend.md`.
-- **Status de automação**: **E — manual**, confirma classificação já esperada pelo material do DIEESE. Não automatizável sem mudança de processo institucional (contato direto com quem fornece o dado).
+- **Conceito**: **Identificado (2026-09-23, evidência primária direta)** — não é instituição externa. É o nome de uma planilha Excel interna do próprio DIEESE (3 cópias mensais encontradas em `materiais/originais/`, título real nos metadados: "IBGE - Índices de Preços ao Consumidor"), que consolida manualmente ~11 séries já conhecidas (ICV-DIEESE, INPC, IPCA, IPC-FIPE, IPC-FGV, IGP-M, IGP-DI, IPA-DI, câmbio, salário mínimo, poupança, TR, BTN+TR).
+- **Fonte**: processo de trabalho interno do DIEESE (planilha + envio por e-mail), não uma fonte externa a pesquisar. Ficha completa e evidência em `docs/04-fontes/fgv-indatend.md`.
+- **Status de automação**: **E — manual, confirmado por evidência primária**. Não é lacuna de pesquisa — o dado bruto por trás do rótulo já está identificado; só mudaria se o DIEESE automatizasse o próprio processo interno.
 
 ## 25. Endividamento familiar — parte BCB ("Tabela 27") e Saldo de crédito SFN
 
