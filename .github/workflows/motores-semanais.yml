@@ -56,6 +56,10 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_uci_cni.py
 
+      - name: Índice de Commodities Brasil (BCB/SGS)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_commodities_bcb.py
+
       # --- Bloco 2 — Monetário e Crédito ---
       - name: Juros por modalidade (BCB/SGS)
         continue-on-error: true

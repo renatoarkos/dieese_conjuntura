@@ -5,11 +5,13 @@ repositório) dos indicadores macroeconômicos que formam o pano de fundo da con
 o tamanho e o ritmo da economia (PIB doméstico e mundial), o preço da moeda (câmbio), o
 volume de atividade nos três setores que mais pesam no PIB brasileiro (comércio,
 serviços e indústria), quanto da capacidade produtiva instalada está sendo usada
-(indústria), o resultado das trocas do país com o exterior (balança comercial) e o
-espaço fiscal dos estados para gastar com pessoal (limite fiscal por UF). São nove
-indicadores de seis fontes oficiais diferentes — IBGE, Banco Central, FMI, CNI, MDIC e
-Tesouro Nacional — que juntos respondem à pergunta "como vai a economia agora", antes de
-qualquer recorte de mercado de trabalho, preços ou renda, que ficam em outros blocos.
+(indústria), o resultado das trocas do país com o exterior (balança comercial), o
+espaço fiscal dos estados para gastar com pessoal (limite fiscal por UF), o preço das
+commodities relevantes para a economia brasileira, e a proporção do PIB destinada a
+investimento produtivo (taxa de investimento). São onze indicadores de seis fontes
+oficiais diferentes — IBGE, Banco Central, FMI, CNI, MDIC e Tesouro Nacional — que
+juntos respondem à pergunta "como vai a economia agora", antes de qualquer recorte de
+mercado de trabalho, preços ou renda, que ficam em outros blocos.
 
 Cada script é independente, autoexecutável e não depende de nenhum outro script deste
 bloco para rodar. Nenhum deles transforma dado: cada um busca a resposta de uma fonte
@@ -32,7 +34,7 @@ função `registrar_coleta` de `pipelines/supabase_raw.py`) — se as credenciai
 Supabase não estiverem configuradas em `.env`, essa etapa é apenas ignorada, sem
 interromper a coleta.
 
-## Os 9 scripts
+## Os 11 scripts
 
 ### `coleta_pib_sidra.py` — PIB Brasil
 
@@ -181,3 +183,36 @@ interromper a coleta.
   `NR_PERIODO`), busca os dados e grava um arquivo JSON próprio dessa UF em
   `data/raw/siconfi/`, todos com o mesmo timestamp de rodada; registra cada um dos 27
   arquivos no Supabase.
+
+### `coleta_commodities_bcb.py` — Índice de Commodities Brasil (IC-Br)
+
+- **O que mede**: preço, em reais, de uma cesta de commodities relevantes para a
+  economia brasileira — índice geral e 3 subíndices (agropecuária, metal, energia).
+- **De onde vem**: Banco Central do Brasil, Departamento Econômico (BCB/Depec), via SGS
+  — códigos 27574 (geral), 27575, 27576, 27577.
+- **Como foi achado**: **não estava em nenhum dos 33 indicadores do catálogo P1
+  original** — apareceu ao abrir a própria planilha de dados do DIEESE
+  (`materiais/originais/.../Índice de Commodities .xlsx`, achada numa investigação de
+  completude em 2026-09-23), cujo rodapé citava "Fonte: BCB-Depec" e os códigos de série
+  exatos — confirmados por teste real na API antes de escrever o script.
+- **Por que este método**: mesmo padrão SGS já usado por `coleta_cambio_bcb.py` e outros
+  scripts BCB deste piloto — 4 séries relacionadas coletadas juntas.
+- **Passo a passo**: para cada código de série em `SERIES`, busca os dados na API e
+  grava um arquivo JSON separado em `data/raw/bcb_sgs/`; registra cada arquivo no
+  Supabase.
+
+### `coleta_taxa_investimento_sidra.py` — Taxa de investimento (FBCF/PIB)
+
+- **O que mede**: proporção do PIB destinada a investimento produtivo (Formação Bruta de
+  Capital Fixo — máquinas, equipamentos, construção), já calculada pelo IBGE.
+- **De onde vem**: IBGE, Contas Nacionais Trimestrais, tabela SIDRA 6727.
+- **Como foi achado**: mesma investigação de completude — arquivo
+  `materiais/originais/.../taxa_invest.xlsx` do próprio DIEESE, cujo título ("Tabela 6727
+  - Taxa de investimento") apontou direto para a tabela SIDRA correspondente.
+- **Revisão observada**: entre duas cópias da planilha do DIEESE (nov/2024 e dez/2024), o
+  mesmo trimestre (2º tri/2024) mudou de 16,8% para 16,6% — revisão típica do IBGE entre
+  divulgações; o script sempre grava com timestamp, nunca sobrescreve.
+- **Passo a passo**: monta a URL fixa da tabela 6727 (todos os territórios, todas as
+  variáveis, todos os períodos — sem precisar de classificação, a tabela só tem uma
+  variável); busca os dados; grava o JSON em `data/raw/ibge_sidra/` com timestamp;
+  registra no Supabase.

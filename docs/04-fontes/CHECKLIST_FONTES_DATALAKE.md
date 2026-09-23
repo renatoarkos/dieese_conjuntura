@@ -86,19 +86,30 @@ Checklist mestre de rastreamento de todas as fontes de dados identificadas até 
 | 31 | Principais reivindicações das greves | idem | idem | idem | 🟢 CONFIRMADO — piloto executado | B | idem |
 | 33 | Distribuição de reajustes salariais em negociação coletiva | DIEESE — boletim mensal público "De Olho nas Negociações", slides "Reajustes salariais"/"Variação real média" (edição 67, abr/2026), **lido diretamente**; Mediador/MTE reconfirmado sem API/exportação em massa; dados.gov.br (CKAN) exige token institucional (401) | `dieese.org.br/boletimnegociacao/{ano}/boletimnegociacao{n}.pdf` | **Teste técnico confirmado**: `pdftotext -layout -enc UTF-8` extrai texto real e limpo; piloto de coleta executado com sucesso (edição 72, set/2026) | 🟢 CONFIRMADO — piloto executado (2ª rodada, 2026-09-23) | B | Extração dos números do texto (STAGING) ainda não implementada. Números de terceiros sobre volume de instrumentos (90,5 mil etc.) seguem NÃO confirmados — tratar como pista, não dado |
 
+## Bloco 7 — Indicadores novos (achados fora do catálogo P1 original)
+
+Encontrados em 2026-09-23 ao investigar a completude da planilha de dados do próprio DIEESE (`materiais/originais/`), fora dos 33 indicadores identificados nos materiais P1 originais. Ver `docs/05-indicadores/CATALOGO_MESTRE_INDICADORES.md`, itens 35-36.
+
+| # | Indicador | Instituição | Tabela/série | Método de acesso | Status | Automação | Próxima ação |
+|---|---|---|---|---|---|---|---|
+| 35 | Índice de Commodities Brasil (IC-Br) | BCB — Depec | SGS 27574 (geral), 27575 (agropecuária), 27576 (metal), 27577 (energia) | API SGS confirmada e testada | 🟢 CONFIRMADO — piloto executado (2026-09-23) | A | Nenhuma — piloto executado (`pipelines/ingestao/bloco_1_macroeconomia/coleta_commodities_bcb.py`) |
+| 36 | Taxa de investimento (FBCF/PIB) | IBGE — Contas Nacionais Trimestrais | SIDRA 6727 | API SIDRA confirmada e testada | 🟢 CONFIRMADO — piloto executado (2026-09-23) | A | Nenhuma — piloto executado (`pipelines/ingestao/bloco_1_macroeconomia/coleta_taxa_investimento_sidra.py`) |
+
+**Nota sobre um 3º candidato descartado**: a mesma investigação também abriu um arquivo "Setor público" que parecia trazer um indicador novo — na verdade é **o mesmo Relatório de Gestão Fiscal (RGF/SICONFI) já coletado pelo item 8 deste checklist** (Limite fiscal por UF), só encontrado numa planilha diferente. Não gerou motor novo, para não duplicar.
+
 ---
 
-## Síntese de status (33 indicadores do catálogo P1, atualizado após Lotes 02-06 + investigação de lacunas completa)
+## Síntese de status (36 indicadores catalogados, atualizado após Lotes 02-06 + investigação de lacunas + correção de classificação dos boletins DIEESE + investigação de completude da planilha do DIEESE)
 
 | Status | Quantidade | Indicadores |
 |---|---|---|
-| 🟢 CONFIRMADO — automatizável (A/B/C), piloto executado | 32 de 33 | Todo o catálogo P1, exceto PIB per capita e NFSP (ambiguidade de escopo, decisão do usuário) e as transformações (9b, 18). Inclui os 5 boletins institucionais do DIEESE (Cesta Básica, ICT, Greves, Reajustes e Pisos salariais), todos B, validados por teste técnico + comparação cruzada com a apresentação interna do DIEESE. |
+| 🟢 CONFIRMADO — automatizável (A/B/C), piloto executado | 34 de 36 | Todo o catálogo, exceto PIB per capita e NFSP (ambiguidade de escopo, decisão do usuário) e as transformações (9b, 18). Inclui os 5 boletins institucionais do DIEESE (Cesta Básica, ICT, Greves, Reajustes e Pisos salariais), todos B, validados por teste técnico + comparação cruzada com a apresentação interna do DIEESE, e os 2 indicadores novos achados na planilha do DIEESE (Índice de Commodities, Taxa de Investimento), ambos A. |
 | 🟢 CONFIRMADO (fonte manual/pública sem tabela extraível) | 1 | INDATEND — identificado como planilha interna do DIEESE (não é instituição externa), E definitivo |
 | 🔴 LACUNA (sem nenhuma fonte pública identificada) | 2 | PIB per capita, NFSP — ambiguidade de escopo que exige decisão do usuário (QF07, QF08), não falta de pesquisa |
 | Não aplicável (transformação/cruzamento) | 2 | Juros real (9b), PIB x Selic (18) |
-| — | 33+ | Total |
+| — | 36+ | Total |
 
-**29 scripts de piloto técnico** (`pipelines/ingestao/`), organizados em 5 blocos — ver `docs/08-decisoes-adr/0002-expansao-piloto-por-blocos.md`. Todos testados e executados com sucesso.
+**31 scripts de piloto técnico** (`pipelines/ingestao/`), organizados em 5 blocos — ver `docs/08-decisoes-adr/0002-expansao-piloto-por-blocos.md`. Todos testados e executados com sucesso.
 
 **Marco final da investigação de lacunas originais**: dos 11 indicadores 🔴 LACUNA no início do projeto, restam apenas **2** — decisões de escopo que dependem do usuário (QF07 para NFSP, QF08 para PIB per capita), não falta de pesquisa. **Todos os 33 indicadores do catálogo P1 original já passaram por investigação de fonte.**
 

@@ -4,7 +4,7 @@
 
 Catálogo Mestre de Indicadores da plataforma DIEESE Conjuntura, conforme definido em `docs/00-visao-geral/VISAO_DO_PRODUTO.md`, Seção 7 — a camada semântica central que conecta fontes, dados, indicadores e interpretações. Este documento é **distinto** de `docs/05-indicadores/INVENTARIO_INDICADORES_P1.md`, que é um levantamento preliminar restrito à leitura de três materiais internos do DIEESE (P1), sem pesquisa de fonte externa. As entradas aqui já passaram por confirmação direta na fonte oficial (Discovery de Fontes — Lote Piloto 01, ver `research/notas/DISCOVERY_FONTES_LOTE_PILOTO_01.md`).
 
-Este documento está em construção progressiva — iniciou com 6 indicadores (Lote Piloto 01) e já cobre 33 (após Lotes 02-06 e investigação de lacunas conhecidas, 2026-09-22), crescendo conforme novos lotes de Discovery de Fontes forem executados.
+Este documento está em construção progressiva — iniciou com 6 indicadores (Lote Piloto 01) e já cobre 36 (após Lotes 02-06, investigação de lacunas, correção de classificação dos boletins DIEESE e investigação de completude da planilha do DIEESE, 2026-09-23), crescendo conforme novos lotes de Discovery de Fontes forem executados.
 
 Campos seguem `VISAO_DO_PRODUTO.md`, Seção 7: identificação, conceito, fonte, metodologia, periodicidade, unidade, abrangência, dimensões, histórico, transformações, atualização, relações com outros indicadores, relações teóricas, limitações, status de automação. Campos que dependem de outros papéis especializados (relações teóricas — Especialista em Metodologia Econômica; relevância conjuntural — Economista de Conjuntura) ainda não foram preenchidos neste lote e estão marcados como **[A PREENCHER]**.
 
@@ -369,6 +369,23 @@ Campos seguem `VISAO_DO_PRODUTO.md`, Seção 7: identificação, conceito, fonte
 - **Fonte**: DIEESE, mesmo boletim "De Olho nas Negociações" do indicador 33. **Atualizado 2ª rodada (2026-09-23)**: slide "Pisos salariais" da edição 67 lido diretamente — piso médio R$ 1.846 / mediano R$ 1.719 (1º trimestre de 2026), por setor econômico e região; metodologia exclui pisos de estagiário/aprendiz e considera um valor por instrumento. SACC (sistema histórico DIEESE-MTE) segue sem série corrente (só 2004-2008), não é mais necessário como fonte. Ficha completa em `docs/04-fontes/dieese-publicacoes.md`.
 - **ALERTA**: um valor diferente (R$ 1.867 médio, R$ 1.736 mediano, boletim nº 68) citado em rodada anterior via terceiros **segue não confirmado na fonte primária** — não usar. Os valores R$ 1.846/R$ 1.719 acima, por outro lado, foram lidos diretamente do PDF e podem ser tratados como confirmados para aquela edição/trimestre.
 - **Status de automação**: **B — download estruturado, confirmado e testado, piloto executado** (mesmo script e mesma execução do indicador 33 — mesmo boletim).
+
+## 35. Índice de Commodities Brasil (IC-Br)
+
+- **Identificação**: índice de preços, em reais, de uma cesta de commodities relevantes para a economia brasileira — geral e 3 subíndices (agropecuária, metal, energia).
+- **Conceito**: acompanha a variação de preços de commodities que afetam a economia brasileira (produção, exportação, inflação de insumos), calculado pelo próprio Banco Central.
+- **Fonte**: Banco Central do Brasil, Departamento Econômico (BCB/Depec), via SGS — códigos 27574 (geral), 27575 (agropecuária), 27576 (metal), 27577 (energia). **Não estava em nenhum dos 33 indicadores do catálogo P1 original** — encontrado ao abrir a planilha `materiais/originais/.../Índice de Commodities .xlsx` do próprio DIEESE (2026-09-23), cujo rodapé cita "Fonte: BCB-Depec" e os códigos de série exatos, confirmados por teste real na API.
+- **Periodicidade**: mensal. **Unidade**: número-índice (base 100 = média de 2006).
+- **Status de automação**: **A — API direta, confirmada por teste real, piloto executado** (`pipelines/ingestao/bloco_1_macroeconomia/coleta_commodities_bcb.py`).
+
+## 36. Taxa de investimento (FBCF/PIB)
+
+- **Identificação**: taxa de investimento — Formação Bruta de Capital Fixo em relação ao PIB.
+- **Conceito**: proporção do PIB destinada a investimento produtivo (máquinas, equipamentos, construção), já calculada pelo IBGE nas Contas Nacionais Trimestrais.
+- **Fonte**: IBGE, Contas Nacionais Trimestrais. SIDRA Tabela 6727. **Não estava em nenhum dos 33 indicadores do catálogo P1 original** — encontrado ao abrir os arquivos `materiais/originais/.../taxa_invest.xlsx` do próprio DIEESE (2026-09-23), cujo título ("Tabela 6727 - Taxa de investimento") e rodapé de fonte apontaram direto para a tabela SIDRA, confirmada por teste real.
+- **Periodicidade**: trimestral. **Unidade**: %. **Histórico**: desde 4º tri/2014.
+- **Revisão observada**: entre duas cópias da planilha do DIEESE (nov/2024 e dez/2024), o mesmo trimestre (2º tri/2024) apareceu com valores diferentes (16,8% → 16,6%) — revisão típica do IBGE entre divulgações; ao usar esta série, sempre preferir a coleta mais recente.
+- **Status de automação**: **A — API direta, confirmada por teste real, piloto executado** (`pipelines/ingestao/bloco_1_macroeconomia/coleta_taxa_investimento_sidra.py`).
 
 ## Registro de pendências transversais (todos os lotes)
 

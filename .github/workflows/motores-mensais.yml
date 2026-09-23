@@ -58,6 +58,10 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_sindicalizacao_sidra.py
 
+      - name: Taxa de investimento (SIDRA 6727)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_taxa_investimento_sidra.py
+
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4
         with:

@@ -68,7 +68,9 @@ pipelines/ingestao/
 │   ├── coleta_pib_mundial_fmi.py             — PIB Mundial (FMI WEO, API SDMX)
 │   ├── coleta_uci_cni.py                     — UCI (CNI Indicadores Industriais, raspagem direcionada)
 │   ├── coleta_balanca_comercial_comexstat.py — Balança comercial (MDIC/Comex Stat, CSV via curl)
-│   └── coleta_limite_fiscal_siconfi.py       — Limite fiscal por UF (SICONFI, 27 estados)
+│   ├── coleta_limite_fiscal_siconfi.py       — Limite fiscal por UF (SICONFI, 27 estados)
+│   ├── coleta_commodities_bcb.py             — Índice de Commodities Brasil, IC-Br (BCB/SGS, 4 séries)
+│   └── coleta_taxa_investimento_sidra.py     — Taxa de investimento, FBCF/PIB (SIDRA 6727)
 ├── bloco_2_monetario_credito/
 │   ├── coleta_selic_bcb.py                   — Selic (BCB/SGS 4189 + 432, séries separadas)
 │   ├── coleta_juros_modalidade_bcb.py        — Juros por modalidade PF/PJ (BCB/SGS 20728, 22019, 20741, 20742)
@@ -95,7 +97,7 @@ pipelines/ingestao/
     └── coleta_caged_microdados_ftp.py        — Novo CAGED, microdados brutos (FTP MTE/PDET — sem API)
 ```
 
-**29 scripts no total**, mais `supabase_raw.py` e `google_drive_raw.py` (helpers compartilhados, não são motores de coleta — ver seção "Integração com Supabase" abaixo).
+**31 scripts no total**, mais `supabase_raw.py` e `google_drive_raw.py` (helpers compartilhados, não são motores de coleta — ver seção "Integração com Supabase" abaixo).
 
 ## Como executar
 
@@ -107,7 +109,7 @@ python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_cambio_bcb.py
 ```
 
 Isso é útil para testar um script sozinho ou rodar uma coleta avulsa. Na
-prática, porém, os 29 scripts já rodam **sozinhos e agendados**, via GitHub
+prática, porém, os 31 scripts já rodam **sozinhos e agendados**, via GitHub
 Actions (`.github/workflows/motores-{diarios,semanais,mensais}.yml` — ver
 ADR 0003), agrupados por frequência de publicação da fonte, não por script
 individual.
@@ -140,7 +142,7 @@ Dois scripts envolvem arquivos grandes (dezenas/centenas de MB) e, neste ambient
 
 ## Integração com Supabase (ADR 0004)
 
-Todos os 29 scripts, além de gravar em `data/raw/` (que continua sendo a cópia local e a
+Todos os 31 scripts, além de gravar em `data/raw/` (que continua sendo a cópia local e a
 fonte de verdade imediata deste piloto), agora também chamam `registrar_coleta()`
 (`pipelines/supabase_raw.py`) ao final de cada execução bem-sucedida:
 
