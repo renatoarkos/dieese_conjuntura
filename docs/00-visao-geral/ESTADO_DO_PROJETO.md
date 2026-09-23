@@ -74,16 +74,18 @@ Aguardando validação humana das perguntas remanescentes do Discovery de Fontes
 - `materiais/originais/` permanece preservado localmente e fica temporariamente fora do versionamento Git convencional, sem prejuízo da regra de preservação já estabelecida em `CLAUDE.md`; a estratégia definitiva de armazenamento/versionamento desses materiais será decidida posteriormente por ADR (`docs/08-decisoes-adr/`).
 - **ADR 0001** (`docs/08-decisoes-adr/0001-stack-minima-piloto-ingestao.md`, 2026-09-22): stack mínima e explicitamente provisória para um piloto técnico controlado (Python 3 puro, sem framework/orquestrador/banco), **escopada originalmente a PIB Brasil e IPCA**.
 - **ADR 0002** (`docs/08-decisoes-adr/0002-expansao-piloto-por-blocos.md`, 2026-09-22): expande o piloto do ADR 0001, mesma stack, a mais 7 indicadores confirmados por Discovery de Fontes, organizados em 4 blocos. Não constitui decisão de arquitetura de ingestão definitiva.
+- **ADR 0003** (`docs/08-decisoes-adr/0003-agendamento-github-actions.md`, 2026-09-23): **orquestração/agendamento resolvido** — GitHub Actions (cron), 3 workflows por faixa de periodicidade, cobrindo os 25 motores existentes. Repositório publicado em `github.com/renatoarkos/dieese_conjuntura`, workflows ativos.
+- **Banco de dados — Supabase, credenciais recebidas e conectividade confirmada** (2026-09-23, ainda sem ADR formal): o responsável do projeto criou o projeto Supabase e passou as credenciais (par novo `sb_publishable_`/`sb_secret_` e par clássico JWT `anon`/`service_role`). Credenciais salvas em `.env` local (fora do Git, coberto por `.gitignore`). Projeto: `https://zwyppnwwsuhevpjtgvqf.supabase.co`. Conectividade testada e confirmada via REST (`/rest/v1/`): `service_role`/`secret` respondem HTTP 200; `anon`/`publishable` respondem 401 no endpoint raiz — comportamento esperado do Supabase (restringe introspecção de schema à chave privilegiada), não um problema de credencial. **Ainda falta**: decisão de escopo (só RAW? STAGING/CURATED também? Supabase Storage para arquivos brutos como PDF?) antes de formalizar ADR e desenhar o schema.
+- **Reinvestigação Mediador/MTE, 2ª rodada** (2026-09-23): não há API/exportação em massa do Mediador (reconfirmado), mas achado melhor — o próprio DIEESE já calcula e publica os indicadores "Reajustes salariais" e "Pisos salariais" mensalmente no boletim público "De Olho nas Negociações", lido diretamente (edição 67, abr/2026). Detalhes em `docs/04-fontes/dieese-publicacoes.md`. Os dois indicadores saem de LACUNA/D e passam a classificação **C** (fonte pública confirmada; falta teste técnico de extração de texto do PDF para eventualmente subir a **B**).
 
 ## Decisões abertas
 
 - estratégia definitiva para materiais binários (Git LFS, armazenamento externo ou outra abordagem);
-- stack **definitiva** de ingestão/orquestração (ADR 0001/0002 cobrem apenas um piloto mínimo e escopado, não a decisão definitiva);
-- banco;
+- stack **definitiva** de ingestão (ADR 0001/0002 cobrem apenas um piloto mínimo e escopado, não a decisão definitiva) — agendamento já resolvido (ADR 0003);
+- banco — **Supabase com conectividade confirmada, falta decidir escopo (RAW/STAGING/CURATED, Storage) e formalizar ADR** (ver "Decisões consolidadas");
 - backend;
 - frontend;
-- orquestração;
-- infraestrutura;
+- infraestrutura de armazenamento definitivo (hoje o resultado dos motores fica em artifacts temporários do GitHub Actions, 90 dias — não é solução permanente);
 - deployment;
 - arquitetura de IA;
 - BI;

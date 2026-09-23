@@ -356,17 +356,18 @@ Campos seguem `VISAO_DO_PRODUTO.md`, Seção 7: identificação, conceito, fonte
 
 - **Identificação**: distribuição de reajustes salariais negociados, comparados ao INPC.
 - **Conceito**: quantas negociações coletivas ficaram acima/abaixo da inflação.
-- **Fonte**: DIEESE, boletim mensal público "De Olho nas Negociações" (mesmo padrão do ICT e do Balanço das Greves). Ficha completa em `docs/04-fontes/dieese-publicacoes.md`. Mediador/MTE confirmado sem API nem exportação em massa (consulta manual, unitária).
+- **Fonte**: DIEESE, boletim mensal público "De Olho nas Negociações" (mesmo padrão do ICT e do Balanço das Greves). Ficha completa em `docs/04-fontes/dieese-publicacoes.md`. **Atualizado 2ª rodada (2026-09-23)**: edição 67 (abr/2026) lida diretamente — série mensal abr/25-mar/26, % acima/abaixo do INPC, variação real média, por setor e região; nota metodológica explícita do DIEESE citando o Mediador/MTE como fonte primária. Mediador/MTE reconfirmado sem API nem exportação em massa (consulta manual, unitária); dados.gov.br (CKAN) exige token institucional.
 - **Periodicidade**: mensal. **Histórico**: desde pelo menos 2021.
-- **Status de automação**: **E — manual**. Fonte pública oficial confirmada, mas PDF é imagem/binário, sem tabela extraível.
+- **Status de automação**: **C** (fonte pública lida diretamente; potencial **B** pendente de teste técnico de extração de texto do PDF — `pdftotext`/equivalente — antes de assumir que está automatizável como a Cesta Básica).
+- **Pista não confirmada**: números de terceiros sobre volume de instrumentos coletivos (~90,5 mil 2023-2025) não confirmados em fonte primária — não usar.
 
 ## 34. Valor médio dos pisos salariais por categoria
 
 - **Identificação**: valor médio/mediano dos pisos salariais negociados, por categoria profissional.
 - **Conceito**: referência de piso salarial mínimo por categoria, fruto de negociação coletiva.
-- **Fonte**: nenhuma fonte corrente confirmada. SACC (sistema histórico DIEESE-MTE) confirmado **fora do ar**, dados até 2007/2008 apenas. Boletim "De Olho nas Negociações" pode cobrir pisos, mas não confirmado. Ficha completa em `docs/04-fontes/dieese-publicacoes.md`.
-- **ALERTA**: um valor específico (R$ 1.867 médio, R$ 1.736 mediano) foi encontrado apenas em citação de terceiros, **não confirmado na fonte primária do DIEESE** — não deve ser usado em nenhum documento do projeto até confirmação direta.
-- **Status de automação**: **D — não confirmado**. Único indicador do catálogo de 33 original que permanece sem nenhuma fonte corrente identificada com segurança.
+- **Fonte**: DIEESE, mesmo boletim "De Olho nas Negociações" do indicador 33. **Atualizado 2ª rodada (2026-09-23)**: slide "Pisos salariais" da edição 67 lido diretamente — piso médio R$ 1.846 / mediano R$ 1.719 (1º trimestre de 2026), por setor econômico e região; metodologia exclui pisos de estagiário/aprendiz e considera um valor por instrumento. SACC (sistema histórico DIEESE-MTE) segue sem série corrente (só 2004-2008), não é mais necessário como fonte. Ficha completa em `docs/04-fontes/dieese-publicacoes.md`.
+- **ALERTA**: um valor diferente (R$ 1.867 médio, R$ 1.736 mediano, boletim nº 68) citado em rodada anterior via terceiros **segue não confirmado na fonte primária** — não usar. Os valores R$ 1.846/R$ 1.719 acima, por outro lado, foram lidos diretamente do PDF e podem ser tratados como confirmados para aquela edição/trimestre.
+- **Status de automação**: **C** (mesma situação do indicador 33 — mesmo boletim, mesma pendência de teste técnico de extração de texto).
 
 ## Registro de pendências transversais (todos os lotes)
 
