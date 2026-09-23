@@ -3,8 +3,55 @@
 Piloto técnico controlado de ingestão de dados — escopo e justificativa registrados em:
 - `docs/08-decisoes-adr/0001-stack-minima-piloto-ingestao.md` (stack mínima; escopo original: PIB, IPCA)
 - `docs/08-decisoes-adr/0002-expansao-piloto-por-blocos.md` (expansão por blocos; escopo ampliado nos Lotes 02-06)
+- `docs/08-decisoes-adr/0003-agendamento-github-actions.md` (agendamento automático)
+- `docs/08-decisoes-adr/0004-supabase-raw-storage.md` (armazenamento definitivo do RAW)
 
 **Este NÃO é o desenho definitivo de ingestão da plataforma.** É um piloto mínimo e reversível, restrito a indicadores com fonte **inequivocamente confirmada** pelo Discovery de Fontes (`research/notas/DISCOVERY_FONTES_LOTE_PILOTO_01.md`, Lotes 02-06).
+
+## Por onde começar
+
+Este documento explica a estrutura geral e as decisões que valem para todos os
+scripts. Para o passo a passo de cada indicador especificamente — o que ele
+mede, de onde vem o dado, e como o código funciona — leia o README de dentro
+do bloco correspondente:
+
+- [`bloco_1_macroeconomia/README.md`](ingestao/bloco_1_macroeconomia/README.md) — PIB, câmbio, comércio/serviços/indústria, capacidade instalada, comércio exterior, fiscal
+- [`bloco_2_monetario_credito/README.md`](ingestao/bloco_2_monetario_credito/README.md) — Selic, juros por modalidade, endividamento das famílias, crédito
+- [`bloco_3_inflacao/README.md`](ingestao/bloco_3_inflacao/README.md) — IPCA, INPC, IGP-M, expectativas de inflação, combustíveis
+- [`bloco_4_mercado_trabalho/README.md`](ingestao/bloco_4_mercado_trabalho/README.md) — desocupação, ocupação, participação, sindicalização (PNAD Contínua)
+- [`bloco_5_caged/README.md`](ingestao/bloco_5_caged/README.md) — microdados do Novo CAGED
+
+## Anatomia de um script de coleta
+
+Todo script deste piloto segue a mesma forma, para que aprender a ler um sirva
+para ler qualquer outro. Usando `coleta_pib_sidra.py` como referência:
+
+1. **Docstring do módulo** — antes de qualquer código, explica: o que o
+   indicador mede, de onde vem o dado e por quê, como funciona o protocolo/API
+   daquela fonte em geral (não só desta tabela — o objetivo é que dê para
+   reconhecer o mesmo padrão numa tabela nova da mesma fonte), e um resumo
+   numerado dos passos que o script executa.
+2. **Constantes no topo** — a URL (ou dicionário de URLs, quando o script
+   coleta mais de uma série) e `DESTINO`, o caminho de `data/raw/` onde o
+   resultado é gravado. Ficam separadas do código para que, ao adaptar o
+   script para uma fonte parecida, baste trocar essas linhas.
+3. **Funções pequenas, uma por etapa** — nomeadas com prefixo `_` (privadas do
+   módulo) e um verbo claro: `_buscar_dados`, `_salvar_raw`, `_conectar`,
+   `_localizar_link_atual`. Cada uma faz uma coisa só, com uma docstring
+   curta explicando o quê e, quando não é óbvio, o porquê (ex. por que um
+   `timeout`, por que um `encoding` específico).
+4. **`coletar()`** — a função que orquestra: chama as etapas acima, nesta
+   ordem, e devolve o(s) `Path` do(s) arquivo(s) gravado(s). Não faz trabalho
+   próprio, só encadeia.
+5. **`if __name__ == "__main__":`** — roda `coletar()`, imprime o que foi
+   feito, e chama `registrar_coleta(...)` para cada arquivo (ver seção
+   "Integração com Supabase" abaixo).
+
+Um script deste piloto **nunca transforma o dado** — grava a resposta da
+fonte exatamente como recebida (ver `CLAUDE.md`, seção DADOS, camada RAW).
+Calcular variações, juntar séries, escolher entre fontes candidatas ou
+qualquer outra conta é trabalho de uma camada posterior (STAGING), a partir
+do arquivo que o script gravou — nunca dentro do próprio script de coleta.
 
 ## Estrutura por blocos
 
@@ -49,20 +96,27 @@ pipelines/ingestao/
 
 ## Como executar
 
+Cada script pode ser rodado individualmente:
+
 ```bash
 python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_pib_sidra.py
 python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_cambio_bcb.py
-# ...um comando por script, execução manual nesta fase (sem agendamento automático).
 ```
 
-Cada script grava a resposta bruta da fonte (sem nenhuma transformação) em `data/raw/<fonte>/`, com nome de arquivo incluindo a tabela/série e o timestamp UTC da coleta. `data/raw/` não é versionado no Git (ver `.gitignore`) — é a camada RAW conceitual (`CLAUDE.md`), que nunca deve ser editada manualmente.
+Isso é útil para testar um script sozinho ou rodar uma coleta avulsa. Na
+prática, porém, os 26 scripts já rodam **sozinhos e agendados**, via GitHub
+Actions (`.github/workflows/motores-{diarios,semanais,mensais}.yml` — ver
+ADR 0003), agrupados por frequência de publicação da fonte, não por script
+individual.
+
+Cada script grava a resposta bruta da fonte (sem nenhuma transformação) em `data/raw/<fonte>/`, com nome de arquivo incluindo a tabela/série e o timestamp UTC da coleta. `data/raw/` não é versionado no Git (ver `.gitignore`) — é a camada RAW conceitual (`CLAUDE.md`), que nunca deve ser editada manualmente. Uma cópia de cada arquivo também vai para o Supabase Storage (ver "Integração com Supabase" abaixo) — esse é o destino definitivo da série histórica, não `data/raw/` local nem os artifacts do GitHub Actions.
 
 ## Decisões de formato de extração (todas documentadas no cabeçalho do respectivo script)
 
 - **API direta** (maioria dos scripts): IBGE/SIDRA, BCB/SGS, BCB/Olinda (Focus), FMI/SDMX, SICONFI/ORDS.
 - **Download estruturado com descoberta dinâmica de URL**: PEIC/FecomercioSP (via API de listagem de mídia do WordPress — estável, não é raspagem de HTML) e CNI/UCI (via regex sobre a página oficial, porque a CNI não expõe API de listagem — é raspagem direcionada mínima, não scraping de conteúdo).
 - **Download estruturado via `curl` (não `urllib`)**: Comex Stat — o servidor `balanca.mdic.gov.br` envia uma cadeia de certificado TLS incompleta, que o módulo `ssl` do Python rejeita mesmo com `certifi`; `curl` resolve a cadeia corretamente. Optou-se por trocar a ferramenta de download (mantendo verificação de certificado ativa) em vez de desabilitar a verificação SSL no Python — ver docstring do script para o raciocínio completo.
-- **FTP de microdados brutos**: Novo CAGED — não há API nem link estável de tabelas prontas (pasta Google Drive sem URL fixa); o FTP público é a única fonte estável confirmada, mas entrega microdados, não tabelas agregadas — ver `docs/04-fontes/mte-caged.md`.
+- **FTP de microdados brutos**: Novo CAGED — não há API nem link estável de tabelas prontas (pasta Google Drive sem URL fixa); o FTP público é a única fonte estável confirmada, mas entrega microdados, não tabelas agregadas — ver `docs/04-fontes/mte-caged.md` e `bloco_5_caged/README.md`. Único script com duas formas de coleta: `coletar()` (mês mais recente, é o que roda agendado) e `coletar_periodo(mes_inicio, mes_fim)` (um intervalo de meses, para montar série histórica local sob demanda — não faz parte do agendamento automático).
 - **Rota alternativa via outra instituição**: IGP-M — o Portal FGV/IBRE não expõe API pública (acesso via contrato/assinatura); o BCB replica oficialmente o IGP-M via SGS (código 189), usado como fonte — ver `docs/04-fontes/fgv-indatend.md`.
 - **Download direto com detecção automática de mês mais recente**: Cesta Básica — a fonte era registrada como lacuna (arquivo interno não obtido); a pesquisa encontrou que o próprio DIEESE publica mensalmente, em parceria com a Conab, um boletim PDF público com exatamente o indicador citado. O script tenta os últimos meses a partir do corrente até achar o mais recente publicado — ver `docs/04-fontes/dieese-publicacoes.md`.
 - **Download direto com detecção automática de edição mais recente (numeração sequencial, não ano/mês)**: Negociação Coletiva — o Mediador/MTE (fonte citada no material) não tem API nem exportação em massa (confirmado em duas rodadas de investigação), mas o próprio DIEESE publica mensalmente o boletim "De Olho nas Negociações", já calculando reajustes vs. INPC e pisos salariais a partir dos microdados do Mediador. Diferente da Cesta Básica, a URL usa número de edição sequencial, não ano/mês — o script parte de uma âncora confirmada (edição 67 = abril/2026) e estima a edição corrente pelos meses decorridos, testado com sucesso encontrando a edição 72 (setembro/2026) numa execução real. **Confirmado por teste técnico (`pdftotext -layout -enc UTF-8`) que o PDF tem texto real extraível** (diferente do ICT e do Balanço das Greves, que são PDF-imagem) — por isso este é o único dos quatro boletins institucionais do DIEESE classificado como B, não E. Extração da tabela (STAGING) ainda não implementada.
@@ -100,6 +154,7 @@ Testado de ponta a ponta contra o projeto Supabase real, cobrindo os 3 formatos 
 
 - Nunca transformam o dado — apenas gravam a resposta bruta da fonte.
 - Não têm dependência externa além da biblioteca padrão do Python (exceção documentada: `curl` via subprocess para Comex Stat, por questão de TLS do servidor).
-- Não são agendados automaticamente — execução manual nesta fase.
-- **Explicitamente NÃO cobertos** (ambiguidade de fonte não resolvida, ver ADR 0002 e `research/notas/DISCOVERY_FONTES_LOTE_PILOTO_01.md`): NFSP (QF07), PIB per capita (QF08), Rendimento médio real com deflacionamento DIEESE (QF04), PMS/PIM de recortes específicos além do índice geral, ICT, Greves (lacunas de arquivo-fonte, PDF-imagem sem texto extraível).
+- Rodam agendados via GitHub Actions (ver ADR 0003) — execução manual (`python3 <script>`) continua funcionando para testes e coletas avulsas.
+- **Motores para fontes DIEESE, pausados por decisão do responsável do projeto** (2026-09-23): indicadores cuja fonte é o próprio DIEESE (Cesta Básica, ICT, Greves, Reajustes/Pisos salariais) serão eventualmente alimentados por planilhas internas fornecidas diretamente pelo DIEESE, não por raspagem de boletim. Os 2 motores já construídos (`coleta_cesta_basica_dieese.py`, `coleta_negociacao_coletiva_dieese.py`) continuam rodando como estão, mas não recebem mais investimento de engenharia (ex. extração de texto, reescrita didática) até essa decisão ser revista. ICT e Greves permanecem sem motor.
+- **Explicitamente NÃO cobertos** (ambiguidade de fonte não resolvida, ver ADR 0002 e `research/notas/DISCOVERY_FONTES_LOTE_PILOTO_01.md`): NFSP (QF07), PIB per capita (QF08), Rendimento médio real com deflacionamento DIEESE (QF04) — este último, aliás, é o único indicador com fonte 100% confirmada (SIDRA 5440) que ainda não tem motor construído.
 - Qualquer expansão a novos blocos/indicadores requer fonte confirmada primeiro (Discovery de Fontes).
