@@ -131,7 +131,7 @@ Campos seguem `VISAO_DO_PRODUTO.md`, Seção 7: identificação, conceito, fonte
 - **Relações teóricas**: [A PREENCHER — Especialista em Metodologia Econômica].
 - **Limitações**: herdadas do desenho amostral da PNAD Contínua; rendimento "habitual" é autodeclarado; **erro histórico documentado pelo próprio IBGE** — entre jan/2012 e jan/2015, pesos regionais do deflator usaram indevidamente o INPC em vez do IPCA (posteriormente corrigido).
 - **ALERTA — risco metodológico a validar**: a Tabela 5440 do IBGE já entrega o valor em termos REAIS (deflacionado pela metodologia do próprio IBGE). O material do DIEESE indica um deflacionamento adicional próprio (Nota Técnica DIEESE). **Não é possível determinar, com os materiais e fontes disponíveis nesta pesquisa, se isso configura dupla deflação (o DIEESE aplicaria seu deflator sobre um valor já real) ou se o DIEESE parte de uma série nominal distinta (ainda não identificada)**. Requer validação humana e/ou acesso à Nota Técnica DIEESE antes de qualquer uso analítico ou de automação deste indicador.
-- **Status de automação**: **B — dado bruto do IBGE** (API de metadados confirmada; valores não testados especificamente nesta rodada). **E — deflacionamento adicional do DIEESE** (manual/específico, depende de documento interno não disponível).
+- **Status de automação**: **A — dado bruto do IBGE**, confirmado por teste real da chamada de valores (233 registros, 1º tri/2012–2º tri/2026) e piloto executado (`pipelines/ingestao/bloco_4_mercado_trabalho/coleta_rendimento_medio_real_sidra.py`, 2026-09-23). **E — deflacionamento adicional do DIEESE** (manual/específico, depende de documento interno não disponível) — continua sem solução, não é resolvido por este motor.
 
 ---
 

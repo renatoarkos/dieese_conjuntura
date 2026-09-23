@@ -80,6 +80,30 @@ nova "fotografia" da série, nunca uma sobrescrita da coleta anterior.
   resposta bruta em disco com timestamp (`_salvar_raw`); registra a coleta no
   Supabase.
 
+## `coleta_rendimento_medio_real_sidra.py`
+
+- **O que mede**: o valor médio mensal do rendimento do trabalho habitualmente
+  recebido no trabalho principal, pessoas de 14+ anos ocupadas, já em termos
+  reais (a própria tabela do IBGE entrega deflacionado), por posição na
+  ocupação/categoria do emprego.
+- **De onde vem**: Tabela SIDRA 5440, alimentada pela PNAD Contínua
+  trimestral. Fonte confirmada em `docs/04-fontes/ibge-sidra.md` — era o
+  único indicador do catálogo com fonte confirmada que ainda não tinha motor
+  construído; a chamada de valores foi testada diretamente antes de escrever
+  este script (233 registros, 1º tri/2012 a 2º tri/2026).
+- **Diferença em relação aos outros scripts deste bloco**: a URL não
+  especifica um código de classificação — testado que, se você omitir, o
+  SIDRA devolve todas as categorias de "posição na ocupação" por padrão, sem
+  precisar descobrir o código exato.
+- **Limitação que este motor não resolve**: o material do DIEESE indica um
+  deflacionamento adicional próprio, por cima do valor que a 5440 já entrega
+  real — não dá para saber, só com fontes públicas, se isso é dupla deflação
+  ou se o DIEESE parte de outra série. Ver `docs/04-fontes/ibge-sidra.md`.
+- **Passo a passo**: monta a URL da consulta (tabela 5440, todos os
+  territórios de nível Brasil, todas as variáveis, todos os períodos); busca
+  os dados na API (`_buscar_dados`); grava a resposta bruta em disco com
+  timestamp (`_salvar_raw`); registra a coleta no Supabase.
+
 ## `coleta_sindicalizacao_sidra.py`
 
 - **O que mede**: a taxa de sindicalização — proporção de pessoas ocupadas de

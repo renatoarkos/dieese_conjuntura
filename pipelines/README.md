@@ -87,12 +87,13 @@ pipelines/ingestao/
 │   ├── coleta_posicao_ocupacao_sidra.py      — Posição na ocupação (SIDRA 4097)
 │   ├── coleta_taxa_participacao_sidra.py     — Taxa de participação (SIDRA 6461)
 │   ├── coleta_sindicalizacao_sidra.py        — Taxa de sindicalização (SIDRA 8676)
+│   ├── coleta_rendimento_medio_real_sidra.py — Rendimento médio real do trabalho (SIDRA 5440)
 │   └── coleta_negociacao_coletiva_dieese.py  — Reajustes e pisos salariais em negociação coletiva (DIEESE, boletim PDF mensal)
 └── bloco_5_caged/
     └── coleta_caged_microdados_ftp.py        — Novo CAGED, microdados brutos (FTP MTE/PDET — sem API)
 ```
 
-**26 scripts no total**, mais `supabase_raw.py` (helper compartilhado, não é um motor de coleta — ver seção "Integração com Supabase" abaixo).
+**27 scripts no total**, mais `supabase_raw.py` (helper compartilhado, não é um motor de coleta — ver seção "Integração com Supabase" abaixo).
 
 ## Como executar
 
@@ -104,7 +105,7 @@ python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_cambio_bcb.py
 ```
 
 Isso é útil para testar um script sozinho ou rodar uma coleta avulsa. Na
-prática, porém, os 26 scripts já rodam **sozinhos e agendados**, via GitHub
+prática, porém, os 27 scripts já rodam **sozinhos e agendados**, via GitHub
 Actions (`.github/workflows/motores-{diarios,semanais,mensais}.yml` — ver
 ADR 0003), agrupados por frequência de publicação da fonte, não por script
 individual.
@@ -137,7 +138,7 @@ Dois scripts envolvem arquivos grandes (dezenas/centenas de MB) e, neste ambient
 
 ## Integração com Supabase (ADR 0004)
 
-Todos os 26 scripts, além de gravar em `data/raw/` (que continua sendo a cópia local e a
+Todos os 27 scripts, além de gravar em `data/raw/` (que continua sendo a cópia local e a
 fonte de verdade imediata deste piloto), agora também chamam `registrar_coleta()`
 (`pipelines/supabase_raw.py`) ao final de cada execução bem-sucedida:
 

@@ -50,6 +50,10 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_taxa_participacao_sidra.py
 
+      - name: Rendimento médio real (SIDRA 5440)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_rendimento_medio_real_sidra.py
+
       - name: Taxa de sindicalização (SIDRA 8676)
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_sindicalizacao_sidra.py
