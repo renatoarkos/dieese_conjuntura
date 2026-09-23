@@ -30,9 +30,11 @@ jobs:
           python-version: "3.12"
 
       - name: Selic (BCB/SGS 4189 + 432)
+        continue-on-error: true
         run: python3 pipelines/ingestao/bloco_2_monetario_credito/coleta_selic_bcb.py
 
       - name: Expectativas de mercado — Focus (BCB/Olinda, IPCA/INPC)
+        continue-on-error: true
         run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_expectativas_focus_bcb.py
 
       - name: Publicar dados coletados como artifact
