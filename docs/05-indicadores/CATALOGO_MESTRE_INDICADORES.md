@@ -358,7 +358,7 @@ Campos seguem `VISAO_DO_PRODUTO.md`, Seção 7: identificação, conceito, fonte
 - **Conceito**: quantas negociações coletivas ficaram acima/abaixo da inflação.
 - **Fonte**: DIEESE, boletim mensal público "De Olho nas Negociações" (mesmo padrão do ICT e do Balanço das Greves). Ficha completa em `docs/04-fontes/dieese-publicacoes.md`. **Atualizado 2ª rodada (2026-09-23)**: edição 67 (abr/2026) lida diretamente — série mensal abr/25-mar/26, % acima/abaixo do INPC, variação real média, por setor e região; nota metodológica explícita do DIEESE citando o Mediador/MTE como fonte primária. Mediador/MTE reconfirmado sem API nem exportação em massa (consulta manual, unitária); dados.gov.br (CKAN) exige token institucional.
 - **Periodicidade**: mensal. **Histórico**: desde pelo menos 2021.
-- **Status de automação**: **C** (fonte pública lida diretamente; potencial **B** pendente de teste técnico de extração de texto do PDF — `pdftotext`/equivalente — antes de assumir que está automatizável como a Cesta Básica).
+- **Status de automação**: **B — download estruturado, confirmado e testado, piloto executado** (`pipelines/ingestao/bloco_4_mercado_trabalho/coleta_negociacao_coletiva_dieese.py`). Teste técnico com `pdftotext -layout -enc UTF-8` confirmou camada de texto real e limpa no PDF; script executado com sucesso, encontrando a edição 72 (set/2026, dados até ago/2026). Extração dos números do texto (STAGING) ainda não implementada.
 - **Pista não confirmada**: números de terceiros sobre volume de instrumentos coletivos (~90,5 mil 2023-2025) não confirmados em fonte primária — não usar.
 
 ## 34. Valor médio dos pisos salariais por categoria
@@ -367,7 +367,7 @@ Campos seguem `VISAO_DO_PRODUTO.md`, Seção 7: identificação, conceito, fonte
 - **Conceito**: referência de piso salarial mínimo por categoria, fruto de negociação coletiva.
 - **Fonte**: DIEESE, mesmo boletim "De Olho nas Negociações" do indicador 33. **Atualizado 2ª rodada (2026-09-23)**: slide "Pisos salariais" da edição 67 lido diretamente — piso médio R$ 1.846 / mediano R$ 1.719 (1º trimestre de 2026), por setor econômico e região; metodologia exclui pisos de estagiário/aprendiz e considera um valor por instrumento. SACC (sistema histórico DIEESE-MTE) segue sem série corrente (só 2004-2008), não é mais necessário como fonte. Ficha completa em `docs/04-fontes/dieese-publicacoes.md`.
 - **ALERTA**: um valor diferente (R$ 1.867 médio, R$ 1.736 mediano, boletim nº 68) citado em rodada anterior via terceiros **segue não confirmado na fonte primária** — não usar. Os valores R$ 1.846/R$ 1.719 acima, por outro lado, foram lidos diretamente do PDF e podem ser tratados como confirmados para aquela edição/trimestre.
-- **Status de automação**: **C** (mesma situação do indicador 33 — mesmo boletim, mesma pendência de teste técnico de extração de texto).
+- **Status de automação**: **B — download estruturado, confirmado e testado, piloto executado** (mesmo script e mesma execução do indicador 33 — mesmo boletim).
 
 ## Registro de pendências transversais (todos os lotes)
 

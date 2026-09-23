@@ -39,12 +39,13 @@ pipelines/ingestao/
 │   ├── coleta_desocupacao_sidra.py           — Taxa de desocupação (SIDRA 4093)
 │   ├── coleta_posicao_ocupacao_sidra.py      — Posição na ocupação (SIDRA 4097)
 │   ├── coleta_taxa_participacao_sidra.py     — Taxa de participação (SIDRA 6461)
-│   └── coleta_sindicalizacao_sidra.py        — Taxa de sindicalização (SIDRA 8676)
+│   ├── coleta_sindicalizacao_sidra.py        — Taxa de sindicalização (SIDRA 8676)
+│   └── coleta_negociacao_coletiva_dieese.py  — Reajustes e pisos salariais em negociação coletiva (DIEESE, boletim PDF mensal)
 └── bloco_5_caged/
     └── coleta_caged_microdados_ftp.py        — Novo CAGED, microdados brutos (FTP MTE/PDET — sem API)
 ```
 
-**25 scripts no total.**
+**26 scripts no total.**
 
 ## Como executar
 
@@ -64,6 +65,7 @@ Cada script grava a resposta bruta da fonte (sem nenhuma transformação) em `da
 - **FTP de microdados brutos**: Novo CAGED — não há API nem link estável de tabelas prontas (pasta Google Drive sem URL fixa); o FTP público é a única fonte estável confirmada, mas entrega microdados, não tabelas agregadas — ver `docs/04-fontes/mte-caged.md`.
 - **Rota alternativa via outra instituição**: IGP-M — o Portal FGV/IBRE não expõe API pública (acesso via contrato/assinatura); o BCB replica oficialmente o IGP-M via SGS (código 189), usado como fonte — ver `docs/04-fontes/fgv-indatend.md`.
 - **Download direto com detecção automática de mês mais recente**: Cesta Básica — a fonte era registrada como lacuna (arquivo interno não obtido); a pesquisa encontrou que o próprio DIEESE publica mensalmente, em parceria com a Conab, um boletim PDF público com exatamente o indicador citado. O script tenta os últimos meses a partir do corrente até achar o mais recente publicado — ver `docs/04-fontes/dieese-publicacoes.md`.
+- **Download direto com detecção automática de edição mais recente (numeração sequencial, não ano/mês)**: Negociação Coletiva — o Mediador/MTE (fonte citada no material) não tem API nem exportação em massa (confirmado em duas rodadas de investigação), mas o próprio DIEESE publica mensalmente o boletim "De Olho nas Negociações", já calculando reajustes vs. INPC e pisos salariais a partir dos microdados do Mediador. Diferente da Cesta Básica, a URL usa número de edição sequencial, não ano/mês — o script parte de uma âncora confirmada (edição 67 = abril/2026) e estima a edição corrente pelos meses decorridos, testado com sucesso encontrando a edição 72 (setembro/2026) numa execução real. **Confirmado por teste técnico (`pdftotext -layout -enc UTF-8`) que o PDF tem texto real extraível** (diferente do ICT e do Balanço das Greves, que são PDF-imagem) — por isso este é o único dos quatro boletins institucionais do DIEESE classificado como B, não E. Extração da tabela (STAGING) ainda não implementada.
 - **Cabeçalhos HTTP de navegador para evitar detecção de bot**: Combustíveis (ANP) — a página oficial retornava HTTP 403 sem cabeçalhos `Accept`/`Accept-Language`, mas funcionou normalmente ao adicioná-los. Não era um bloqueio institucional — ver `docs/04-fontes/anp-ipeadata.md`.
 
 ## Notas sobre séries compostas ou com pendência de mapeamento
@@ -84,5 +86,5 @@ Dois scripts envolvem arquivos grandes (dezenas/centenas de MB) e, neste ambient
 - Nunca transformam o dado — apenas gravam a resposta bruta da fonte.
 - Não têm dependência externa além da biblioteca padrão do Python (exceção documentada: `curl` via subprocess para Comex Stat, por questão de TLS do servidor).
 - Não são agendados automaticamente — execução manual nesta fase.
-- **Explicitamente NÃO cobertos** (ambiguidade de fonte não resolvida, ver ADR 0002 e `research/notas/DISCOVERY_FONTES_LOTE_PILOTO_01.md`): NFSP (QF07), PIB per capita (QF08), Rendimento médio real com deflacionamento DIEESE (QF04), PMS/PIM de recortes específicos além do índice geral, Cesta Básica/Combustíveis/ICT/Greves/Negociação Coletiva (lacunas de arquivo-fonte).
+- **Explicitamente NÃO cobertos** (ambiguidade de fonte não resolvida, ver ADR 0002 e `research/notas/DISCOVERY_FONTES_LOTE_PILOTO_01.md`): NFSP (QF07), PIB per capita (QF08), Rendimento médio real com deflacionamento DIEESE (QF04), PMS/PIM de recortes específicos além do índice geral, ICT, Greves (lacunas de arquivo-fonte, PDF-imagem sem texto extraível).
 - Qualquer expansão a novos blocos/indicadores requer fonte confirmada primeiro (Discovery de Fontes).
