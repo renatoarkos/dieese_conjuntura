@@ -25,6 +25,10 @@ INICIO_SERIE = {
     "4189": date(1986, 8, 1),
     "432": date(1999, 3, 5),
 }
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from supabase_raw import registrar_coleta
+
 DESTINO = Path(__file__).resolve().parents[3] / "data" / "raw" / "bcb_sgs"
 
 
@@ -91,3 +95,4 @@ def coletar() -> list[Path]:
 if __name__ == "__main__":
     for caminho in coletar():
         print(f"Coleta concluída: {caminho}")
+        registrar_coleta(fonte=DESTINO.name, arquivo=caminho, script=__file__)

@@ -31,6 +31,10 @@ from pathlib import Path
 
 FTP_HOST = "ftp.mtps.gov.br"
 FTP_BASE = "/pdet/microdados/NOVO CAGED"
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from supabase_raw import registrar_coleta
+
 DESTINO = Path(__file__).resolve().parents[3] / "data" / "raw" / "mte_caged"
 
 
@@ -105,3 +109,4 @@ if __name__ == "__main__":
     for caminho in coletar():
         tamanho_mb = caminho.stat().st_size / (1024 * 1024)
         print(f"Coleta concluída: {caminho} ({tamanho_mb:.1f} MB)")
+        registrar_coleta(fonte=DESTINO.name, arquivo=caminho, script=__file__)

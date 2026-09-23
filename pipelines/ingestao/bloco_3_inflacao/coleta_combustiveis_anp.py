@@ -35,6 +35,10 @@ CABECALHOS = {
     "Accept": "text/csv,text/html,*/*",
     "Accept-Language": "pt-BR,pt;q=0.9",
 }
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from supabase_raw import registrar_coleta
+
 DESTINO = Path(__file__).resolve().parents[3] / "data" / "raw" / "anp"
 
 
@@ -56,3 +60,4 @@ if __name__ == "__main__":
     for caminho in coletar():
         tamanho_mb = caminho.stat().st_size / (1024 * 1024)
         print(f"Coleta concluída: {caminho} ({tamanho_mb:.2f} MB)")
+        registrar_coleta(fonte=DESTINO.name, arquivo=caminho, script=__file__)

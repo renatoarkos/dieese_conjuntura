@@ -27,6 +27,10 @@ CODIGOS_UF = {
 
 AN_EXERCICIO = 2026
 NR_PERIODO = 1  # 1º quadrimestre — período mais recente com dados confirmados nesta rodada
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from supabase_raw import registrar_coleta
+
 DESTINO = Path(__file__).resolve().parents[3] / "data" / "raw" / "siconfi"
 
 
@@ -55,3 +59,5 @@ def coletar() -> list[Path]:
 if __name__ == "__main__":
     arquivos = coletar()
     print(f"Coleta concluída: {len(arquivos)} arquivos (1 por UF) em {DESTINO}")
+    for caminho in arquivos:
+        registrar_coleta(fonte=DESTINO.name, arquivo=caminho, script=__file__)

@@ -19,6 +19,10 @@ SERIES = {
     "20741": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20741/dados?formato=json",  # PF - Cheque especial
     "20742": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.20742/dados?formato=json",  # PF - Crédito pessoal não consignado
 }
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from supabase_raw import registrar_coleta
+
 DESTINO = Path(__file__).resolve().parents[3] / "data" / "raw" / "bcb_sgs"
 
 
@@ -38,3 +42,4 @@ def coletar() -> list[Path]:
 if __name__ == "__main__":
     for caminho in coletar():
         print(f"Coleta concluída: {caminho}")
+        registrar_coleta(fonte=DESTINO.name, arquivo=caminho, script=__file__)

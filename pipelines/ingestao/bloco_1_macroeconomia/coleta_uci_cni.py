@@ -29,6 +29,10 @@ PADRAO_LINK = re.compile(
     r"https://static\.portaldaindustria\.com\.br/[^\"'\s]+indicadoresindustriais[^\"'\s]*\.xlsx",
     re.IGNORECASE,
 )
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from supabase_raw import registrar_coleta
+
 DESTINO = Path(__file__).resolve().parents[3] / "data" / "raw" / "cni"
 
 
@@ -65,3 +69,4 @@ if __name__ == "__main__":
     caminho = coletar()
     tamanho_kb = caminho.stat().st_size / 1024
     print(f"Coleta concluída: {caminho} ({tamanho_kb:.1f} KB)")
+    registrar_coleta(fonte=DESTINO.name, arquivo=caminho, script=__file__)

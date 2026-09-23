@@ -23,6 +23,10 @@ URL = (
     "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.RES/WEO/~/A.*.NGDP_RPCH"
     "?startPeriod=2016&endPeriod=2030"
 )
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from supabase_raw import registrar_coleta
+
 DESTINO = Path(__file__).resolve().parents[3] / "data" / "raw" / "fmi_weo"
 
 
@@ -41,3 +45,4 @@ def coletar() -> Path:
 if __name__ == "__main__":
     caminho = coletar()
     print(f"Coleta concluída: {caminho}")
+    registrar_coleta(fonte=DESTINO.name, arquivo=caminho, script=__file__)

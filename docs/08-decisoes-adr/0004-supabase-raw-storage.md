@@ -2,7 +2,7 @@
 
 ## Status
 
-Aceito — 2026-09-23. **Implementação parcial**: migração `0001_criar_raw_ingestoes.sql` aplicada com sucesso no SQL Editor do Supabase pelo responsável do projeto (confirmado via API: `raw_ingestoes` existe e responde HTTP 200); bucket `raw` criado via Storage API (privado, sem acesso público). **Ainda pendente**: integração dos 26 scripts de coleta — nenhum script hoje envia arquivo ao Storage nem grava linha em `raw_ingestoes`, eles continuam gravando apenas em `data/raw/` local.
+Aceito e **implementado** — 2026-09-23. Migração `0001_criar_raw_ingestoes.sql` aplicada com sucesso no SQL Editor do Supabase pelo responsável do projeto (confirmado via API). Bucket `raw` criado via Storage API (privado, sem acesso público). Os 26 scripts de `pipelines/ingestao/` foram atualizados para, ao final de cada execução, enviar o arquivo bruto ao Storage e registrar a execução em `raw_ingestoes`, via helper compartilhado `pipelines/supabase_raw.py` — testado de ponta a ponta contra o projeto real, cobrindo os 4 formatos de bloco `__main__` existentes no piloto (ver `pipelines/README.md`, seção "Integração com Supabase"). Pendência conhecida: os dois maiores arquivos do piloto (CAGED, Comex Stat) não foram reexecutados nesta rodada para confirmar que o upload funciona também para arquivos de dezenas/centenas de MB — o código é idêntico ao já testado, mas o limite de tamanho padrão do Storage do Supabase não foi verificado.
 
 ## Contexto
 
@@ -24,8 +24,8 @@ Diante da pergunta sobre escopo (só RAW? STAGING/CURATED também? Storage para 
 
 - **STAGING/CURATED/ANALYTICS no Supabase** — fica para um ADR futuro, quando a arquitetura de transformação de dados for definida.
 - **Migração automática do schema** — nenhum script deste piloto aplica `db/migrations/*.sql` automaticamente; é passo manual nesta fase.
-- **Upload automático dos 26 scripts existentes para o Storage** — os scripts de coleta continuam, por enquanto, apenas gravando em `data/raw/` local. Conectar cada script ao Storage/`raw_ingestoes` é trabalho de implementação futuro, não incluído neste ADR.
 - **Backend/API de aplicação** — Supabase como banco não implica automaticamente Supabase como backend da aplicação final; essa decisão segue em aberto.
+- **Ciclo de vida dos arquivos no Storage** — nenhuma política de retenção/expiração foi definida (diferente dos artifacts de 90 dias do GitHub Actions, que essa integração torna redundantes como fonte de verdade, mas que continuam ativos como cópia de curto prazo).
 
 ## Consequências
 

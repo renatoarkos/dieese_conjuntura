@@ -45,7 +45,7 @@ pipelines/ingestao/
     └── coleta_caged_microdados_ftp.py        — Novo CAGED, microdados brutos (FTP MTE/PDET — sem API)
 ```
 
-**26 scripts no total.**
+**26 scripts no total**, mais `supabase_raw.py` (helper compartilhado, não é um motor de coleta — ver seção "Integração com Supabase" abaixo).
 
 ## Como executar
 
@@ -80,6 +80,21 @@ Dois scripts envolvem arquivos grandes (dezenas/centenas de MB) e, neste ambient
 
 - `coleta_caged_microdados_ftp.py`: **completou com sucesso** — `CAGEDMOV202607...7z` chegou a 55.197.862 bytes (tamanho exato esperado), assinatura de arquivo 7z verificada e válida.
 - `coleta_balanca_comercial_comexstat.py`: **completou com sucesso** — exportação (`EXP_2026.csv`) 75.055.366 bytes e importação (`IMP_2026.csv`) 120.181.098 bytes, ambos batendo exatamente com o `Content-Length` declarado pelo servidor. Os dois downloads grandes do piloto confirmam que a lógica de retomada funciona corretamente de ponta a ponta.
+
+## Integração com Supabase (ADR 0004)
+
+Todos os 26 scripts, além de gravar em `data/raw/` (que continua sendo a cópia local e a
+fonte de verdade imediata deste piloto), agora também chamam `registrar_coleta()`
+(`pipelines/supabase_raw.py`) ao final de cada execução bem-sucedida:
+
+- Envia uma cópia do arquivo bruto para o bucket `raw` do Supabase Storage (`raw/<fonte>/<arquivo>`, mesma organização de pastas de `data/raw/<fonte>/`).
+- Registra uma linha na tabela `raw_ingestoes` (fonte, script, timestamp, caminho no Storage, tamanho, SHA-256, status).
+
+Testado de ponta a ponta contra o projeto Supabase real, cobrindo os 3 formatos de retorno de `coletar()` existentes no piloto: `Path` único (`coleta_pib_sidra.py`), `Path` único com cálculo de tamanho (`coleta_uci_cni.py`), `list[Path]` com loop (`coleta_cambio_bcb.py`) e `list[Path]` sem loop explícito (`coleta_limite_fiscal_siconfi.py`, 27 arquivos — todos confirmados registrados).
+
+**Falha ao enviar para o Supabase nunca interrompe a coleta em si** — `registrar_coleta()` captura qualquer erro de rede/API e apenas avisa em stderr; a gravação local em `data/raw/` já terá acontecido antes dessa chamada. Também não faz nada (silenciosamente) se `SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY` não estiverem em `.env` — mantém os scripts funcionando em qualquer ambiente sem Supabase configurado.
+
+**Risco não testado nesta rodada**: os dois maiores arquivos do piloto (CAGED `.7z`, ~55 MB; Comex Stat CSV, até ~120 MB) não foram reexecutados para validar o upload ao Storage — o padrão de código é idêntico ao dos scripts testados, mas o limite de tamanho padrão do Storage do Supabase pode rejeitar arquivos muito grandes via upload direto (não-resumível). Se isso acontecer, o comportamento já é seguro (loga `status: erro` em `raw_ingestoes`, não quebra a coleta) — mas a série histórica desses dois indicadores no Storage pode ficar incompleta até isso ser confirmado/ajustado.
 
 ## Regras destes scripts
 
