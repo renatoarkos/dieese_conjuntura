@@ -72,6 +72,15 @@ Por baixo dos panos, as duas funções usam:
   porque o arquivo maior (`CAGEDMOV`) às vezes tem a transferência interrompida
   antes de completar — instabilidade de rede, não erro do servidor.
 
+## Arquivos grandes e o Supabase Storage
+
+Os arquivos `CAGEDMOV` (~45-57 MB) excedem o limite de 50 MB do plano atual
+do Supabase Storage. `registrar_coleta()` (`pipelines/supabase_raw.py`)
+detecta isso automaticamente e divide o arquivo em partes menores antes do
+envio — sem precisar de nenhuma mudança neste script. Ver a seção
+"Integração com Supabase" em `pipelines/README.md` para os detalhes de como
+o particionamento e a reconstrução funcionam.
+
 ## O que ainda falta (camada STAGING, fora deste piloto)
 
 - Descompactar os arquivos `.7z` e ler os registros (são arquivos de largura
