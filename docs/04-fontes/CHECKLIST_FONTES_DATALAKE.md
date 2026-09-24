@@ -97,19 +97,28 @@ Encontrados em 2026-09-23 ao investigar a completude da planilha de dados do pr�
 
 **Nota sobre um 3º candidato descartado**: a mesma investigação também abriu um arquivo "Setor público" que parecia trazer um indicador novo — na verdade é **o mesmo Relatório de Gestão Fiscal (RGF/SICONFI) já coletado pelo item 8 deste checklist** (Limite fiscal por UF), só encontrado numa planilha diferente. Não gerou motor novo, para não duplicar.
 
+## Bloco 8 — Expansão internacional e financeira (fora do catálogo P1)
+
+Promovidos de "pesquisa exploratória" (`docs/04-fontes/outras-instituicoes-2026-09.md` e `outras-instituicoes-mundiais-2026-09.md`) a motor de produção em 2026-09-24. Ver `docs/05-indicadores/CATALOGO_MESTRE_INDICADORES.md`, itens 37-38.
+
+| # | Indicador | Instituição | Tabela/série | Método de acesso | Status | Automação | Próxima ação |
+|---|---|---|---|---|---|---|---|
+| 37 | Desembolsos do BNDES | BNDES — Portal de Dados Abertos (CKAN) | `datastore_search`, resource_id `179950b8-...` | API testada; achado que o dado é microdado por operação (13 mil+ registros/mês), não indicador já agregado | 🟢 CONFIRMADO — piloto executado (2026-09-24) | C | Agregação em série mensal/setorial é trabalho de STAGING, não implementado |
+| 38 | Taxa de desemprego — comparação internacional | ILOSTAT (OIT/ILO) | Dataflow `DF_UNE_2EAP_SEX_AGE_RT`, SDMX | API testada; precisa de cabeçalho User-Agent de navegador (mesmo padrão da ANP) | 🟢 CONFIRMADO — piloto executado (2026-09-24) | A | Nenhuma — não confundir com a Tabela SIDRA 4093 (item 5), são estimativas diferentes |
+
 ---
 
-## Síntese de status (36 indicadores catalogados, atualizado após Lotes 02-06 + investigação de lacunas + correção de classificação dos boletins DIEESE + investigação de completude da planilha do DIEESE)
+## Síntese de status (38 indicadores catalogados, atualizado após Lotes 02-06 + investigação de lacunas + correção de classificação dos boletins DIEESE + investigação de completude da planilha do DIEESE + expansão internacional/financeira)
 
 | Status | Quantidade | Indicadores |
 |---|---|---|
-| 🟢 CONFIRMADO — automatizável (A/B/C), piloto executado | 34 de 36 | Todo o catálogo, exceto PIB per capita e NFSP (ambiguidade de escopo, decisão do usuário) e as transformações (9b, 18). Inclui os 5 boletins institucionais do DIEESE (Cesta Básica, ICT, Greves, Reajustes e Pisos salariais), todos B, validados por teste técnico + comparação cruzada com a apresentação interna do DIEESE, e os 2 indicadores novos achados na planilha do DIEESE (Índice de Commodities, Taxa de Investimento), ambos A. |
+| 🟢 CONFIRMADO — automatizável (A/B/C), piloto executado | 36 de 38 | Todo o catálogo, exceto PIB per capita e NFSP (ambiguidade de escopo, decisão do usuário) e as transformações (9b, 18). Inclui os 5 boletins institucionais do DIEESE (Cesta Básica, ICT, Greves, Reajustes e Pisos salariais), todos B, validados por teste técnico + comparação cruzada com a apresentação interna do DIEESE; os 2 indicadores achados na planilha do DIEESE (Índice de Commodities, Taxa de Investimento), ambos A; e os 2 indicadores de expansão internacional/financeira (BNDES, C; ILOSTAT, A). |
 | 🟢 CONFIRMADO (fonte manual/pública sem tabela extraível) | 1 | INDATEND — identificado como planilha interna do DIEESE (não é instituição externa), E definitivo |
 | 🔴 LACUNA (sem nenhuma fonte pública identificada) | 2 | PIB per capita, NFSP — ambiguidade de escopo que exige decisão do usuário (QF07, QF08), não falta de pesquisa |
 | Não aplicável (transformação/cruzamento) | 2 | Juros real (9b), PIB x Selic (18) |
-| — | 36+ | Total |
+| — | 38+ | Total |
 
-**31 scripts de piloto técnico** (`pipelines/ingestao/`), organizados em 5 blocos — ver `docs/08-decisoes-adr/0002-expansao-piloto-por-blocos.md`. Todos testados e executados com sucesso.
+**33 scripts de piloto técnico** (`pipelines/ingestao/`), organizados em 5 blocos — ver `docs/08-decisoes-adr/0002-expansao-piloto-por-blocos.md`. Todos testados e executados com sucesso.
 
 **Marco final da investigação de lacunas originais**: dos 11 indicadores 🔴 LACUNA no início do projeto, restam apenas **2** — decisões de escopo que dependem do usuário (QF07 para NFSP, QF08 para PIB per capita), não falta de pesquisa. **Todos os 33 indicadores do catálogo P1 original já passaram por investigação de fonte.**
 

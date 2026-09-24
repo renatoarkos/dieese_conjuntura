@@ -4,7 +4,7 @@
 
 Catálogo Mestre de Indicadores da plataforma DIEESE Conjuntura, conforme definido em `docs/00-visao-geral/VISAO_DO_PRODUTO.md`, Seção 7 — a camada semântica central que conecta fontes, dados, indicadores e interpretações. Este documento é **distinto** de `docs/05-indicadores/INVENTARIO_INDICADORES_P1.md`, que é um levantamento preliminar restrito à leitura de três materiais internos do DIEESE (P1), sem pesquisa de fonte externa. As entradas aqui já passaram por confirmação direta na fonte oficial (Discovery de Fontes — Lote Piloto 01, ver `research/notas/DISCOVERY_FONTES_LOTE_PILOTO_01.md`).
 
-Este documento está em construção progressiva — iniciou com 6 indicadores (Lote Piloto 01) e já cobre 36 (após Lotes 02-06, investigação de lacunas, correção de classificação dos boletins DIEESE e investigação de completude da planilha do DIEESE, 2026-09-23), crescendo conforme novos lotes de Discovery de Fontes forem executados.
+Este documento está em construção progressiva — iniciou com 6 indicadores (Lote Piloto 01) e já cobre 38 (após Lotes 02-06, investigação de lacunas, correção de classificação dos boletins DIEESE, investigação de completude da planilha do DIEESE e promoção de 2 indicadores de expansão internacional/financeira a motor de produção, 2026-09-23/24), crescendo conforme novos lotes de Discovery de Fontes forem executados. Os indicadores 35-38 são **expansão de escopo** — não vieram do material P1 original do DIEESE, mas de investigação própria sobre novos centros de dados relevantes para a plataforma.
 
 Campos seguem `VISAO_DO_PRODUTO.md`, Seção 7: identificação, conceito, fonte, metodologia, periodicidade, unidade, abrangência, dimensões, histórico, transformações, atualização, relações com outros indicadores, relações teóricas, limitações, status de automação. Campos que dependem de outros papéis especializados (relações teóricas — Especialista em Metodologia Econômica; relevância conjuntural — Economista de Conjuntura) ainda não foram preenchidos neste lote e estão marcados como **[A PREENCHER]**.
 
@@ -386,6 +386,26 @@ Campos seguem `VISAO_DO_PRODUTO.md`, Seção 7: identificação, conceito, fonte
 - **Periodicidade**: trimestral. **Unidade**: %. **Histórico**: desde 4º tri/2014.
 - **Revisão observada**: entre duas cópias da planilha do DIEESE (nov/2024 e dez/2024), o mesmo trimestre (2º tri/2024) apareceu com valores diferentes (16,8% → 16,6%) — revisão típica do IBGE entre divulgações; ao usar esta série, sempre preferir a coleta mais recente.
 - **Status de automação**: **A — API direta, confirmada por teste real, piloto executado** (`pipelines/ingestao/bloco_1_macroeconomia/coleta_taxa_investimento_sidra.py`).
+
+## 37. Desembolsos do BNDES
+
+- **Identificação**: desembolsos mensais do BNDES (financiamentos efetivamente liberados), por operação — porte de cliente, setor CNAE/BNDES, UF, produto, forma de apoio.
+- **Conceito**: volume de crédito de fomento efetivamente repassado pelo BNDES à economia, indicador de investimento público direcionado.
+- **Fonte**: BNDES, Portal de Dados Abertos (CKAN). **Fora do escopo do catálogo P1 original** — indicador de expansão, documentado em `docs/04-fontes/outras-instituicoes-2026-09.md` (rodada exploratória, 2026-09-23) e promovido a motor de produção em 2026-09-24.
+- **Achado importante**: uma primeira avaliação classificou esta fonte como A (API direta simples), mas o dado é mais granular do que parecia — o dataset completo tem 3,76 milhões de registros desde 1995, e só o mês mais recente já tem mais de 13 mil operações individuais. Não é um indicador já agregado ("desembolso total do mês") — é microdado por operação, como o Novo CAGED e a RAIS.
+- **Defasagem observada**: no teste de 2026-09-24, o mês mais recente disponível era março/2026 (~6 meses de atraso) — maior que a "atualização trimestral" declarada pelo BNDES.
+- **Periodicidade**: mensal (com defasagem de publicação variável).
+- **Status de automação**: **C — microdados, confirmado e testado, piloto executado** (`pipelines/ingestao/bloco_1_macroeconomia/coleta_bndes_desembolsos.py`). Agregar em "desembolso mensal total" ou por setor/UF é trabalho de STAGING, não implementado.
+
+## 38. Taxa de desemprego — comparação internacional (ILOSTAT)
+
+- **Identificação**: taxa de desemprego do Brasil, estimativa harmonizada internacionalmente pela Organização Internacional do Trabalho (OIT/ILO), por sexo e faixa etária.
+- **Conceito**: mesmo conceito da taxa de desocupação (indicador 5), mas ajustado pela OIT para ser comparável entre países com metodologias nacionais diferentes — não substitui a série do IBGE, serve para comparação internacional.
+- **Fonte**: ILOSTAT (OIT/ILO), API SDMX. **Fora do escopo do catálogo P1 original** — indicador de expansão, documentado em `docs/04-fontes/outras-instituicoes-mundiais-2026-09.md` (rodada exploratória, 2026-09-23) e promovido a motor de produção em 2026-09-24.
+- **ALERTA — não confundir com o indicador 5**: os valores desta série são "ILO - Modelled Estimates" e vão divergir da Tabela SIDRA 4093 (taxa de desocupação oficial do IBGE) para o mesmo período — isso é esperado, não é erro. Usar esta série só para comparação Brasil x outros países.
+- **Achado técnico**: a API retorna HTTP 403 sem cabeçalho `User-Agent` de navegador — mesmo padrão de detecção de bot já visto na ANP, não é bloqueio institucional.
+- **Periodicidade**: anual. **Histórico**: desde 2010 (coletado).
+- **Status de automação**: **A — API direta, confirmada por teste real, piloto executado** (`pipelines/ingestao/bloco_4_mercado_trabalho/coleta_desemprego_ilostat.py`).
 
 ## Registro de pendências transversais (todos os lotes)
 

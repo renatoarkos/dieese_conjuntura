@@ -7,11 +7,12 @@ volume de atividade nos três setores que mais pesam no PIB brasileiro (comérci
 serviços e indústria), quanto da capacidade produtiva instalada está sendo usada
 (indústria), o resultado das trocas do país com o exterior (balança comercial), o
 espaço fiscal dos estados para gastar com pessoal (limite fiscal por UF), o preço das
-commodities relevantes para a economia brasileira, e a proporção do PIB destinada a
-investimento produtivo (taxa de investimento). São onze indicadores de seis fontes
-oficiais diferentes — IBGE, Banco Central, FMI, CNI, MDIC e Tesouro Nacional — que
-juntos respondem à pergunta "como vai a economia agora", antes de qualquer recorte de
-mercado de trabalho, preços ou renda, que ficam em outros blocos.
+commodities relevantes para a economia brasileira, a proporção do PIB destinada a
+investimento produtivo (taxa de investimento), e o volume de crédito de fomento
+efetivamente repassado à economia (desembolsos do BNDES). São doze indicadores de sete
+fontes oficiais diferentes — IBGE, Banco Central, FMI, CNI, MDIC, Tesouro Nacional e
+BNDES — que juntos respondem à pergunta "como vai a economia agora", antes de qualquer
+recorte de mercado de trabalho, preços ou renda, que ficam em outros blocos.
 
 Cada script é independente, autoexecutável e não depende de nenhum outro script deste
 bloco para rodar. Nenhum deles transforma dado: cada um busca a resposta de uma fonte
@@ -34,7 +35,7 @@ função `registrar_coleta` de `pipelines/supabase_raw.py`) — se as credenciai
 Supabase não estiverem configuradas em `.env`, essa etapa é apenas ignorada, sem
 interromper a coleta.
 
-## Os 11 scripts
+## Os 12 scripts
 
 ### `coleta_pib_sidra.py` — PIB Brasil
 
@@ -216,3 +217,27 @@ interromper a coleta.
   variáveis, todos os períodos — sem precisar de classificação, a tabela só tem uma
   variável); busca os dados; grava o JSON em `data/raw/ibge_sidra/` com timestamp;
   registra no Supabase.
+
+### `coleta_bndes_desembolsos.py` — Desembolsos do BNDES
+
+- **O que mede**: financiamentos efetivamente liberados pelo BNDES, por operação
+  individual (porte de cliente, setor, UF, produto, forma de apoio).
+- **De onde vem**: Portal de Dados Abertos do BNDES, protocolo CKAN (mesmo protocolo
+  usado por muitos catálogos de dados abertos governamentais).
+- **Achado que mudou a classificação**: uma avaliação inicial (documentada em
+  `docs/04-fontes/outras-instituicoes-2026-09.md`) classificou esta fonte como A — API
+  simples. Testando de perto antes de escrever o script, descobriu-se que o dataset
+  completo tem 3,76 milhões de registros desde 1995, e só o mês mais recente já tem mais
+  de 13 mil operações — não é um indicador já agregado, é microdado por operação, no
+  mesmo espírito do Novo CAGED e da RAIS. Por isso a classificação real é **C**.
+- **Por que este método**: o endpoint `datastore_search` do CKAN aceita um `limit` alto
+  (dezenas de milhares) numa única chamada, sem precisar paginar — mais simples que o
+  laço de 27 chamadas do SICONFI, embora o volume de dado por chamada seja maior. O
+  filtro exato por campo (ano/mês) usa o parâmetro `filters` (JSON), não `q` (que é busca
+  textual livre e não filtra por campo).
+- **Passo a passo**: descobre o mês mais recente disponível, pedindo 1 registro ordenado
+  do mais novo para o mais velho (`_mes_mais_recente` — necessário porque a defasagem de
+  publicação observada, ~6 meses, é maior que a "atualização trimestral" declarada pelo
+  próprio BNDES); busca todos os registros desse mês numa única chamada
+  (`_buscar_dados`); grava o JSON em `data/raw/bndes/` com timestamp; registra no
+  Supabase.

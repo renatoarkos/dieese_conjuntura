@@ -3,14 +3,17 @@
 Este bloco reúne indicadores sobre a situação da força de trabalho no Brasil:
 quantas pessoas estão desocupadas, quantas participam do mercado de trabalho,
 sob que tipo de vínculo as pessoas ocupadas trabalham, qual a proporção delas
-sindicalizada, e a intensidade/natureza do conflito capital-trabalho. Seis
-scripts vêm da mesma pesquisa de origem — a PNAD Contínua (Pesquisa Nacional
-por Amostra de Domicílios Contínua) do IBGE — acessada pela API pública do
-SIDRA. Três outros vêm de boletins institucionais que o próprio DIEESE
-publica (ver seção dedicada mais abaixo). Formam um grupo porque descrevem,
-em conjunto, diferentes ângulos da mesma realidade: quem está trabalhando,
-quem está procurando trabalho, em que condição, com que grau de organização
-coletiva, e como o conflito trabalhista se expressa.
+sindicalizada, a intensidade/natureza do conflito capital-trabalho, e como o
+desemprego brasileiro se compara internacionalmente. Seis scripts vêm da
+mesma pesquisa de origem — a PNAD Contínua (Pesquisa Nacional por Amostra de
+Domicílios Contínua) do IBGE — acessada pela API pública do SIDRA. Três
+outros vêm de boletins institucionais que o próprio DIEESE publica (ver seção
+dedicada mais abaixo). Um último vem de um organismo internacional (OIT/ILO),
+para comparação Brasil x mundo. Formam um grupo porque descrevem, em
+conjunto, diferentes ângulos da mesma realidade: quem está trabalhando, quem
+está procurando trabalho, em que condição, com que grau de organização
+coletiva, como o conflito trabalhista se expressa, e como isso se compara ao
+resto do mundo.
 
 Os seis scripts SIDRA seguem o mesmo padrão de coleta já usado no restante do
 projeto (ver `pipelines/ingestao/bloco_1_macroeconomia/coleta_pib_sidra.py`,
@@ -189,3 +192,27 @@ interna do DIEESE (`materiais/originais/`) — os números batem exatamente.
 - **Passo a passo**: tenta primeiro edições mais novas que a âncora conhecida
   (pode ter saído uma edição nova), depois a própria âncora; baixa o PDF;
   registra no Supabase.
+
+## Comparação internacional (organismo externo)
+
+### `coleta_desemprego_ilostat.py`
+
+- **O que mede**: taxa de desemprego do Brasil, por sexo e faixa etária —
+  mas **estimativa harmonizada pela OIT** (rotulada "ILO - Modelled
+  Estimates"), não a série direta do IBGE.
+- **De onde vem**: ILOSTAT (Organização Internacional do Trabalho), API
+  SDMX. Fonte confirmada em
+  `docs/04-fontes/outras-instituicoes-mundiais-2026-09.md`.
+- **NÃO confunda com `coleta_desocupacao_sidra.py`**: são dois indicadores
+  diferentes de propósito diferente. A série do IBGE (SIDRA 4093) é a
+  referência para qualquer análise só do Brasil. Esta série da OIT serve
+  **só para comparar o Brasil com outros países** na mesma base
+  metodológica — os valores não vão bater exatamente para o mesmo período,
+  e isso é esperado.
+- **Achado técnico**: a API retorna HTTP 403 sem cabeçalho `User-Agent` de
+  navegador — mesmo padrão de detecção de bot já visto na ANP
+  (`docs/04-fontes/anp-ipeadata.md`), não é bloqueio institucional.
+- **Passo a passo**: monta a URL SDMX (país Brasil, todas as demais
+  dimensões), pedindo resposta em CSV; busca os dados com os cabeçalhos
+  necessários; grava o CSV em `data/raw/ilostat/` com timestamp; registra
+  no Supabase.

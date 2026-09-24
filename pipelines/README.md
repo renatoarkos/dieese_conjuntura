@@ -70,7 +70,8 @@ pipelines/ingestao/
 │   ├── coleta_balanca_comercial_comexstat.py — Balança comercial (MDIC/Comex Stat, CSV via curl)
 │   ├── coleta_limite_fiscal_siconfi.py       — Limite fiscal por UF (SICONFI, 27 estados)
 │   ├── coleta_commodities_bcb.py             — Índice de Commodities Brasil, IC-Br (BCB/SGS, 4 séries)
-│   └── coleta_taxa_investimento_sidra.py     — Taxa de investimento, FBCF/PIB (SIDRA 6727)
+│   ├── coleta_taxa_investimento_sidra.py     — Taxa de investimento, FBCF/PIB (SIDRA 6727)
+│   └── coleta_bndes_desembolsos.py           — Desembolsos do BNDES (CKAN, microdados por operação)
 ├── bloco_2_monetario_credito/
 │   ├── coleta_selic_bcb.py                   — Selic (BCB/SGS 4189 + 432, séries separadas)
 │   ├── coleta_juros_modalidade_bcb.py        — Juros por modalidade PF/PJ (BCB/SGS 20728, 22019, 20741, 20742)
@@ -92,12 +93,13 @@ pipelines/ingestao/
 │   ├── coleta_rendimento_medio_real_sidra.py — Rendimento médio real do trabalho (SIDRA 5440)
 │   ├── coleta_negociacao_coletiva_dieese.py  — Reajustes e pisos salariais em negociação coletiva (DIEESE, boletim PDF mensal)
 │   ├── coleta_ict_dieese.py                  — Índice da Condição do Trabalho (DIEESE, boletim PDF trimestral)
-│   └── coleta_greves_dieese.py               — Número de greves, categorias e reivindicações (DIEESE/SAG, boletim PDF semestral/anual)
+│   ├── coleta_greves_dieese.py               — Número de greves, categorias e reivindicações (DIEESE/SAG, boletim PDF semestral/anual)
+│   └── coleta_desemprego_ilostat.py          — Desemprego comparado internacionalmente (ILOSTAT/OIT, SDMX)
 └── bloco_5_caged/
     └── coleta_caged_microdados_ftp.py        — Novo CAGED, microdados brutos (FTP MTE/PDET — sem API)
 ```
 
-**31 scripts no total**, mais `supabase_raw.py` e `google_drive_raw.py` (helpers compartilhados, não são motores de coleta — ver seção "Integração com Supabase" abaixo).
+**35 scripts no total**, mais `supabase_raw.py` e `google_drive_raw.py` (helpers compartilhados, não são motores de coleta — ver seção "Integração com Supabase" abaixo).
 
 ## Como executar
 
@@ -109,7 +111,7 @@ python3 pipelines/ingestao/bloco_1_macroeconomia/coleta_cambio_bcb.py
 ```
 
 Isso é útil para testar um script sozinho ou rodar uma coleta avulsa. Na
-prática, porém, os 31 scripts já rodam **sozinhos e agendados**, via GitHub
+prática, porém, os 35 scripts já rodam **sozinhos e agendados**, via GitHub
 Actions (`.github/workflows/motores-{diarios,semanais,mensais}.yml` — ver
 ADR 0003), agrupados por frequência de publicação da fonte, não por script
 individual.
@@ -142,7 +144,7 @@ Dois scripts envolvem arquivos grandes (dezenas/centenas de MB) e, neste ambient
 
 ## Integração com Supabase (ADR 0004)
 
-Todos os 31 scripts, além de gravar em `data/raw/` (que continua sendo a cópia local e a
+Todos os 35 scripts, além de gravar em `data/raw/` (que continua sendo a cópia local e a
 fonte de verdade imediata deste piloto), agora também chamam `registrar_coleta()`
 (`pipelines/supabase_raw.py`) ao final de cada execução bem-sucedida:
 
