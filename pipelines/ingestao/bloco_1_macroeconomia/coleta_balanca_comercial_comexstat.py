@@ -27,6 +27,39 @@ amplamente disponível em ambientes Linux/macOS/Windows modernos, então essa
 troca não compromete a portabilidade do piloto.
 
 ===============================================================================
+POR QUE HÁ UM CERTIFICADO INTERMEDIÁRIO EMBUTIDO EM `certs/`
+===============================================================================
+Descoberto em 2026-09-28: o servidor `balanca.mdic.gov.br` envia apenas o
+certificado-folha na negociação TLS, sem o intermediário
+"AC SERPRO AR46 OV TLS CA 2025" (emissor: GlobalSign Root R46 — uma raiz
+pública já presente em qualquer repositório de confiança padrão). O curl
+baseado em Schannel (Windows, usado neste projeto localmente) busca esse
+intermediário sozinho via AIA (Authority Information Access) — por isso o
+download funcionava aqui sem nenhum ajuste. O curl do runner do GitHub
+Actions (Ubuntu, baseado em OpenSSL) **não** faz essa busca automática, e
+falha com `curl código 60 — unable to get local issuer certificate`. Isso foi
+confirmado comparando `curl --version` nos dois ambientes (Schannel local vs.
+OpenSSL no CI) e inspecionando a cadeia enviada pelo servidor com
+`openssl s_client -showcerts` (confirmado: só 1 certificado na cadeia).
+
+A correção (`_bundle_cacert_combinado`) combina o repositório de confiança
+padrão do sistema (`/etc/ssl/certs/ca-certificates.crt`, presente em
+Linux/Debian/Ubuntu, incluindo os runners `ubuntu-latest` do GitHub Actions)
+com este intermediário — obtido da própria URL "CA Issuers" do certificado
+do servidor — e passa o bundle combinado ao curl via `--cacert`. No Windows
+esse arquivo de sistema não existe, a função retorna `None`, e o curl segue
+resolvendo a cadeia sozinho via Schannel como sempre fez — nenhum
+comportamento existente é alterado fora do Linux.
+
+Se este download voltar a falhar com código 60 no futuro, é provável que a
+SERPRO tenha rotacionado este intermediário — repita o diagnóstico:
+    echo | openssl s_client -connect balanca.mdic.gov.br:443 \
+      -servername balanca.mdic.gov.br 2>/dev/null | \
+      openssl x509 -noout -text | grep -A2 "Authority Information Access"
+e busque o novo certificado na URL "CA Issuers" indicada, substituindo
+`certs/serpro_ar46_intermediate.pem`.
+
+===============================================================================
 POR QUE HÁ LÓGICA DE RETOMADA (RESUME) NO DOWNLOAD
 ===============================================================================
 Os arquivos anuais de exportação/importação por NCM são grandes (~70-120 MB).
@@ -70,6 +103,7 @@ feito depois, a partir do arquivo que este script grava — nunca aqui.
 
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -77,6 +111,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from supabase_raw import registrar_coleta
 
 ANO_ATUAL = datetime.now().year
+
+INTERMEDIARIO_SERPRO_PEM = Path(__file__).resolve().parent / "certs" / "serpro_ar46_intermediate.pem"
+BUNDLE_CA_SISTEMA_LINUX = Path("/etc/ssl/certs/ca-certificates.crt")
 
 # URLs de download direto do CSV, extraídas da página oficial de dados
 # brutos do MDIC (ver docs/04-fontes/mdic-tesouro.md). Um arquivo por fluxo
@@ -87,6 +124,29 @@ URLS = {
 }
 
 DESTINO = Path(__file__).resolve().parents[3] / "data" / "raw" / "comexstat"
+
+
+# ------------------------------------------------------------------------
+# PASSO 0 — montar um bundle CA combinado (sistema + intermediário SERPRO)
+# ------------------------------------------------------------------------
+def _bundle_cacert_combinado() -> str | None:
+    """Monta um bundle CA combinado (sistema Linux + intermediário SERPRO).
+
+    Retorna `None` no Windows (ou em qualquer sistema sem o bundle padrão do
+    OpenSSL em `/etc/ssl/certs/ca-certificates.crt`) — nesses casos o curl já
+    resolve a cadeia sozinho (Schannel) e não devemos interferir na
+    verificação padrão dele. Ver docstring do módulo para o diagnóstico
+    completo desta diferença de comportamento entre ambientes.
+    """
+    if not BUNDLE_CA_SISTEMA_LINUX.exists():
+        return None
+    combinado = Path(tempfile.gettempdir()) / "comexstat_ca_bundle.pem"
+    combinado.write_text(
+        BUNDLE_CA_SISTEMA_LINUX.read_text()
+        + "\n"
+        + INTERMEDIARIO_SERPRO_PEM.read_text()
+    )
+    return str(combinado)
 
 
 # ------------------------------------------------------------------------
@@ -104,17 +164,21 @@ def _baixar_com_retomada(url: str, destino_arquivo: Path, max_tentativas: int = 
     recomeçar do zero — por isso um número alto de tentativas pequenas ainda
     converge para o arquivo completo.
     """
+    cacert = _bundle_cacert_combinado()
     for tentativa in range(1, max_tentativas + 1):
         try:
             # --speed-limit/--speed-time: aborta cedo se a conexão travar (em vez de
             # esperar o timeout inteiro) — observado nesta rodada que a conexão tanto
             # reseta quanto, às vezes, trava sem enviar dado algum.
+            comando = [
+                "curl", "-sS", "-C", "-", "--connect-timeout", "15",
+                "--speed-limit", "1000", "--speed-time", "10",
+                "-o", str(destino_arquivo), url,
+            ]
+            if cacert:
+                comando[1:1] = ["--cacert", cacert]
             resultado = subprocess.run(
-                [
-                    "curl", "-sS", "-C", "-", "--connect-timeout", "15",
-                    "--speed-limit", "1000", "--speed-time", "10",
-                    "-o", str(destino_arquivo), url,
-                ],
+                comando,
                 capture_output=True,
                 timeout=45,
             )
