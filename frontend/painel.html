@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Painel · DIEESE 360</title>
+  <meta name="theme-color" content="#030086">
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="container">
+      <a class="marca-topo" href="index.html">
+        <strong>DIEESE 360</strong>
+        <span>painel interno</span>
+      </a>
+      <nav class="nav-topo">
+        <span id="usuario-nome" style="color:var(--cinza-700);font-size:.88rem"></span>
+        <a href="#" id="sair">Sair</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="secao" style="padding-top:36px">
+    <div class="container">
+      <h2 style="margin-bottom:4px">Indicadores por dimensão</h2>
+      <p class="lead" style="margin-bottom:20px">Todos os indicadores publicados, organizados pelas 5 dimensões do catálogo. Clique num cartão para ver a explicação, a fonte e a comparação com o ponto anterior.</p>
+
+      <nav class="abas-dimensao" id="abas-dimensao" aria-label="Dimensões"></nav>
+
+      <div id="paineis-dimensao"></div>
+    </div>
+  </section>
+
+  <script src="js/vendor/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/dados.js"></script>
+  <script src="js/cartao-flip.js"></script>
+  <script src="js/animacao-dash.js"></script>
+  <script src="js/mapa-uf.js"></script>
+  <script src="js/painel.js"></script>
+</body>
+</html>

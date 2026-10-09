@@ -1,0 +1,85 @@
+{
+  "style": "Direção de arte para o DIEESE 360, plataforma de inteligência socioeconômica do DIEESE, instituição sindical brasileira de pesquisa. Paleta dominante: azul-marinho profundo (#030086) e branco, com vermelho vivo (#EC0000) usado apenas como pequeno acento (um objeto, um detalhe, nunca a cor dominante da cena). Fundos claros e arejados, luz natural suave. Quando o prompt pedir fotografia: fotografia editorial documental, realista, lente 35mm, profundidade de campo moderada, pessoas adultas e diversas em raça, gênero, idade e corpo, em contexto de trabalho técnico/pesquisa (não mercado financeiro). Quando pedir ilustração: vetorial plana, traço limpo e uniforme, formas geométricas simples, cantos arredondados, sem degradês pesados, sem sombras duras, fundo #F6F7FC. Evitar: estética de 'Wall Street' (touros, terno e gravata, pregão, velas de candlestick, dinheiro em espécie), relógios/urgência, tom corporativo frio, clichês de banco de imagem (apertos de mão, dedos apontando para gráfico), logotipos e marcas de terceiros, qualquer texto ou número legível dentro da imagem (os números reais vêm do painel, não da imagem).",
+  "images": [
+    {
+      "file": "hero/hero-home.png",
+      "aspect": "16:9",
+      "resolution": "2K",
+      "prompt": "Fotografia. Três a quatro pesquisadores adultos e diversos, em um escritório técnico claro, diante de uma mesa com um monitor grande mostrando blocos abstratos de cor (sem texto legível) organizados em um grid — sugerindo um painel de dados sem reproduzir um real. Conversam com atenção, uma pessoa aponta para uma área do grid. Luz natural de janela lateral. Um único detalhe vermelho discreto (uma caneca, uma etiqueta). Assunto central e à direita do quadro.",
+      "uso": "Página inicial, hero, recortada ou como imagem de fundo suave",
+      "tamanho_de_uso": "1920 x 1080 px",
+      "alt": "Equipe técnica do DIEESE observando um painel de indicadores em um monitor",
+      "funcao": "Mostra a plataforma como ferramenta de trabalho técnico coletivo"
+    },
+    {
+      "file": "hero/og-compartilhamento.png",
+      "aspect": "16:9",
+      "resolution": "1K",
+      "prompt": "Fotografia em plano fechado de um monitor exibindo blocos de cor azul-marinho e branco organizados em grid, um único bloco vermelho em destaque, levemente desfocado. Faixa central livre e calma, para a equipe de design sobrepor o título depois. Nenhum texto ou número legível.",
+      "uso": "Pré-visualização do link em WhatsApp, e-mail e redes (Open Graph)",
+      "tamanho_de_uso": "1200 x 630 px",
+      "alt": "Painel de indicadores em tons de azul-marinho, com um destaque vermelho",
+      "funcao": "Dá identidade ao link compartilhado, sem depender de texto na imagem"
+    },
+    {
+      "file": "dimensoes/icone-macroeconomia.png",
+      "aspect": "1:1",
+      "resolution": "1K",
+      "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000, traço limpo, cantos arredondados, sem texto. Um globo terrestre simplificado (poucos meridianos) com uma seta ascendente curta saindo de um lado.",
+      "uso": "Cartão da dimensão 'Macroeconomia', página inicial e painel interno",
+      "tamanho_de_uso": "600 x 600 px (exibida a 64 px)",
+      "alt": "",
+      "funcao": "Decorativa: o título da dimensão já descreve o conteúdo"
+    },
+    {
+      "file": "dimensoes/icone-monetario-credito.png",
+      "aspect": "1:1",
+      "resolution": "1K",
+      "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000, traço limpo, cantos arredondados, sem texto. Duas moedas sobrepostas com um pequeno símbolo de percentual (%) flutuando ao lado.",
+      "uso": "Cartão da dimensão 'Monetário e crédito'",
+      "tamanho_de_uso": "600 x 600 px (exibida a 64 px)",
+      "alt": "",
+      "funcao": "Decorativa"
+    },
+    {
+      "file": "dimensoes/icone-inflacao.png",
+      "aspect": "1:1",
+      "resolution": "1K",
+      "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000, traço limpo, cantos arredondados, sem texto. Um carrinho de compras simples com uma seta ascendente curta saindo de cima.",
+      "uso": "Cartão da dimensão 'Inflação'",
+      "tamanho_de_uso": "600 x 600 px (exibida a 64 px)",
+      "alt": "",
+      "funcao": "Decorativa"
+    },
+    {
+      "file": "dimensoes/icone-mercado-trabalho.png",
+      "aspect": "1:1",
+      "resolution": "1K",
+      "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000, traço limpo, cantos arredondados, sem texto. Uma maleta de trabalho simples com um pequeno gráfico de barras ascendente ao lado.",
+      "uso": "Cartão da dimensão 'Mercado de trabalho'",
+      "tamanho_de_uso": "600 x 600 px (exibida a 64 px)",
+      "alt": "",
+      "funcao": "Decorativa"
+    },
+    {
+      "file": "dimensoes/icone-caged.png",
+      "aspect": "1:1",
+      "resolution": "1K",
+      "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000, traço limpo, cantos arredondados, sem texto. Um documento com três linhas de lista e uma marca de verificação, representando admissão/desligamento formal.",
+      "uso": "Cartão da dimensão 'Novo CAGED'",
+      "tamanho_de_uso": "600 x 600 px (exibida a 64 px)",
+      "alt": "",
+      "funcao": "Decorativa"
+    },
+    {
+      "file": "login/login-lateral.png",
+      "aspect": "3:4",
+      "resolution": "2K",
+      "prompt": "Fotografia vertical. Ambiente de trabalho técnico de um instituto de pesquisa, visto de dentro: uma mesa com um monitor mostrando blocos de cor azul-marinho organizados em grid (sem texto legível), uma pessoa de costas observando, plantas e luz natural de janela. Tons azul-marinho e branco, um detalhe vermelho discreto. Composição calma.",
+      "uso": "Tela de login e definir-senha, painel direito recortado pela diagonal azul",
+      "tamanho_de_uso": "1080 x 1440 px",
+      "alt": "",
+      "funcao": "Decorativa: acompanha o formulário de login e não carrega informação"
+    }
+  ]
+}

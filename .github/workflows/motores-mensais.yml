@@ -70,6 +70,25 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_4_mercado_trabalho/coleta_desemprego_ilostat.py
 
+      # --- Camada CURATED (ADR 0005) — transforma o RAW recém-coletado acima
+      # em pontos prontos para o painel (frontend/). Roda depois de toda a
+      # ingestão deste workflow, lendo o RAW mais recente de cada indicador. ---
+      - name: "CURATED: PIB Brasil"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_pib_sidra.py
+
+      - name: "CURATED: Limite fiscal por UF"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_limite_fiscal_siconfi.py
+
+      - name: "CURATED: Taxa de investimento"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_taxa_investimento_sidra.py
+
+      - name: "CURATED: Desembolsos do BNDES"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_bndes_desembolsos.py
+
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4
         with:

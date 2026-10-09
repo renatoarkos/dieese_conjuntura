@@ -116,6 +116,34 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_5_caged/coleta_caged_microdados_ftp.py
 
+      # --- Camada CURATED (ADR 0005) — transforma o RAW recém-coletado acima
+      # em pontos prontos para o painel (frontend/). Cobre só os indicadores
+      # do bloco_1_macroeconomia coletados neste workflow — os demais blocos
+      # ainda não têm transformação CURATED (ver ADR 0005, "O que não resolve"). ---
+      - name: "CURATED: Câmbio"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_cambio_bcb.py
+
+      - name: "CURATED: PMC — comércio"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_pmc_comercio_sidra.py
+
+      - name: "CURATED: PMS — serviços"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_pms_servicos_sidra.py
+
+      - name: "CURATED: PIM — indústria"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_pim_industria_sidra.py
+
+      - name: "CURATED: Balança comercial"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_balanca_comercial_comexstat.py
+
+      - name: "CURATED: Índice de Commodities Brasil"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_commodities_bcb.py
+
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4
         with:

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Definir senha · DIEESE 360</title>
+  <meta name="theme-color" content="#030086">
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="login">
+    <section class="login-form" aria-labelledby="t-senha">
+      <a class="marca" href="index.html" aria-label="Página inicial">
+        <strong>DIEESE 360</strong>
+        <span>inteligência socioeconômica</span>
+      </a>
+      <h1 id="t-senha" style="font-size:2rem">Definir senha</h1>
+      <p style="color:var(--cinza-700)">Escolha uma senha para entrar no painel. Use pelo menos 12 caracteres.</p>
+
+      <p id="msg" class="aviso" role="alert" hidden></p>
+
+      <form id="form-senha" novalidate hidden>
+        <div class="campo">
+          <label for="nova">Nova senha</label>
+          <input id="nova" type="password" autocomplete="new-password" minlength="12" required>
+        </div>
+        <div class="campo">
+          <label for="confirma">Repita a senha</label>
+          <input id="confirma" type="password" autocomplete="new-password" minlength="12" required>
+        </div>
+        <button class="btn btn-vermelho" type="submit" id="salvar" style="width:100%;justify-content:center">Salvar senha</button>
+      </form>
+      <p style="font-size:.85rem"><a href="login.html">← Voltar ao login</a></p>
+    </section>
+    <aside class="login-lateral" aria-hidden="true"><div class="mancha"></div></aside>
+  </main>
+  <script src="js/vendor/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/definir-senha.js"></script>
+</body>
+</html>

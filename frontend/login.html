@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Entrar · DIEESE 360</title>
+  <meta name="theme-color" content="#030086">
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="login">
+    <section class="login-form" aria-labelledby="t-login">
+      <a class="marca" href="index.html" aria-label="Voltar à página inicial">
+        <strong>DIEESE 360</strong>
+        <span>inteligência socioeconômica</span>
+      </a>
+      <h1 id="t-login" style="font-size:2rem">Entrar no painel</h1>
+      <p style="color:var(--cinza-700)">Use seu e-mail institucional. O acesso é concedido por convite da administração da plataforma.</p>
+
+      <p id="msg" class="aviso" role="alert" hidden></p>
+
+      <form id="form-login" novalidate>
+        <div class="campo">
+          <label for="email">E-mail institucional</label>
+          <input id="email" name="email" type="email" autocomplete="username" placeholder="nome@dieese.org.br" required>
+        </div>
+        <div class="campo">
+          <label for="senha">Senha</label>
+          <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-vermelho" type="submit" id="entrar" style="width:100%;justify-content:center">Entrar</button>
+        <p style="margin:14px 0 0;font-size:.9rem"><a href="#" id="esqueci">Esqueci minha senha</a></p>
+      </form>
+
+      <p class="aviso">Não há cadastro aberto. Se você é técnico do DIEESE e ainda não tem acesso, fale com a administração da plataforma.</p>
+      <p style="font-size:.85rem"><a href="index.html">← Voltar à página inicial</a></p>
+    </section>
+    <aside class="login-lateral" aria-hidden="true"><div class="mancha"></div></aside>
+  </main>
+  <script src="js/vendor/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

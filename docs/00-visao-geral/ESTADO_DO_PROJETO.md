@@ -2,7 +2,7 @@
 
 ## Data de atualização
 
-2026-09-28
+2026-10-09
 
 ## Fase atual
 
@@ -92,20 +92,21 @@ Aguardando validação humana das perguntas remanescentes do Discovery de Fontes
 
 - estratégia definitiva para materiais binários (Git LFS, armazenamento externo ou outra abordagem);
 - stack **definitiva** de ingestão (ADR 0001/0002 cobrem apenas um piloto mínimo e escopado, não a decisão definitiva) — agendamento já resolvido (ADR 0003);
-- banco — **Supabase implementado para RAW (ADR 0004); STAGING/CURATED seguem em aberto**;
-- backend;
-- frontend;
+- banco — **Supabase implementado para RAW (ADR 0004) e para uma camada CURATED mínima (ADR 0005, só bloco_1_macroeconomia por enquanto)**; STAGING completo e ANALYTICS seguem em aberto;
+- backend — **frontend decidido e com primeira versão construída (ADR 0005, DIEESE 360)**: HTML/CSS/JS puro + Supabase, sem backend de aplicação separado nesta fase;
 - infraestrutura de armazenamento definitivo (hoje o resultado dos motores fica em artifacts temporários do GitHub Actions, 90 dias — não é solução permanente);
-- deployment;
+- deployment do frontend (construído e testado localmente; publicar no Vercel é ação externa visível, não feita nesta rodada);
 - arquitetura de IA;
 - BI;
 - escopo de NFSP (5760 vs. 5750) e de PIB per capita (aceitar 6784?) — QF07, QF08;
 - expansão futura do piloto técnico além dos blocos já cobertos — depende de novo lote de Discovery de Fontes + decisão explícita;
 - os 4 indicadores candidatos da checagem de completude (IBC-Br, PIB de São Paulo, juros sobre dívida pública, subutilização) — incluir no checklist ou tratar como descontinuados.
 
+- **DIEESE 360 — primeira versão do frontend construída** (2026-10-09): a pedido do responsável do projeto ("vamos começar a construir o frontend"), decisões tomadas em conversa (nome, slogan, escopo, visibilidade, login) e registradas em `docs/08-decisoes-adr/0005-dieese-360-frontend-e-camada-curated.md`. **Nome: DIEESE 360** — "A conjuntura brasileira vista de todos os ângulos: dados, indicadores e análise em tempo real." Construído: (a) camada CURATED mínima (`indicadores`/`indicadores_serie`/`perfis`, migração `db/migrations/0002_criar_camada_curated.sql`) e 10 scripts de transformação em `pipelines/curated/` cobrindo 10 dos 12 indicadores do `bloco_1_macroeconomia` (UCI/CNI e PIB Mundial/FMI ficaram de fora deliberadamente — RAW não confiável para parser automático nesta rodada, ver ADR); workflows `motores-mensais.yml`/`motores-semanais.yml` atualizados para rodar essas transformações depois da ingestão; (b) `frontend/` completo — HTML/CSS/JS puro, mesmo padrão já validado em `painel_saude_mental/painel-web` (identidade visual, Supabase Auth, animações de entrada, cartão giratório): página pública (`index.html`), login (`login.html`/`definir-senha.html`) e painel interno por dimensão (`painel.html`), com cartões giratórios animados (frente: número + sparkline + tendência; verso: explicação, fonte, comparação automática) e, a pedido do responsável durante a construção ("trabalhar com mapas a partir dos shapefiles do IBGE... cores, animação ao passar o mouse"), um **mapa coroplético por UF** (`js/mapa-uf.js`) para o indicador "Limite fiscal de pessoal", usando a malha oficial do IBGE (API de malhas territoriais, vendorizada em `frontend/assets/mapas/malha_uf.geojson`), com hover/tooltip/realce animados — substituindo o que seria um único cartão com média nacional. **Verificado de ponta a ponta com Playwright** (servidor estático local + cliente Supabase simulado com dados sintéticos, já que a migração 0002 ainda não foi aplicada no banco real): zero erros de console, flip do cartão funcionando, mapa colorido corretamente pela escala sequencial, tooltip/realce no hover confirmados por screenshot. Pendências claras e documentadas em `frontend/README.md`: aplicar a migração 0002, rodar os scripts curated pelo menos uma vez, criar a primeira conta de acesso, gerar as imagens de `frontend/img-prompts.json`, e o deploy em si (nenhum feito nesta rodada).
+
 ## Bloqueios
 
-Nenhum bloqueio real identificado no momento. Toda a infraestrutura automatizada (3 workflows agendados, 35 scripts) está confirmada saudável em 2026-09-28, incluindo os motores adicionados nas últimas sessões, executando de verdade no ambiente real do GitHub Actions (não só localmente).
+Nenhum bloqueio real identificado no momento. Toda a infraestrutura automatizada (3 workflows agendados, 35 scripts) está confirmada saudável em 2026-09-28, incluindo os motores adicionados nas últimas sessões, executando de verdade no ambiente real do GitHub Actions (não só localmente). O frontend (DIEESE 360) está construído e verificado localmente, mas só funciona de ponta a ponta contra o banco real depois que o responsável aplicar a migração 0002 (ver `frontend/README.md`).
 
 ## Próxima tarefa recomendada
 
@@ -114,6 +115,7 @@ Nenhum bloqueio real identificado no momento. Toda a infraestrutura automatizada
 3. Decidir sobre os 4 indicadores candidatos da checagem de completude (Seção 9.3 do Discovery de Fontes — IBC-Br, PIB de São Paulo, dívida pública, subutilização) — pesquisar fonte ou tratar como descontinuados. Único item de pesquisa de fonte genuinamente ainda não iniciado neste projeto (está fora do catálogo original de 33).
 4. Considerar se avançar para a Fase 1 do Roadmap (`docs/02-arquitetura/ROADMAP_DATALAKE_FASES.md`) — formalizar contratos de dados para os 25 indicadores já com piloto técnico funcionando — ou aguardar validação humana das perguntas QF antes de formalizar mais.
 5. Se pisos salariais (único indicador sem fonte corrente confirmada) for prioritário, considerar contato direto com o DIEESE sobre o SACC (hoje fora do ar) ou sobre se o boletim "De Olho nas Negociações" cobre esse dado.
+6. **DIEESE 360**: aplicar a migração `db/migrations/0002_criar_camada_curated.sql` no SQL Editor do Supabase, rodar os scripts de `pipelines/curated/` pelo menos uma vez, e criar a primeira conta de acesso (ver passo a passo em `frontend/README.md`) — só depois disso o painel mostra números reais em vez de "sem pontos publicados". Em seguida, decidir se a prioridade é (a) estender `pipelines/curated/` às outras 4 dimensões, (b) gerar as imagens de `frontend/img-prompts.json`, ou (c) publicar no Vercel.
 
 ## Regra de atualização
 

@@ -3,8 +3,9 @@
 Schema versionado do banco de dados definitivo (Supabase/Postgres) — decisão registrada em
 `docs/08-decisoes-adr/0004-supabase-raw-storage.md`.
 
-**Escopo atual: apenas RAW.** Nenhuma tabela de STAGING/CURATED/ANALYTICS existe ainda —
-fica para um ADR futuro.
+**Escopo atual: RAW + uma camada CURATED mínima.** `raw_ingestoes` (RAW) e
+`indicadores`/`indicadores_serie`/`perfis` (CURATED mínima, ver ADR 0005) existem.
+STAGING completo/ANALYTICS seguem em aberto.
 
 ## Como aplicar uma migração
 
@@ -23,6 +24,7 @@ Nenhum script deste repositório aplica migrações automaticamente nesta fase.
 | # | Arquivo | O que faz |
 |---|---|---|
 | 0001 | `migrations/0001_criar_raw_ingestoes.sql` | Cria `raw_ingestoes` — log de metadados de cada execução dos motores de coleta (fonte, script, timestamp, caminho no Storage, status). RLS habilitada, sem policy pública. |
+| 0002 | `migrations/0002_criar_camada_curated.sql` | Cria `indicadores` (catálogo) e `indicadores_serie` (série temporal) — alimentadas por `pipelines/curated/`, leitura pública (RLS). Cria também `perfis` (contas do painel interno DIEESE 360, cadastradas por um administrador). Ver ADR 0005. |
 
 ## Supabase Storage
 
