@@ -20,12 +20,16 @@
     });
   }
 
+  // Nunca expõe o texto técnico cru do banco a quem usa o painel — toda
+  // mensagem aqui é escrita para quem lê, não para quem depura. Erros não
+  // reconhecidos caem num texto genérico, nunca no `e.message` original.
   function mensagemErro(e) {
-    var m = (e && (e.message || e.error_description)) || String(e || 'Erro desconhecido');
+    var m = (e && (e.message || e.error_description)) || String(e || '');
     if (/row-level security|permission denied|42501/i.test(m)) return 'Você não tem permissão para esta operação.';
-    if (/Failed to fetch|NetworkError|Load failed/i.test(m)) return 'Sem conexão com o servidor. Tente de novo.';
-    if (/JWT expired|invalid JWT/i.test(m)) return 'Sua sessão expirou. Entre de novo.';
-    return m;
+    if (/Failed to fetch|NetworkError|Load failed/i.test(m)) return 'Sem conexão com o servidor. Tente novamente em instantes.';
+    if (/JWT expired|invalid JWT/i.test(m)) return 'Sua sessão expirou. Entre novamente.';
+    if (/schema cache|relation .* does not exist|could not find the table/i.test(m)) return 'Os indicadores desta seção ainda estão sendo preparados. Volte em breve.';
+    return 'Não foi possível carregar os dados agora. Tente novamente em instantes.';
   }
 
   function irParaLogin(motivo) {
