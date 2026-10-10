@@ -17,6 +17,19 @@ está lá.
 
 O CSV usa `;` como separador de campo e aspas duplas em todo campo — formato
 confirmado em `docs/04-fontes/mdic-tesouro.md` e no próprio arquivo bruto.
+
+===============================================================================
+POR QUE ESTE SCRIPT RECONSTRÓI ARQUIVOS PARTICIONADOS
+===============================================================================
+Os CSVs deste indicador (um ano inteiro de exportação ou importação) passam
+fácil de 45 MB — acima do limite que `pipelines/supabase_raw.py` usa para
+particionar automaticamente antes do envio ao Storage (ver ADR 0004). Quando
+isso acontece, a linha de `raw_ingestoes` não tem `storage_path` preenchido
+(fica `None`) — o caminho de cada pedaço vive em `metadata.partes`, na ordem
+certa. Descoberto na prática: a primeira versão deste script só olhava
+`storage_path`, então nunca achava o CSV de exportação/importação (sempre
+particionados) — corrigido baixando e concatenando as partes quando
+`storage_path` vem vazio.
 """
 
 import csv
@@ -31,17 +44,29 @@ SCRIPT_ORIGEM = "pipelines/ingestao/bloco_1_macroeconomia/coleta_balanca_comerci
 
 
 # ------------------------------------------------------------------------
-# PASSO 1 — baixar o CSV mais recente de um fluxo (exportação/importação)
+# PASSO 1 — baixar o CSV mais recente de um fluxo (exportação/importação),
+# reconstruindo a partir das partes quando o arquivo foi particionado
 # ------------------------------------------------------------------------
+def _registro_corresponde(registro: dict, prefixo_arquivo: str) -> bool:
+    if prefixo_arquivo in (registro.get("storage_path") or ""):
+        return True
+    partes = ((registro.get("metadata") or {}).get("partes")) or []
+    return any(prefixo_arquivo in p for p in partes)
+
+
 def _baixar_raw(prefixo_arquivo: str) -> bytes:
     registros = buscar_ultimo_raw(SCRIPT_ORIGEM, limite=8)
-    alvo = next(
-        (r for r in registros if prefixo_arquivo in (r.get("storage_path") or "")),
-        None,
-    )
+    alvo = next((r for r in registros if _registro_corresponde(r, prefixo_arquivo)), None)
     if alvo is None:
         raise RuntimeError(f"Nenhum RAW '{prefixo_arquivo}' encontrado para {SCRIPT_ORIGEM}")
-    return baixar_objeto_storage(alvo["storage_path"])
+
+    if alvo.get("storage_path"):
+        return baixar_objeto_storage(alvo["storage_path"])
+
+    partes = (alvo.get("metadata") or {}).get("partes") or []
+    if not partes:
+        raise RuntimeError(f"RAW '{prefixo_arquivo}' sem storage_path e sem partes em metadata — registro inconsistente.")
+    return b"".join(baixar_objeto_storage(p) for p in partes)
 
 
 # ------------------------------------------------------------------------

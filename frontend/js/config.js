@@ -5,8 +5,8 @@
 //
 // NUNCA coloque aqui a chave secreta (sb_secret_...) nem a service_role.
 window.PAINEL_CONFIG = {
-  SUPABASE_URL: 'https://zwyppnwwsuhevpjtgvqf.supabase.co',
-  SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_EByvKxSYVdDXVfDCC4UpFQ_JGMaMeYi',
+  SUPABASE_URL: 'https://mygmpquzzxbbcekertrd.supabase.co',
+  SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_W3JMHjtXArpcLesxVSK0Gg__gASei4P',
   // Minutos sem uso até a sessão da área interna encerrar sozinha.
   INATIVIDADE_MINUTOS: 30
 };
