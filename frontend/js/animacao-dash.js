@@ -28,7 +28,7 @@
 
   function animarEntrada(raiz) {
     if (!raiz || reduz()) return;
-    var cartoes = Array.prototype.slice.call(raiz.querySelectorAll('.cartao-flip, .cartao-dimensao, .cartao-pendente'));
+    var cartoes = Array.prototype.slice.call(raiz.querySelectorAll('.cartao-resumo, .cartao-dimensao, .cartao-pendente'));
     cartoes.forEach(function (c, i) {
       var atraso = i * 90;
       c.classList.remove('anim-cartao'); void c.offsetWidth;

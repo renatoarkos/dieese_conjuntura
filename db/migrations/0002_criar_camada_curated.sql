@@ -57,30 +57,43 @@ create policy "indicadores_serie: leitura publica"
 -- pipelines/curated/ nesta rodada (ver docs/08-decisoes-adr/0005-...).
 -- UCI/CNI e PIB Mundial/FMI ficam de fora deliberadamente (ver o mesmo ADR) —
 -- não inserir linha de catálogo para um indicador sem série real.
+-- Os textos de `metodologia_md` abaixo descrevem sempre o período e a base de
+-- comparação de forma explícita (ex. "no trimestre, comparado ao mesmo
+-- trimestre do ano anterior") — pedido explícito do responsável do projeto
+-- depois de ver a primeira versão (2026-10-10): o cartão não pode deixar
+-- dúvida sobre a que período/base cada variação se refere.
 insert into indicadores (id, nome, dimensao, unidade, periodicidade, fonte, classificacao, metodologia_md, direcao_positiva, ordem_exibicao)
 values
     ('pib_brasil', 'PIB Brasil', 'macroeconomia', '% (variação)', 'trimestral', 'IBGE/SIDRA (tabela 5932)', 'A',
-     'Variação do PIB em relação ao mesmo trimestre do ano anterior (série encadeada, ajuste sazonal do IBGE).', 'alta', 10),
+     'Mede o crescimento (ou queda) da economia brasileira. Compara o volume de bens e serviços produzidos no trimestre com o mesmo trimestre do ano anterior — por isso já descarta o efeito sazonal típico de cada época do ano (ex.: Natal, safra). Série com ajuste sazonal do IBGE.', 'alta', 10),
     ('cambio_dolar', 'Taxa de câmbio (dólar, venda)', 'macroeconomia', 'R$', 'mensal', 'BCB/SGS (série 3698)', 'A',
-     'Câmbio livre, dólar americano, venda, média mensal.', 'neutra', 20),
+     'Quantos reais são necessários para comprar 1 dólar americano, na cotação de venda. Valor é a média de todas as cotações do mês — não é a cotação de um dia específico.', 'neutra', 20),
     ('balanca_exportacoes', 'Exportações (FOB)', 'macroeconomia', 'US$ FOB', 'mensal', 'MDIC/Comex Stat', 'B',
-     'Soma do valor FOB de todas as operações de exportação do mês, por NCM.', 'alta', 30),
+     'Soma, em dólares (valor FOB — sem contar frete e seguro), de tudo que o Brasil vendeu para o exterior no mês.', 'alta', 30),
     ('balanca_importacoes', 'Importações (FOB)', 'macroeconomia', 'US$ FOB', 'mensal', 'MDIC/Comex Stat', 'B',
-     'Soma do valor FOB de todas as operações de importação do mês, por NCM.', 'neutra', 31),
+     'Soma, em dólares (valor FOB), de tudo que o Brasil comprou do exterior no mês.', 'neutra', 31),
     ('balanca_saldo', 'Saldo da balança comercial', 'macroeconomia', 'US$ FOB', 'mensal', 'MDIC/Comex Stat', 'B',
-     'Exportações menos importações (FOB) do mês.', 'alta', 32),
-    ('commodities_geral', 'Índice de Commodities Brasil — geral', 'macroeconomia', 'número-índice (2006=100)', 'mensal', 'BCB/Depec (SGS 27574)', 'A', null, 'neutra', 40),
-    ('commodities_agropecuaria', 'IC-Br — Agropecuária', 'macroeconomia', 'número-índice (2006=100)', 'mensal', 'BCB/Depec (SGS 27575)', 'A', null, 'neutra', 41),
-    ('commodities_metal', 'IC-Br — Metal', 'macroeconomia', 'número-índice (2006=100)', 'mensal', 'BCB/Depec (SGS 27576)', 'A', null, 'neutra', 42),
-    ('commodities_energia', 'IC-Br — Energia', 'macroeconomia', 'número-índice (2006=100)', 'mensal', 'BCB/Depec (SGS 27577)', 'A', null, 'neutra', 43),
+     'Exportações menos importações do mês, em dólares (FOB). Positivo = superávit comercial; negativo = déficit comercial.', 'alta', 32),
+    ('commodities_geral', 'Índice de Commodities Brasil — geral', 'macroeconomia', 'número-índice (2006=100)', 'mensal', 'BCB/Depec (SGS 27574)', 'A',
+     'Índice que acompanha, em reais, o preço médio de uma cesta de commodities relevantes para a economia brasileira. Quanto maior, mais caras estão essas commodities no mês. Base 100 = média de 2006.', 'neutra', 40),
+    ('commodities_agropecuaria', 'IC-Br — Agropecuária', 'macroeconomia', 'número-índice (2006=100)', 'mensal', 'BCB/Depec (SGS 27575)', 'A',
+     'Mesmo índice do IC-Br geral, só com a cesta de commodities agropecuárias (grãos, carnes, café etc.). Base 100 = média de 2006.', 'neutra', 41),
+    ('commodities_metal', 'IC-Br — Metal', 'macroeconomia', 'número-índice (2006=100)', 'mensal', 'BCB/Depec (SGS 27576)', 'A',
+     'Mesmo índice do IC-Br geral, só com a cesta de commodities metálicas (minério de ferro, cobre etc.). Base 100 = média de 2006.', 'neutra', 42),
+    ('commodities_energia', 'IC-Br — Energia', 'macroeconomia', 'número-índice (2006=100)', 'mensal', 'BCB/Depec (SGS 27577)', 'A',
+     'Mesmo índice do IC-Br geral, só com a cesta de commodities de energia (petróleo, gás etc.). Base 100 = média de 2006.', 'neutra', 43),
     ('limite_fiscal_pessoal', 'Limite fiscal de pessoal (média das 27 UFs)', 'macroeconomia', '% da RCL ajustada', 'quadrimestral', 'SICONFI/Tesouro Nacional', 'A',
-     'Despesa total com pessoal como % da Receita Corrente Líquida ajustada — média simples das 27 UFs; quebra por UF em metadata.por_uf. Limite legal: 49% (máximo), 46,55% (prudencial), 44,1% (alerta).', 'baixa', 50),
-    ('taxa_investimento', 'Taxa de investimento (FBCF/PIB)', 'macroeconomia', '%', 'trimestral', 'IBGE/SIDRA (tabela 6727)', 'A', null, 'alta', 60),
+     'Quanto cada Estado gasta com a folha de pagamento do funcionalismo, em proporção à sua Receita Corrente Líquida. A Lei de Responsabilidade Fiscal limita o Poder Executivo estadual a 49% (prudencial: 46,55%; alerta: 44,1%). O número do cartão é a média simples das 27 UFs no quadrimestre mais recente — veja o mapa abaixo para o valor de cada estado.', 'baixa', 50),
+    ('taxa_investimento', 'Taxa de investimento (FBCF/PIB)', 'macroeconomia', '%', 'trimestral', 'IBGE/SIDRA (tabela 6727)', 'A',
+     'Quanto da riqueza produzida no país (PIB) do trimestre foi reinvestido em máquinas, equipamentos e construção, em vez de consumido.', 'alta', 60),
     ('bndes_desembolsos', 'Desembolsos do BNDES', 'macroeconomia', 'R$', 'mensal', 'BNDES/Dados Abertos', 'C',
-     'Soma de desembolsos_reais de todas as operações do mês mais recente disponível (defasagem de publicação observada: ~6 meses).', 'alta', 70),
-    ('pmc_volume_vendas', 'Volume de vendas — comércio (PMC)', 'macroeconomia', '% (variação acum. 12m)', 'mensal', 'IBGE/SIDRA (tabela 8881)', 'A', null, 'alta', 80),
-    ('pms_volume_servicos', 'Volume de serviços (PMS)', 'macroeconomia', '% (variação acum. 12m)', 'mensal', 'IBGE/SIDRA (tabela 5906)', 'A', null, 'alta', 81),
-    ('pim_producao_industrial', 'Produção industrial (PIM-PF)', 'macroeconomia', '% (variação acum. 12m)', 'mensal', 'IBGE/SIDRA (tabela 8888)', 'A', null, 'alta', 82)
+     'Total de crédito que o BNDES efetivamente liberou para financiamentos no mês — não é o que foi aprovado, é o que já foi pago às empresas. Costuma ser divulgado com ~6 meses de defasagem.', 'alta', 70),
+    ('pmc_volume_vendas', 'Volume de vendas — comércio (PMC)', 'macroeconomia', '% (variação acum. 12m)', 'mensal', 'IBGE/SIDRA (tabela 8881)', 'A',
+     'Variação do volume de vendas do comércio varejista no mês, comparado ao mesmo mês do ano anterior — mede se as pessoas compraram mais ou menos (já descontado o efeito de preço, só quantidade).', 'alta', 80),
+    ('pms_volume_servicos', 'Volume de serviços (PMS)', 'macroeconomia', '% (variação acum. 12m)', 'mensal', 'IBGE/SIDRA (tabela 5906)', 'A',
+     'Variação do volume do setor de serviços na soma dos últimos 12 meses, comparada aos 12 meses imediatamente anteriores — uma média móvel longa, por isso reage mais devagar que indicadores mês a mês.', 'alta', 81),
+    ('pim_producao_industrial', 'Produção industrial (PIM-PF)', 'macroeconomia', '% (variação acum. 12m)', 'mensal', 'IBGE/SIDRA (tabela 8888)', 'A',
+     'Variação da produção da indústria na soma dos últimos 12 meses, comparada aos 12 meses imediatamente anteriores — mesma lógica de média móvel longa da PMS.', 'alta', 82)
 on conflict (id) do nothing;
 
 -- Perfis de usuário do painel interno (DIEESE 360) — mesmo padrão do

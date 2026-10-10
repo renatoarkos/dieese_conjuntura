@@ -7,9 +7,14 @@
   var D = window.DIEESE360.dados;
   var esc = P.esc;
 
-  // Amostra curada para a home (6 de ~14 indicadores já publicados) — os
-  // demais ficam para quem entrar no painel.
-  var AMOSTRA = ['pib_brasil', 'cambio_dolar', 'commodities_geral', 'taxa_investimento', 'balanca_saldo', 'bndes_desembolsos'];
+  // Amostra curada para a home (10 dos 14 indicadores já publicados) — os
+  // 4 subíndices restantes do IC-Br e a quebra por UF do limite fiscal
+  // (via mapa) ficam para quem entrar no painel.
+  var AMOSTRA = [
+    'pib_brasil', 'cambio_dolar', 'commodities_geral', 'taxa_investimento',
+    'balanca_saldo', 'bndes_desembolsos', 'limite_fiscal_pessoal',
+    'pmc_volume_vendas', 'pms_volume_servicos', 'pim_producao_industrial'
+  ];
   // Indicadores mensais que compõem o ticker de topo.
   var TICKER = ['cambio_dolar', 'commodities_geral', 'balanca_saldo', 'pmc_volume_vendas', 'pms_volume_servicos', 'pim_producao_industrial', 'bndes_desembolsos'];
 

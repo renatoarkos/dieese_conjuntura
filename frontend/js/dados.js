@@ -62,6 +62,13 @@
     return formatarNumero(valor, 1);
   }
 
+  // Versão compacta da data, para eixo/tooltip do gráfico (não repete o
+  // texto longo de formatarDataReferencia, que é para o cabeçalho do cartão).
+  function formatarDataCurta(dataIso) {
+    var d = new Date(dataIso + 'T00:00:00');
+    return d.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }).replace('.', '');
+  }
+
   function formatarDataReferencia(dataIso, periodicidade) {
     var d = new Date(dataIso + 'T00:00:00');
     if (periodicidade === 'trimestral') {
@@ -122,42 +129,32 @@
   }
 
   // ------------------------------------------------------------------
-  // Cartão giratório — frente (número + sparkline) / verso (explicação,
-  // fonte, metodologia, comparação automática). Ver css .cartao-flip e
-  // js/cartao-flip.js (interação de virar).
+  // Cartão-resumo (stat tile): número + tendência + sparkline. Ao clicar,
+  // abre o painel de detalhe com 2 cartões — informação e gráfico da série
+  // completa (ver js/detalhe-indicador.js). Os dados completos (indicador +
+  // série) ficam guardados em `window.DIEESE360.registro`, para o painel de
+  // detalhe não precisar buscar de novo no Supabase.
   // ------------------------------------------------------------------
   function montarCartao(indicador, serieAsc) {
     if (!serieAsc.length) return montarCartaoVazio(indicador);
+    window.DIEESE360.registro = window.DIEESE360.registro || {};
+    window.DIEESE360.registro[indicador.id] = { indicador: indicador, serieAsc: serieAsc };
+
     var atual = serieAsc[serieAsc.length - 1];
     var tendencia = calcularTendencia(indicador, serieAsc);
     var chip = tendencia
       ? '<span class="chip-tendencia ' + tendencia.classe + '">' + tendencia.seta + ' ' + formatarValor(indicador, Math.abs(tendencia.delta)) + '</span>'
       : '';
-    var comparacao = tendencia
-      ? tendencia.seta + ' ' + formatarValor(indicador, Math.abs(tendencia.delta)) + ' vs. ' + formatarDataReferencia(tendencia.anterior.data_referencia, indicador.periodicidade)
-      : 'Ainda não há ponto anterior para comparar.';
 
     return (
-      '<article class="cartao-flip" data-indicador="' + esc(indicador.id) + '">' +
-      '<div class="cartao-flip-interior" tabindex="0" role="button" aria-pressed="false" aria-label="' + esc(indicador.nome) + ' — vire o cartão para ver mais">' +
-      '<div class="cartao-flip-frente">' +
+      '<article class="cartao-resumo">' +
+      '<button type="button" class="cartao-resumo-botao" data-abrir-detalhe="' + esc(indicador.id) + '" aria-label="' + esc(indicador.nome) + ' — ver detalhes e gráfico completo">' +
       '<div class="cartao-cabecalho"><span class="cartao-rotulo">' + esc(indicador.nome) + '</span>' + chip + '</div>' +
       '<strong class="cartao-valor">' + formatarValor(indicador, atual.valor) + '</strong>' +
       '<span class="cartao-data">' + esc(formatarDataReferencia(atual.data_referencia, indicador.periodicidade)) + '</span>' +
       montarSparkline(serieAsc) +
-      '<span class="cartao-dica">virar ↻</span>' +
-      '</div>' +
-      '<div class="cartao-flip-verso">' +
-      '<h3>' + esc(indicador.nome) + '</h3>' +
-      '<p class="explicacao">' + esc(indicador.metodologia_md || ('Indicador de ' + (DIMENSOES[indicador.dimensao] || {}).nome + '.')) + '</p>' +
-      '<dl>' +
-      '<dt>Fonte</dt><dd>' + esc(indicador.fonte) + '</dd>' +
-      '<dt>Periodicidade</dt><dd>' + esc(indicador.periodicidade) + '</dd>' +
-      '<dt>Classificação</dt><dd>' + esc(indicador.classificacao) + ' — ver docs/04-fontes</dd>' +
-      '</dl>' +
-      '<p class="comparacao">' + esc(comparacao) + '</p>' +
-      '</div>' +
-      '</div>' +
+      '<span class="cartao-dica">ver detalhes e gráfico →</span>' +
+      '</button>' +
       '</article>'
     );
   }
@@ -188,13 +185,19 @@
     if (!serieAsc.length) return '';
     var atual = serieAsc[serieAsc.length - 1];
     var tendencia = calcularTendencia(indicador, serieAsc);
-    var classeDelta = tendencia ? tendencia.classe : 'neutra';
     var classeSeta = tendencia ? (tendencia.direcaoMudanca === 'baixa' ? 'baixa' : (tendencia.direcaoMudanca === 'alta' ? 'alta' : 'neutra')) : 'neutra';
+    var periodo = formatarDataReferencia(atual.data_referencia, indicador.periodicidade);
+    var comparacao = tendencia
+      ? 'vs. ' + formatarDataReferencia(tendencia.anterior.data_referencia, indicador.periodicidade)
+      : 'sem período anterior';
     return (
       '<span class="ticker-item">' +
+      '<span class="ticker-linha1">' +
       '<span class="rotulo">' + esc(indicador.nome) + '</span>' +
       '<span class="valor">' + formatarValor(indicador, atual.valor) + '</span>' +
-      (tendencia ? '<span class="delta ' + classeSeta + '">' + tendencia.seta + '</span>' : '') +
+      (tendencia ? '<span class="delta ' + classeSeta + '">' + tendencia.seta + ' ' + formatarValor(indicador, Math.abs(tendencia.delta)) + '</span>' : '') +
+      '</span>' +
+      '<span class="ticker-linha2">' + esc(periodo) + ' · ' + esc(comparacao) + '</span>' +
       '</span>'
     );
   }
@@ -206,6 +209,7 @@
     carregarSerie: carregarSerie,
     formatarValor: formatarValor,
     formatarDataReferencia: formatarDataReferencia,
+    formatarDataCurta: formatarDataCurta,
     calcularTendencia: calcularTendencia,
     montarCartao: montarCartao,
     montarCartaoDimensaoPendente: montarCartaoDimensaoPendente,
