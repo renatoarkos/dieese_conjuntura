@@ -129,17 +129,13 @@
   }
 
   // ------------------------------------------------------------------
-  // Cartão-resumo (stat tile): número + tendência + sparkline. Ao clicar,
-  // abre o painel de detalhe com 2 cartões — informação e gráfico da série
-  // completa (ver js/detalhe-indicador.js). Os dados completos (indicador +
-  // série) ficam guardados em `window.DIEESE360.registro`, para o painel de
-  // detalhe não precisar buscar de novo no Supabase.
+  // Cartão-resumo (stat tile): número + tendência + sparkline. É um link de
+  // verdade para a página própria do indicador (indicador.html?id=...) — ver
+  // js/pagina-indicador.js — não um modal: cada indicador tem sua URL,
+  // navegável e compartilhável, como nos grandes portais de estatística.
   // ------------------------------------------------------------------
   function montarCartao(indicador, serieAsc) {
     if (!serieAsc.length) return montarCartaoVazio(indicador);
-    window.DIEESE360.registro = window.DIEESE360.registro || {};
-    window.DIEESE360.registro[indicador.id] = { indicador: indicador, serieAsc: serieAsc };
-
     var atual = serieAsc[serieAsc.length - 1];
     var tendencia = calcularTendencia(indicador, serieAsc);
     var chip = tendencia
@@ -148,13 +144,13 @@
 
     return (
       '<article class="cartao-resumo">' +
-      '<button type="button" class="cartao-resumo-botao" data-abrir-detalhe="' + esc(indicador.id) + '" aria-label="' + esc(indicador.nome) + ' — ver detalhes e gráfico completo">' +
+      '<a class="cartao-resumo-botao" href="indicador.html?id=' + esc(indicador.id) + '" aria-label="' + esc(indicador.nome) + ' — ver página completa, gráfico e tabela">' +
       '<div class="cartao-cabecalho"><span class="cartao-rotulo">' + esc(indicador.nome) + '</span>' + chip + '</div>' +
       '<strong class="cartao-valor">' + formatarValor(indicador, atual.valor) + '</strong>' +
       '<span class="cartao-data">' + esc(formatarDataReferencia(atual.data_referencia, indicador.periodicidade)) + '</span>' +
       montarSparkline(serieAsc) +
-      '<span class="cartao-dica">ver detalhes e gráfico →</span>' +
-      '</button>' +
+      '<span class="cartao-dica">ver indicador →</span>' +
+      '</a>' +
       '</article>'
     );
   }

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Indicador · DIEESE 360</title>
+  <meta name="theme-color" content="#030086">
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="container">
+      <a class="marca-topo" href="index.html">
+        <strong>DIEESE 360</strong>
+        <span>inteligência socioeconômica</span>
+      </a>
+      <nav class="nav-topo">
+        <span id="usuario-nome" style="color:var(--cinza-700);font-size:.88rem"></span>
+        <a class="nav-link" id="link-painel" href="painel.html">Painel</a>
+        <a href="#" id="sair" hidden>Sair</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container layout-lateral">
+    <nav class="barra-lateral" id="barra-lateral" aria-label="Indicadores por dimensão">
+      <p class="lateral-carregando">Carregando…</p>
+    </nav>
+    <main class="conteudo-indicador" id="conteudo-indicador">
+      <p class="lateral-carregando">Carregando indicador…</p>
+    </main>
+  </div>
+
+  <script src="js/vendor/supabase.js"></script>
+  <script src="js/vendor/xlsx.mini.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/dados.js"></script>
+  <script src="js/grafico-linha.js"></script>
+  <script src="js/mapa-uf.js"></script>
+  <script src="js/barra-lateral.js"></script>
+  <script src="js/exportar-excel.js"></script>
+  <script src="js/animacao-dash.js"></script>
+  <script src="js/pagina-indicador.js"></script>
+</body>
+</html>

@@ -26,25 +26,23 @@
     </div>
   </header>
 
-  <section class="secao" style="padding-top:36px">
-    <div class="container">
-      <h2 style="margin-bottom:4px">Indicadores por dimensão</h2>
-      <p class="lead" style="margin-bottom:20px">Todos os indicadores publicados, organizados pelas 5 dimensões do catálogo. Clique num cartão para ver a explicação, a fonte e o gráfico da série histórica completa.</p>
-
-      <nav class="abas-dimensao" id="abas-dimensao" aria-label="Dimensões"></nav>
-
-      <div id="paineis-dimensao"></div>
-    </div>
-  </section>
+  <div class="container layout-lateral">
+    <nav class="barra-lateral" id="barra-lateral" aria-label="Indicadores por dimensão">
+      <p class="lateral-carregando">Carregando…</p>
+    </nav>
+    <main class="conteudo-indicador" id="conteudo-painel">
+      <h1 style="margin-bottom:4px">Indicadores por dimensão</h1>
+      <p class="lead" style="margin-bottom:28px">Todos os indicadores publicados. Use o menu à esquerda para ir direto a um indicador, ou role a página — cada dimensão tem sua seção, com um cartão por indicador. Clique num cartão para abrir a página completa (gráfico, tabela, infográfico e exportação).</p>
+      <div id="secoes-dimensao"></div>
+    </main>
+  </div>
 
   <script src="js/vendor/supabase.js"></script>
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
   <script src="js/dados.js"></script>
-  <script src="js/grafico-linha.js"></script>
-  <script src="js/detalhe-indicador.js"></script>
+  <script src="js/barra-lateral.js"></script>
   <script src="js/animacao-dash.js"></script>
-  <script src="js/mapa-uf.js"></script>
   <script src="js/painel.js"></script>
 </body>
 </html>
