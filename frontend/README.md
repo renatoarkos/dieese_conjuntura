@@ -9,11 +9,16 @@ validado em `painel_saude_mental/painel-web`.
 
 - `index.html` — página pública (hero, dimensões, amostra de indicadores, ticker).
 - `login.html` / `definir-senha.html` — Supabase Auth.
-- `painel.html` — área interna (pós-login): navegação pelas 5 dimensões.
-- `css/styles.css` — identidade visual do DIEESE (tokens herdados de `painel-web`) + componentes novos (ticker, cartão giratório, sparkline, mapa por UF).
-- `js/dados.js` — busca `indicadores`/`indicadores_serie` no Supabase, formata valores, calcula tendência, monta o HTML dos cartões.
-- `js/mapa-uf.js` — mapa coroplético por UF (malha oficial do IBGE, vendorizada em `assets/mapas/malha_uf.geojson`), usado hoje só pelo indicador "Limite fiscal de pessoal".
-- `js/cartao-flip.js` / `js/animacao-dash.js` — interação de virar o cartão e animação de entrada.
+- `painel.html` — área interna (pós-login): navegação lateral + uma seção por dimensão, cada uma com a grade de cartões.
+- `indicador.html?id=<slug>` — página própria de cada indicador (pública — os números já são públicos, ver ADR 0005): conceito, metadados, filtro de período (últimos 12/24/60 pontos ou tudo) e 4 vistas da mesma série — Gráfico, Tabela, Infográfico e, para indicadores regionalizados, Mapa por UF —, mais exportação para Excel.
+- `css/styles.css` — identidade visual do DIEESE (tokens herdados de `painel-web`) + componentes novos (ticker, cartão-resumo, sparkline, navegação lateral, gráfico de linha, mapa por UF, infográfico, tabela de série).
+- `js/dados.js` — busca `indicadores`/`indicadores_serie` no Supabase, formata valores, calcula tendência, monta o HTML dos cartões (que são links para `indicador.html`, não mais um modal).
+- `js/barra-lateral.js` — navegação lateral (as 5 dimensões como seções, os indicadores de cada uma como subseções) — usada em `painel.html` e `indicador.html`.
+- `js/pagina-indicador.js` — orquestra `indicador.html`: filtro de período, troca de vista, exportação.
+- `js/grafico-linha.js` — gráfico de linha da série completa (grade, eixos, crosshair + tooltip no hover).
+- `js/mapa-uf.js` — mapa coroplético por UF (malha oficial do IBGE, vendorizada em `assets/mapas/malha_uf.geojson`) + tabela ordenada ao lado (nenhum valor depende só do hover).
+- `js/exportar-excel.js` — exporta a série filtrada como `.xlsx` (SheetJS vendorizado em `js/vendor/`, mesma lib já usada em `painel_saude_mental`).
+- `js/animacao-dash.js` — animação de entrada dos cartões/seções.
 - `img-prompts.json` — especificação das imagens de marca a gerar (mesmo formato de `painel-web/img-prompts.json`) — **as imagens em si ainda não foram geradas**.
 
 ## Como rodar localmente
