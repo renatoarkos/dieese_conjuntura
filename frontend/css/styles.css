@@ -148,20 +148,39 @@ img { max-width: 100%; display: block; }
 .ticker::before, .ticker::after { content: ""; position: absolute; top: 0; bottom: 0; width: 48px; z-index: 2; pointer-events: none; }
 .ticker::before { left: 0; background: linear-gradient(90deg, var(--azul), transparent); }
 .ticker::after { right: 0; background: linear-gradient(270deg, var(--azul), transparent); }
-.ticker-trilho { display: flex; width: max-content; gap: 40px; padding: 10px 0; animation: ticker-rola 50s linear infinite; }
+.ticker-trilho { display: flex; width: max-content; gap: 14px; padding: 14px 16px; animation: ticker-rola 50s linear infinite; align-items: stretch; }
 .ticker:hover .ticker-trilho, .ticker:focus-within .ticker-trilho { animation-play-state: paused; }
 @keyframes ticker-rola { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.ticker-item { display: flex; flex-direction: column; gap: 1px; white-space: nowrap; padding: 2px 0; }
-.ticker-linha1 { display: flex; align-items: baseline; gap: 7px; font-size: .92rem; }
-.ticker-item .rotulo { opacity: .8; }
-.ticker-item .valor { font: 700 1rem var(--fonte-titulo); }
-.ticker-item .delta { font-size: .78rem; font-weight: 700; }
-.ticker-item .delta.alta { color: #b9ffcf; }
-.ticker-item .delta.baixa { color: #ffd1d1; }
-.ticker-item .delta.neutra { color: #cfd3f7; }
-.ticker-linha2 { font-size: .72rem; opacity: .72; }
+/* Cada indicador é um cartão próprio (borda + fundo translúcido) — separa
+   visualmente um indicador do outro, em vez de depender só de espaço em
+   branco entre eles (ver pedido do responsável: "muito uma coisa em cima
+   da outra"). Hierarquia em 3 linhas: rótulo → valor+variação → período. */
+.ticker-item {
+  display: flex; flex-direction: column; gap: 6px;
+  white-space: nowrap; padding: 12px 18px;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 10px;
+  min-width: 190px;
+}
+.ticker-item .rotulo {
+  font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  opacity: .75;
+}
+.ticker-linha1 { display: flex; align-items: center; gap: 10px; }
+.ticker-item .valor { font: 700 1.3rem var(--fonte-titulo); line-height: 1; }
+/* Variação vira selo (fundo colorido), não só texto colorido — mais
+   destaque e mais fácil de escanear rápido numa faixa rolando. */
+.ticker-item .delta {
+  font-size: .76rem; font-weight: 700; line-height: 1;
+  padding: 4px 9px; border-radius: 999px; white-space: nowrap;
+}
+.ticker-item .delta.alta { color: #073d20; background: #b9ffcf; }
+.ticker-item .delta.baixa { color: #5c0a0a; background: #ffd1d1; }
+.ticker-item .delta.neutra { color: #1c1f6b; background: #cfd3f7; }
+.ticker-linha2 { font-size: .72rem; opacity: .7; }
 @media (prefers-reduced-motion: reduce) {
-  .ticker-trilho { animation: none; flex-wrap: wrap; gap: 20px 28px; padding: 14px 24px; }
+  .ticker-trilho { animation: none; flex-wrap: wrap; gap: 12px; padding: 16px; }
 }
 
 /* ---------------------------------------------------------------- seções de conteúdo */
@@ -215,6 +234,35 @@ img { max-width: 100%; display: block; }
 .cartao-sparkline path.area { fill: var(--azul); opacity: .08; stroke: none; }
 .cartao-sparkline circle { fill: var(--azul); }
 .cartao-dica { margin-top: 8px; font-size: .7rem; color: var(--azul-300); text-align: right; }
+
+/* -------- cartão giratório (flip in-place) — só na amostra pública da
+   home (index.html). Clique gira o cartão no próprio lugar, sem navegar —
+   ver js/cartao-flip.js. O cartão-resumo (acima) continua sendo usado no
+   painel interno, que navega para a página completa do indicador. -------- */
+.cartao-flip { height: 100%; min-height: 240px; perspective: 1400px; }
+.cartao-flip-interior {
+  position: relative; width: 100%; height: 100%; min-height: 240px; cursor: pointer;
+  transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+}
+.cartao-flip.virado .cartao-flip-interior { transform: rotateY(180deg); }
+.cartao-flip-interior:focus-visible { outline: 3px solid var(--azul-300); outline-offset: 4px; }
+.cartao-flip-frente, .cartao-flip-verso {
+  position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: var(--raio); border: 1px solid var(--linha); background: #fff; box-shadow: var(--sombra);
+  padding: 16px 18px; display: flex; flex-direction: column; overflow: hidden;
+}
+.cartao-flip-frente:hover, .cartao-flip-interior:hover .cartao-flip-frente { border-color: var(--azul-300); }
+.cartao-flip-verso { transform: rotateY(180deg); overflow-y: auto; gap: 8px; }
+.cartao-flip-verso .cartao-rotulo { flex: 0 0 auto; }
+.cartao-flip-conceito { font-size: .84rem; color: var(--ink); line-height: 1.45; margin: 0; }
+.cartao-flip-meta { display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; font-size: .78rem; margin: 0; }
+.cartao-flip-meta dt { color: var(--ink-muda); }
+.cartao-flip-meta dd { margin: 0; font-weight: 600; }
+.cartao-flip-comparacao { background: var(--azul-50); border-radius: 8px; padding: 8px 10px; font-size: .82rem; font-weight: 600; color: var(--azul); margin: 0; }
+.cartao-flip-link { margin-top: auto; font-size: .78rem; font-weight: 700; color: var(--azul); align-self: flex-start; }
+@media (prefers-reduced-motion: reduce) {
+  .cartao-flip-interior { transition: none; }
+}
 
 /* -------- painel de detalhe: 2 cartões (informação + gráfico) -------- */
 .detalhe-fundo { position: fixed; inset: 0; z-index: 90; background: rgba(6, 6, 36, .55); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }

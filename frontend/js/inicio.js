@@ -60,9 +60,10 @@
     var alvo = document.getElementById('grade-amostra');
     var html = AMOSTRA.map(function (id) {
       var indicador = indicadores.filter(function (i) { return i.id === id; })[0];
-      return indicador ? D.montarCartao(indicador, series[id] || []) : '';
+      return indicador ? window.DIEESE360.montarCartaoFlip(indicador, series[id] || []) : '';
     }).join('');
     alvo.innerHTML = html || '<p>Nenhum indicador publicado ainda.</p>';
+    window.DIEESE360.ligarCartoesFlip(alvo);
   }
 
   function iniciar() {

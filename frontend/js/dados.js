@@ -188,8 +188,8 @@
       : 'sem período anterior';
     return (
       '<span class="ticker-item">' +
-      '<span class="ticker-linha1">' +
       '<span class="rotulo">' + esc(indicador.nome) + '</span>' +
+      '<span class="ticker-linha1">' +
       '<span class="valor">' + formatarValor(indicador, atual.valor) + '</span>' +
       (tendencia ? '<span class="delta ' + classeSeta + '">' + tendencia.seta + ' ' + formatarValor(indicador, Math.abs(tendencia.delta)) + '</span>' : '') +
       '</span>' +
@@ -208,7 +208,9 @@
     formatarDataCurta: formatarDataCurta,
     calcularTendencia: calcularTendencia,
     montarCartao: montarCartao,
+    montarCartaoVazio: montarCartaoVazio,
     montarCartaoDimensaoPendente: montarCartaoDimensaoPendente,
-    montarItemTicker: montarItemTicker
+    montarItemTicker: montarItemTicker,
+    montarSparkline: montarSparkline
   };
 })();
