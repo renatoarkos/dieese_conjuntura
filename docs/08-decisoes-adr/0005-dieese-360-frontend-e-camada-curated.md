@@ -2,10 +2,22 @@
 
 ## Status
 
-Aceito e em implementação — 2026-10-09. Plano detalhado em conversa com o responsável do
-projeto (nome e visibilidade de dados confirmados explicitamente). Primeiro ADR deste
-projeto a cobrir a camada de aplicação (os ADRs 0001-0004 cobriram só pipeline,
-agendamento e armazenamento RAW).
+Aceito e em implementação — 2026-10-09, expandido em 2026-10-14. Plano detalhado em
+conversa com o responsável do projeto (nome e visibilidade de dados confirmados
+explicitamente). Primeiro ADR deste projeto a cobrir a camada de aplicação (os ADRs
+0001-0004 cobriram só pipeline, agendamento e armazenamento RAW).
+
+**Atualização 2026-10-14**: a camada CURATED foi estendida das 15 séries originais
+(só `bloco_1_macroeconomia`) para **41 séries, cobrindo também `bloco_2_monetario_credito`,
+`bloco_3_inflacao` e `bloco_4_mercado_trabalho`** — 14 novos scripts em
+`pipelines/curated/`, migração `db/migrations/0003_catalogo_bloco_2_3_4.sql` (26 novas
+linhas de catálogo via `INSERT` direto pela API REST, não SQL Editor — DDL continua
+exigindo SQL Editor, mas DML passou a ser feito por API para evitar o mojibake de
+acentuação já registrado no ADR 0004) e os 3 workflows de agendamento atualizados com os
+passos de transformação correspondentes. As imagens de marca de `frontend/img-prompts.json`
+também foram geradas e integradas (hero da home, ícone por dimensão, imagem lateral do
+login). Verificado com Playwright contra o banco real: as 41 séries carregam e renderizam
+corretamente, agrupadas por dimensão, na página interna (`painel.html`).
 
 ## Contexto
 
@@ -53,10 +65,13 @@ Duas tabelas novas no mesmo projeto Supabase já em uso (`db/migrations/0002_cri
 
 Alimentadas por `pipelines/curated/` — scripts de transformação que leem o RAW mais
 recente de cada indicador (via `raw_ingestoes`, localizado pelo campo `script`, que é
-único por indicador) e gravam pontos em `indicadores_serie`. Primeira rodada cobre os
-indicadores do `bloco_1_macroeconomia` com fonte estruturada (JSON/CSV) — 10 dos 12
-scripts desse bloco. Os outros 2 ficam documentados como pendência, não como dado
-inventado (ver "O que este ADR NÃO resolve").
+único por indicador) e gravam pontos em `indicadores_serie`. Primeira rodada (2026-10-09)
+cobriu os indicadores do `bloco_1_macroeconomia` com fonte estruturada (JSON/CSV) — 10 dos
+12 scripts desse bloco. Segunda rodada (2026-10-14) estendeu a mesma `curated_supabase.py`
+e o mesmo padrão de script aos blocos 2, 3 e 4 — 14 scripts novos, 41 séries publicadas no
+total. Os indicadores de fonte só-PDF (ICT, Greves, Reajustes, Pisos salariais) e os que
+ainda exigem parser dedicado (UCI/CNI, PIB Mundial/FMI, PEIC) continuam pendência
+documentada, não dado inventado (ver "O que este ADR NÃO resolve").
 
 ### 4. Autenticação e visibilidade dos dados
 Supabase Auth, contas individuais cadastradas por um administrador (mesmo padrão do
@@ -69,19 +84,23 @@ trabalho interna), não o dado bruto. A home pública mostra só uma amostra cur
 
 ## O que este ADR NÃO resolve
 
-- **As outras 4 dimensões com dado real** (Monetário/Crédito, Inflação, Mercado de
-  Trabalho, CAGED) — a interface já fica pronta para recebê-las; falta repetir o padrão
-  de `pipelines/curated/` para cada bloco.
-- **2 dos 12 indicadores do bloco_1_macroeconomia**: UCI/CNI (o RAW é um arquivo `.xlsx`
-  binário — precisa de um parser dedicado, construído depois de inspecionar a estrutura
-  real da planilha, não adivinhado) e PIB Mundial/FMI (a resposta SDMX 3.0 capturada no
-  RAW mais recente, inspecionada diretamente nesta rodada, não contém observações
-  numéricas utilizáveis — só metadados de estrutura; a URL de coleta provavelmente
-  precisa de ajuste, ex. `dimensionAtObservation=AllDimensions`, antes de um transform
-  poder ser escrito corretamente). Nenhum dos dois ganhou um valor inventado para
-  preencher a lacuna.
-- **Geração das imagens de marca** — `frontend/img-prompts.json` fica pronto (mesmo
-  formato do `painel-web`), gerar/curar as imagens é um passo separado.
+- **CAGED (bloco 5) com dado real** — única dimensão ainda sem série publicada; a
+  interface já mostra um estado "em construção" explícito para ela, não um cartão vazio
+  silencioso. A ingestão RAW já roda; falta só a camada de transformação.
+- **Indicadores de fonte só-PDF** (ICT, Greves ×3, Reajustes, Pisos salariais) — exigem
+  extração texto→número de boletins PDF do próprio DIEESE, engenharia ainda não
+  construída neste projeto (diferente do parsing de JSON/CSV feito até aqui).
+- **UCI/CNI e PEIC** — RAW é `.xlsx` binário, precisa de parser dedicado construído a
+  partir da estrutura real da planilha, não adivinhado.
+- **PIB Mundial/FMI** — a resposta SDMX 3.0 capturada no RAW, inspecionada diretamente,
+  não contém observações numéricas utilizáveis, só metadados de estrutura; a URL de
+  coleta provavelmente precisa de ajuste (ex. `dimensionAtObservation=AllDimensions`)
+  antes de um transform poder ser escrito corretamente.
+- **NFSP e PIB per capita** — bloqueados em decisão de metodologia do responsável
+  (QF07, QF08), não em engenharia.
+- **Focus/Expectativas** — falta decidir a convenção de mês de referência antes de
+  gravar a série.
+- Nenhum desses itens ganhou valor inventado para preencher a lacuna.
 - **Deploy em produção** — construído e testado localmente; publicar no Vercel é ação
   externa visível, fica para autorização explícita separada (mesmo padrão já seguido
   com o `painel-web`).
