@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Catálogo de indicadores · DIEESE 360</title>
+  <meta name="description" content="Todos os indicadores da plataforma DIEESE 360, com fonte, metodologia e periodicidade — pesquisável e filtrável por dimensão.">
+  <meta name="theme-color" content="#030086">
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="container">
+      <a class="marca-topo" href="index.html">
+        <strong>DIEESE 360</strong>
+        <span>inteligência socioeconômica</span>
+      </a>
+      <nav class="nav-topo">
+        <a class="nav-link" href="index.html#dimensoes">Dimensões</a>
+        <a class="nav-link" href="catalogo.html" aria-current="page">Catálogo</a>
+        <a class="btn btn-primario btn-pequeno" href="login.html">Entrar</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="secao" style="padding-bottom:0">
+    <div class="container">
+      <span class="hero-rotulo">Catálogo mestre</span>
+      <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);max-width:22ch">Todos os indicadores, numa lista só</h1>
+      <p class="lead">Cada linha é um indicador publicado — com fonte, periodicidade e classificação de automação visíveis sem precisar abrir a página. Clique no nome para ver a série completa, o gráfico e a metodologia.</p>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <div class="catalogo-controles">
+        <input type="search" id="catalogo-busca" class="catalogo-busca" placeholder="Buscar por nome ou fonte…" aria-label="Buscar indicador">
+        <div class="catalogo-filtros" id="catalogo-filtros" role="group" aria-label="Filtrar por dimensão"></div>
+      </div>
+      <p class="catalogo-contagem" id="catalogo-contagem" aria-live="polite"></p>
+      <div class="catalogo-tabela-caixa">
+        <table class="catalogo-tabela">
+          <thead>
+            <tr>
+              <th>Indicador</th>
+              <th>Dimensão</th>
+              <th>Fonte</th>
+              <th>Periodicidade</th>
+              <th>Classif.</th>
+            </tr>
+          </thead>
+          <tbody id="catalogo-corpo">
+            <tr><td colspan="5">Carregando catálogo…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer class="rodape">
+    <div class="container">
+      <span>DIEESE 360 — uso interno do DIEESE.</span>
+      <span>Dados de fontes oficiais públicas — ver metodologia em cada indicador.</span>
+    </div>
+  </footer>
+
+  <script src="js/vendor/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/dados.js"></script>
+  <script src="js/catalogo.js"></script>
+</body>
+</html>

@@ -203,6 +203,12 @@ img { max-width: 100%; display: block; }
 .secao { padding: 56px 0; }
 .secao h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 .secao .lead { color: var(--cinza-700); max-width: 62ch; margin-bottom: 32px; }
+/* Seções institucionais de texto corrido (Quem somos, Boletim de Conjuntura
+   etc.): TODOS os parágrafos do bloco compartilham a mesma largura de
+   coluna, não só o primeiro (".lead" sozinho deixava o 1º parágrafo estreito
+   e os seguintes largos — efeito "bagunçado" relatado pelo responsável). */
+.secao-texto p { max-width: 62ch; color: var(--ink); }
+.secao-texto .lead { margin-bottom: 18px; }
 .grade-dimensoes { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
 .cartao-dimensao { background: #fff; border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px; transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s, border-color .18s; }
 .cartao-dimensao:hover { transform: translateY(-3px); box-shadow: var(--sombra); border-color: var(--azul-300); }
@@ -451,19 +457,67 @@ img { max-width: 100%; display: block; }
 .mapa-tooltip .valor { font: 800 1rem var(--fonte-titulo); color: #fff; }
 
 /* ---------------------------------------------------------------- FAQ do painel */
-.faq-lista { display: grid; gap: 22px; margin-top: 8px; }
-.faq-item h3 { font-size: 1rem; color: var(--azul); margin-bottom: 4px; }
-.faq-item p { margin: 0; color: var(--ink); }
+/* Acordeão (<details>/<summary> nativos — só a pergunta some por padrão,
+   resposta expande ao clicar; pedido do responsável: "mais cara de FAQ"). */
+.faq-lista { border-top: 1px solid var(--linha); margin-top: 8px; }
+.faq-item { border-bottom: 1px solid var(--linha); padding: 4px 0; }
+.faq-item summary {
+  list-style: none; cursor: pointer; padding: 14px 28px 14px 0; position: relative;
+  font: 700 1rem var(--fonte-titulo); color: var(--ink);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+"; position: absolute; right: 4px; top: 12px; font: 400 1.4rem var(--fonte-titulo);
+  color: var(--azul); transition: transform .15s;
+}
+.faq-item[open] summary::after { content: "–"; }
+.faq-item summary:hover { color: var(--azul); }
+.faq-item summary:focus-visible { outline: 2px solid var(--azul-300); outline-offset: 2px; }
+.faq-item p { margin: 0 0 16px; color: var(--cinza-700); max-width: 68ch; }
 
-/* ---------------------------------------------------------------- contato */
-.contato-grade { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin-top: 18px; }
-.contato-bloco h3 { font-size: .95rem; color: var(--azul); margin-bottom: 8px; }
-.contato-bloco p { margin: 0 0 4px; font-size: .9rem; color: var(--ink); }
-.contato-bloco a { font-weight: 600; }
+/* ---------------------------------------------------------------- Catálogo Mestre */
+.catalogo-controles { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 14px; }
+.catalogo-busca { flex: 1 1 260px; font: 400 .92rem var(--fonte-texto); padding: 10px 14px; border: 1px solid var(--linha); border-radius: var(--raio); background: #fff; color: var(--ink); }
+.catalogo-busca:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px var(--azul-50); }
+.catalogo-filtros { display: flex; flex-wrap: wrap; gap: 6px; }
+.catalogo-filtro-botao { font: 600 .82rem var(--fonte-texto); padding: 7px 14px; border-radius: var(--raio); border: 1px solid var(--linha); background: #fff; color: var(--ink); cursor: pointer; }
+.catalogo-filtro-botao:hover { border-color: var(--azul-300); }
+.catalogo-filtro-botao.ativo { background: var(--azul); border-color: var(--azul); color: #fff; }
+.catalogo-contagem { font-size: .82rem; color: var(--ink-muda); margin-bottom: 10px; }
+.catalogo-tabela-caixa { overflow-x: auto; border: 1px solid var(--linha); border-radius: var(--raio); }
+.catalogo-tabela { width: 100%; border-collapse: collapse; font-size: .9rem; white-space: nowrap; }
+.catalogo-tabela th { text-align: left; padding: 10px 14px; background: var(--fundo-suave); color: var(--ink-muda); font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--linha); }
+.catalogo-tabela td { padding: 10px 14px; border-bottom: 1px solid var(--linha); white-space: normal; }
+.catalogo-tabela tr:last-child td { border-bottom: none; }
+.catalogo-tabela tr:hover td { background: var(--azul-50); }
+.catalogo-tabela a { font-weight: 700; text-decoration: none; }
+.catalogo-tabela a:hover { text-decoration: underline; }
+.catalogo-classif { display: inline-block; font: 700 .76rem var(--fonte-titulo); color: var(--ouro-hover); background: var(--ouro-50); padding: 2px 8px; border-radius: 4px; }
 
 /* ---------------------------------------------------------------- rodapé */
 .rodape { background: #fff; border-top: 1px solid var(--linha); padding: 32px 0; color: var(--ink-muda); font-size: .82rem; }
 .rodape .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+/* Rodapé completo (home) — contato + redes sociais + legenda legal, tudo
+   num só bloco escuro, em vez de uma seção de conteúdo seguida de uma
+   barra fina solta (pedido do responsável: "diagrame melhor esse rodapé"). */
+.rodape-completo { background: var(--azul); color: #fff; padding: 48px 0 0; margin-top: 56px; }
+.rodape-grade { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 32px; padding-bottom: 40px; }
+.rodape-marca strong { display: block; font: 800 1.3rem var(--fonte-titulo); }
+.rodape-marca span { display: block; font-size: .82rem; opacity: .75; margin-bottom: 14px; }
+.rodape-marca p { font-size: .84rem; opacity: .85; max-width: 32ch; }
+.rodape-coluna h3 { font: 700 .82rem var(--fonte-titulo); text-transform: uppercase; letter-spacing: .05em; color: var(--ouro-100); margin-bottom: 14px; }
+.rodape-coluna p { font-size: .84rem; opacity: .9; margin-bottom: 8px; line-height: 1.5; }
+.rodape-coluna a { color: #fff; opacity: .9; }
+.rodape-coluna a:hover { opacity: 1; text-decoration-color: var(--ouro); }
+.rodape-barra { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 18px 0; border-top: 1px solid rgba(255, 255, 255, .18); font-size: .78rem; opacity: .75; }
+@media (max-width: 960px) {
+  .rodape-grade { grid-template-columns: repeat(2, 1fr); }
+  .rodape-marca { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .rodape-grade { grid-template-columns: 1fr; }
+}
 
 /* ---------------------------------------------------------------- responsivo geral */
 @media (max-width: 600px) {

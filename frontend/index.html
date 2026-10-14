@@ -29,7 +29,7 @@
       </a>
       <nav class="nav-topo">
         <a class="nav-link" href="#dimensoes">Dimensões</a>
-        <a class="nav-link" href="#amostra">Indicadores</a>
+        <a class="nav-link" href="catalogo.html">Catálogo</a>
         <a class="btn btn-primario btn-pequeno" href="login.html">Entrar</a>
       </nav>
     </div>
@@ -58,13 +58,12 @@
     </div>
   </section>
 
-  <section class="secao" id="quem-somos">
+  <section class="secao secao-texto" id="quem-somos">
     <div class="container">
       <h2>Quem somos</h2>
       <p class="lead">O DIEESE — Departamento Intersindical de Estatística e Estudos Socioeconômicos — é uma entidade criada e mantida pelo movimento sindical brasileiro desde 1955, com a finalidade de produzir pesquisa que sustente as demandas dos trabalhadores. Cerca de 700 sindicatos, federações, confederações e centrais sindicais são filiados à instituição e integram sua direção.</p>
       <p>A atuação combina pesquisa, assessoria técnica e formação, voltadas a dirigentes e assessores sindicais e aos próprios trabalhadores. Reconhecido como entidade de utilidade pública, o DIEESE mantém 17 escritórios regionais, cerca de 50 subseções instaladas em entidades sindicais e dois observatórios do trabalho. Entre as pesquisas de periodicidade mensal já conduzidas estão o acompanhamento de emprego e desemprego, cesta básica, salário mínimo e custo de vida na cidade de São Paulo.</p>
       <p>O DIEESE 360 organiza o acesso a parte desse trabalho — não substitui a pesquisa do DIEESE nem a interpretação de seus técnicos.</p>
-      <p style="font-size:.82rem;color:var(--cinza-700)">Fonte: DIEESE, página institucional "Quem somos" (<a href="https://www.dieese.org.br/materialinstitucional/quemSomos.html" target="_blank" rel="noopener">dieese.org.br/materialinstitucional/quemSomos.html</a>), consultada em 14/10/2026.</p>
     </div>
   </section>
 
@@ -76,12 +75,12 @@
     </div>
   </section>
 
-  <section class="secao" id="boletim-conjuntura">
+  <section class="secao secao-texto" id="boletim-conjuntura">
     <div class="container">
       <h2>O que é o Boletim de Conjuntura</h2>
       <p class="lead">O Boletim de Conjuntura é a publicação periódica do DIEESE dedicada à leitura do momento econômico brasileiro, editada desde novembro de 2014. A edição mais recente identificada nesta pesquisa é a de número 54, de maio de 2026, intitulada "O Brasil no contexto da instabilidade mundial: uma leitura da conjuntura recente" — cada edição recebe um título próprio, definido pelo tema que organiza a leitura daquele período.</p>
       <p>A periodicidade não segue um calendário mensal fixo: o intervalo entre edições varia ao longo da série — dez edições foram publicadas entre outubro de 2024 e maio de 2026, por exemplo. O conteúdo completo de cada boletim é de acesso restrito aos associados do DIEESE; o DIEESE 360 não reproduz esse texto, e organiza, de forma complementar, os indicadores quantitativos que também sustentam esse tipo de análise.</p>
-      <p style="font-size:.82rem;color:var(--cinza-700)">Fonte: DIEESE, série "Boletim de Conjuntura" (<a href="https://www.dieese.org.br/boletimdeconjuntura/2026/boletimconjuntura54.html" target="_blank" rel="noopener">dieese.org.br/boletimdeconjuntura</a>), consultada em 14/10/2026. Periodicidade estimada a partir da numeração e das datas das edições públicas — o DIEESE não declara explicitamente a frequência na página consultada.</p>
+      <p style="font-size:.82rem;color:var(--cinza-700)">A periodicidade acima é estimada a partir da numeração e das datas das edições públicas — não é uma frequência fixa declarada pelo DIEESE.</p>
     </div>
   </section>
 
@@ -107,70 +106,72 @@
     <div class="container">
       <h2>Perguntas frequentes sobre o painel</h2>
       <div class="faq-lista">
-        <div class="faq-item">
-          <h3>Como faço para acessar o painel completo?</h3>
+        <details class="faq-item">
+          <summary>Como faço para acessar o painel completo?</summary>
           <p>O acesso é por convite da administração da plataforma — não há cadastro aberto. Quem já tem conta entra pelo botão "Entrar", no topo da página.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Os dados são atualizados automaticamente?</h3>
+        </details>
+        <details class="faq-item">
+          <summary>Os dados são atualizados automaticamente?</summary>
           <p>Sim. Cada indicador é coletado por um motor próprio, agendado conforme a periodicidade da fonte oficial (diária, semanal ou mensal) — não há atualização manual nem digitação de valores.</p>
-        </div>
-        <div class="faq-item">
-          <h3>De onde vêm os números?</h3>
+        </details>
+        <details class="faq-item">
+          <summary>De onde vêm os números?</summary>
           <p>De fontes oficiais e primárias — IBGE, Banco Central, Tesouro Nacional, MDIC, FMI, Ministério do Trabalho, entre outras. Cada indicador traz a fonte exata, a metodologia de cálculo e a periodicidade na própria página — não há número sem essa rastreabilidade.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Os números do painel substituem o Boletim de Conjuntura?</h3>
+        </details>
+        <details class="faq-item">
+          <summary>Os números do painel substituem o Boletim de Conjuntura?</summary>
           <p>Não. O painel organiza indicadores quantitativos de forma contínua; a leitura, a seleção de tema e a interpretação de cada edição do Boletim de Conjuntura continuam sendo trabalho dos técnicos do DIEESE.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Posso baixar os dados para trabalhar fora da plataforma?</h3>
+        </details>
+        <details class="faq-item">
+          <summary>Posso baixar os dados para trabalhar fora da plataforma?</summary>
           <p>Sim. Cada indicador tem exportação em Excel, com a série completa ou só o período filtrado, incluindo metodologia e fonte na própria planilha.</p>
-        </div>
-        <div class="faq-item">
-          <h3>Como sugiro um indicador ou fonte nova?</h3>
+        </details>
+        <details class="faq-item">
+          <summary>Como sugiro um indicador ou fonte nova?</summary>
           <p>Pelos contatos da seção abaixo — qualquer fonte oficial que ajude a leitura da conjuntura pode ser avaliada para entrar na plataforma.</p>
-        </div>
+        </details>
       </div>
     </div>
   </section>
 
-  <section class="secao" id="contato">
+  <footer class="rodape-completo">
     <div class="container">
-      <h2>Contato</h2>
-      <p class="lead">Canais oficiais do DIEESE — para dúvidas sobre a plataforma, sugestões de indicadores ou qualquer outro assunto institucional.</p>
-      <div class="contato-grade">
-        <div class="contato-bloco">
-          <h3>Escritório Nacional</h3>
-          <p>Rua Aurora, 957, 1º andar — São Paulo/SP, CEP 01209-001</p>
-          <p>(11) 3821-2199 · (11) 3874-5366</p>
-          <p>WhatsApp: (11) 97639-7047 (seg. a sex., 9h às 18h)</p>
+      <div class="rodape-grade">
+        <div class="rodape-coluna rodape-marca">
+          <strong>DIEESE 360</strong>
+          <span>inteligência socioeconômica</span>
+          <p>Canais oficiais do DIEESE — para dúvidas sobre a plataforma, sugestões de indicadores ou qualquer outro assunto institucional.</p>
         </div>
-        <div class="contato-bloco">
+        <div class="rodape-coluna">
+          <h3>Escritório Nacional</h3>
+          <p>Rua Aurora, 957, 1º andar<br>São Paulo/SP, CEP 01209-001</p>
+          <p>(11) 3821-2199 · (11) 3874-5366</p>
+          <p>WhatsApp (11) 97639-7047<br>seg. a sex., 9h às 18h</p>
+        </div>
+        <div class="rodape-coluna">
           <h3>E-mails</h3>
-          <p>Relacionamento com associados: <a href="mailto:relacionamento@dieese.org.br">relacionamento@dieese.org.br</a></p>
-          <p>Atendimento técnico: <a href="mailto:atendimentotecnico@dieese.org.br">atendimentotecnico@dieese.org.br</a></p>
+          <p>Associados: <a href="mailto:relacionamento@dieese.org.br">relacionamento@dieese.org.br</a></p>
+          <p>Atend. técnico: <a href="mailto:atendimentotecnico@dieese.org.br">atendimentotecnico@dieese.org.br</a></p>
           <p>Imprensa: <a href="mailto:imprensa@dieese.org.br">imprensa@dieese.org.br</a></p>
           <p>Institucional: <a href="mailto:institucional@dieese.org.br">institucional@dieese.org.br</a></p>
         </div>
-        <div class="contato-bloco">
-          <h3>Redes sociais do DIEESE</h3>
-          <p><a href="https://www.instagram.com/dieese_online/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.facebook.com/dieese" target="_blank" rel="noopener">Facebook</a> · <a href="https://twitter.com/dieese_online" target="_blank" rel="noopener">X (Twitter)</a></p>
-          <p><a href="https://www.linkedin.com/company/dieese/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://www.youtube.com/user/DIEESEonline/videos" target="_blank" rel="noopener">YouTube</a> · <a href="https://www.tiktok.com/@dieese_online" target="_blank" rel="noopener">TikTok</a></p>
+        <div class="rodape-coluna">
+          <h3>Redes sociais</h3>
+          <p><a href="https://www.instagram.com/dieese_online/" target="_blank" rel="noopener">Instagram</a></p>
+          <p><a href="https://www.facebook.com/dieese" target="_blank" rel="noopener">Facebook</a></p>
+          <p><a href="https://twitter.com/dieese_online" target="_blank" rel="noopener">X (Twitter)</a></p>
+          <p><a href="https://www.linkedin.com/company/dieese/" target="_blank" rel="noopener">LinkedIn</a></p>
+          <p><a href="https://www.youtube.com/user/DIEESEonline/videos" target="_blank" rel="noopener">YouTube</a> · <a href="https://www.tiktok.com/@dieese_online" target="_blank" rel="noopener">TikTok</a></p>
         </div>
-        <div class="contato-bloco">
+        <div class="rodape-coluna">
           <h3>Boletim e Painel de Conjuntura</h3>
-          <p>Instagram dedicado ao Boletim e ao Painel de Conjuntura — <strong>em preparação</strong>, ainda não publicado. O link entra aqui assim que a conta estiver no ar.</p>
+          <p>Instagram dedicado — <strong>em preparação</strong>, ainda não publicado. O link entra aqui assim que a conta estiver no ar.</p>
         </div>
       </div>
-      <p style="font-size:.82rem;color:var(--cinza-700);margin-top:18px">Fonte: DIEESE, página institucional de contato (<a href="https://www.dieese.org.br/materialinstitucional/en.html" target="_blank" rel="noopener">dieese.org.br</a>), consultada em 14/10/2026.</p>
-    </div>
-  </section>
-
-  <footer class="rodape">
-    <div class="container">
-      <span>DIEESE 360 — uso interno do DIEESE.</span>
-      <span>Dados de fontes oficiais públicas — ver metodologia em cada indicador.</span>
+      <div class="rodape-barra">
+        <span>DIEESE 360 — uso interno do DIEESE.</span>
+        <span>Dados de fontes oficiais públicas — ver metodologia em cada indicador.</span>
+      </div>
     </div>
   </footer>
 
