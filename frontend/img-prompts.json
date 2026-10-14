@@ -72,6 +72,46 @@
       "funcao": "Decorativa"
     },
     {
+      "file": "secoes/quem-somos.png",
+      "aspect": "4:3",
+      "resolution": "2K",
+      "prompt": "Fotografia documental. Seis a oito pessoas adultas e diversas (idade, raça, gênero), sentadas em semicírculo numa sala de reunião ampla e clara — uma assembleia ou reunião de diretoria sindical, não um escritório corporativo de startup. Uma pessoa mais velha fala segurando papéis impressos (sem texto legível), as demais ouvem com atenção. Bandeiras ou faixas sindicais genéricas desfocadas ao fundo, sem logotipo legível. Luz natural de janela lateral, tom documental, não publicitário. Um único detalhe vermelho discreto.",
+      "uso": "Seção 'Quem somos', ao lado do texto institucional",
+      "tamanho_de_uso": "1200 x 900 px",
+      "alt": "Reunião de representantes sindicais discutindo em semicírculo numa sala ampla",
+      "funcao": "Caracteriza o DIEESE como entidade do movimento sindical, não como empresa de tecnologia"
+    },
+    {
+      "file": "secoes/boletim-conjuntura.png",
+      "aspect": "4:3",
+      "resolution": "2K",
+      "prompt": "Fotografia documental em plano fechado. Mãos de uma pessoa adulta folheando um boletim impresso grampeado, com gráficos de linha e barra em azul-marinho visíveis mas pequenos demais para ler números, sobre uma mesa de trabalho clara. Um marca-texto e um caderno de anotações ao lado, fora de foco. Luz natural suave, sem tela de computador na cena.",
+      "uso": "Seção 'O que é o Boletim de Conjuntura', ao lado do texto",
+      "tamanho_de_uso": "1200 x 900 px",
+      "alt": "Mãos folheando um boletim impresso com gráficos de conjuntura econômica",
+      "funcao": "Caracteriza o boletim como publicação técnica impressa/formal, distinta do painel digital"
+    },
+    {
+      "file": "catalogo/icone-catalogo.png",
+      "aspect": "1:1",
+      "resolution": "1K",
+      "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000 (ex. um marcador numa das linhas), traço limpo, cantos arredondados, sem texto. Uma lista/índice simplificado: três linhas horizontais de comprimentos diferentes, com um pequeno círculo ou marcador à esquerda de cada uma.",
+      "uso": "Cabeçalho da página Catálogo Mestre (catalogo.html), ao lado do kicker",
+      "tamanho_de_uso": "600 x 600 px (exibida a 56 px)",
+      "alt": "",
+      "funcao": "Decorativa: reforça visualmente a ideia de lista/catálogo"
+    },
+    {
+      "file": "faq/icone-faq.png",
+      "aspect": "1:1",
+      "resolution": "1K",
+      "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000, traço limpo, cantos arredondados, sem texto. Um balão de diálogo simples com um ponto de interrogação dentro.",
+      "uso": "Cabeçalho da seção FAQ, página inicial",
+      "tamanho_de_uso": "600 x 600 px (exibida a 56 px)",
+      "alt": "",
+      "funcao": "Decorativa"
+    },
+    {
       "file": "login/login-lateral.png",
       "aspect": "3:4",
       "resolution": "2K",

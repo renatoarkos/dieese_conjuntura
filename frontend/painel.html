@@ -16,7 +16,8 @@
   <header class="cabecalho">
     <div class="container">
       <a class="marca-topo" href="index.html">
-        <strong>DIEESE 360</strong>
+        <img src="assets/brand/logo-dieese-wordmark.png" alt="DIEESE" width="110" height="24">
+        <strong>360</strong>
         <span>painel interno</span>
       </a>
       <nav class="nav-topo">
@@ -27,9 +28,12 @@
   </header>
 
   <div class="container layout-lateral">
-    <nav class="barra-lateral" id="barra-lateral" aria-label="Indicadores por dimensão">
-      <p class="lateral-carregando">Carregando…</p>
-    </nav>
+    <div class="barra-lateral-caixa">
+      <button type="button" class="lateral-recolher" id="lateral-recolher" aria-expanded="true" aria-controls="barra-lateral" title="Recolher/expandir menu">«</button>
+      <nav class="barra-lateral" id="barra-lateral" aria-label="Indicadores por dimensão">
+        <p class="lateral-carregando">Carregando…</p>
+      </nav>
+    </div>
     <main class="conteudo-indicador" id="conteudo-painel">
       <h1 style="margin-bottom:4px">Indicadores por dimensão</h1>
       <p class="lead" style="margin-bottom:28px">Todos os indicadores publicados. Use o menu à esquerda para ir direto a um indicador, ou role a página — cada dimensão tem sua seção, com um cartão por indicador. Clique num cartão para abrir a página completa (gráfico, tabela, infográfico e exportação).</p>

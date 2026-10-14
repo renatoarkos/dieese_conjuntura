@@ -15,7 +15,8 @@
   <header class="cabecalho">
     <div class="container">
       <a class="marca-topo" href="index.html">
-        <strong>DIEESE 360</strong>
+        <img src="assets/brand/logo-dieese-wordmark.png" alt="DIEESE" width="110" height="24">
+        <strong>360</strong>
         <span>inteligência socioeconômica</span>
       </a>
       <nav class="nav-topo">
@@ -27,9 +28,12 @@
   </header>
 
   <div class="container layout-lateral">
-    <nav class="barra-lateral" id="barra-lateral" aria-label="Indicadores por dimensão">
-      <p class="lateral-carregando">Carregando…</p>
-    </nav>
+    <div class="barra-lateral-caixa">
+      <button type="button" class="lateral-recolher" id="lateral-recolher" aria-expanded="true" aria-controls="barra-lateral" title="Recolher/expandir menu">«</button>
+      <nav class="barra-lateral" id="barra-lateral" aria-label="Indicadores por dimensão">
+        <p class="lateral-carregando">Carregando…</p>
+      </nav>
+    </div>
     <main class="conteudo-indicador" id="conteudo-indicador">
       <p class="lateral-carregando">Carregando indicador…</p>
     </main>

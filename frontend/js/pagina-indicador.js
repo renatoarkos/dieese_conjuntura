@@ -209,6 +209,7 @@
 
     D.carregarIndicadores().then(function (indicadores) {
       window.DIEESE360.montarBarraLateral(document.getElementById('barra-lateral'), indicadores, id);
+      window.DIEESE360.ligarRecolherBarraLateral(document.getElementById('lateral-recolher'), document.querySelector('.layout-lateral'));
       var indicador = indicadores.filter(function (i) { return i.id === id; })[0];
       if (!indicador) { raiz.innerHTML = '<p class="aviso demo">Indicador não encontrado.</p>'; return; }
       document.title = indicador.nome + ' · DIEESE 360';

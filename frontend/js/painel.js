@@ -35,6 +35,7 @@
   function iniciar() {
     D.carregarIndicadores().then(function (indicadores) {
       window.DIEESE360.montarBarraLateral(document.getElementById('barra-lateral'), indicadores, null);
+      window.DIEESE360.ligarRecolherBarraLateral(document.getElementById('lateral-recolher'), document.querySelector('.layout-lateral'));
 
       var porDimensao = {};
       ORDEM_DIMENSOES.forEach(function (c) { porDimensao[c] = []; });

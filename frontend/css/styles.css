@@ -101,6 +101,7 @@ img { max-width: 100%; display: block; }
 .login { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; min-height: 100dvh; }
 .login-form { display: flex; flex-direction: column; justify-content: center; padding: 48px clamp(24px, 8vw, 96px); background: #fff; }
 .login-form .marca { display: flex; flex-direction: column; margin-bottom: 40px; text-decoration: none; }
+.login-form .marca img { height: 34px; width: auto; margin-bottom: 10px; }
 .login-form .marca strong { font: 800 1.6rem var(--fonte-titulo); color: var(--azul); }
 .login-form .marca span { color: var(--cinza-700); font-size: .9rem; }
 .login-lateral {
@@ -123,7 +124,8 @@ img { max-width: 100%; display: block; }
 /* ---------------------------------------------------------------- cabeçalho */
 .cabecalho { background: #fff; border-bottom: 1px solid var(--linha); position: sticky; top: 0; z-index: 50; }
 .cabecalho .container { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 24px; }
-.marca-topo { display: flex; align-items: baseline; gap: 10px; text-decoration: none; min-width: 0; }
+.marca-topo { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0; }
+.marca-topo img { height: 28px; width: auto; flex: 0 0 auto; }
 .marca-topo strong { font: 800 1.3rem var(--fonte-titulo); color: var(--azul); white-space: nowrap; }
 .marca-topo span { color: var(--cinza-700); font-size: .82rem; display: none; }
 @media (min-width: 640px) { .marca-topo span { display: inline; } }
@@ -364,23 +366,44 @@ img { max-width: 100%; display: block; }
 @keyframes cartao-surge { from { opacity: 0; transform: translateY(16px) scale(.98); } to { opacity: 1; transform: none; } }
 
 /* ---------------------------------------------------------------- navegação lateral (painel.html, indicador.html) */
-.layout-lateral { display: flex; align-items: flex-start; gap: 32px; padding: 32px 24px 64px; }
-.barra-lateral { flex: 0 0 230px; position: sticky; top: 76px; max-height: calc(100vh - 96px); overflow-y: auto; padding-right: 4px; }
+.layout-lateral { display: flex; align-items: flex-start; gap: 0; padding: 32px 24px 64px; }
+.barra-lateral-caixa { flex: 0 0 240px; position: sticky; top: 76px; max-height: calc(100vh - 96px); display: flex; flex-direction: column; transition: flex-basis .18s; }
+.barra-lateral { flex: 1 1 auto; overflow-y: auto; padding-right: 4px; border-right: 1px solid var(--linha); margin-right: 32px; }
+.lateral-recolher { align-self: flex-end; width: 26px; height: 26px; border-radius: 4px; border: 1px solid var(--linha); background: #fff; color: var(--azul); font: 700 .9rem var(--fonte-titulo); cursor: pointer; margin-bottom: 8px; flex: 0 0 auto; }
+.lateral-recolher:hover { border-color: var(--azul-300); }
 .lateral-carregando { color: var(--ink-muda); font-size: .85rem; }
-.lateral-secao { margin-bottom: 22px; }
-.lateral-secao-titulo { font: 700 .76rem var(--fonte-titulo); text-transform: uppercase; letter-spacing: .05em; color: var(--azul-300); margin: 0 0 8px; padding: 0 10px; }
-.lateral-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
-.lateral-link { display: block; padding: 7px 10px; border-radius: 7px; font-size: .86rem; color: var(--ink); text-decoration: none; border-left: 3px solid transparent; line-height: 1.3; }
+
+/* Menu de plataforma de gestão: cada dimensão é um acordeão nativo
+   (<details>/<summary>) — clique destaca/expande os indicadores dela,
+   fechado mostra só o título (pedido do responsável, 2026-10-14). */
+.lateral-secao { margin-bottom: 4px; border-radius: 6px; }
+.lateral-secao-titulo {
+  display: flex; align-items: center; justify-content: space-between; cursor: pointer; list-style: none;
+  font: 700 .78rem var(--fonte-titulo); text-transform: uppercase; letter-spacing: .05em; color: var(--azul);
+  margin: 0; padding: 9px 10px; border-radius: 6px; background: var(--azul-50);
+}
+.lateral-secao-titulo::-webkit-details-marker { display: none; }
+.lateral-secao-titulo::after { content: "▸"; font-size: .7rem; color: var(--azul-300); transition: transform .15s; }
+.lateral-secao[open] > .lateral-secao-titulo::after { transform: rotate(90deg); }
+.lateral-secao-titulo:hover { background: var(--azul-100); }
+.lateral-lista { list-style: none; margin: 4px 0 10px; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+.lateral-link { display: block; padding: 7px 10px 7px 18px; border-radius: 7px; font-size: .86rem; color: var(--ink); text-decoration: none; border-left: 3px solid transparent; line-height: 1.3; }
 .lateral-link:hover { background: var(--azul-50); color: var(--azul); }
 .lateral-link.ativo { background: var(--azul-50); color: var(--azul); font-weight: 700; border-left-color: var(--azul); }
-.lateral-vazio { padding: 0 10px; font-size: .8rem; color: var(--ink-muda); font-style: italic; }
+.lateral-vazio { padding: 4px 10px 10px 18px; font-size: .8rem; color: var(--ink-muda); font-style: italic; }
+
+/* Barra inteira recolhida — vira uma tira estreita, só o botão de reabrir. */
+.layout-lateral.lateral-recolhida .barra-lateral { display: none; }
+.layout-lateral.lateral-recolhida .barra-lateral-caixa { flex-basis: 34px; }
+
 .conteudo-indicador { flex: 1 1 auto; min-width: 0; }
 .secao-dimensao { margin-bottom: 48px; scroll-margin-top: 90px; }
 .secao-dimensao h2 { font-size: 1.3rem; margin-bottom: 4px; }
 .secao-dimensao .lead { margin-bottom: 18px; }
 @media (max-width: 900px) {
   .layout-lateral { flex-direction: column; padding: 20px 16px 48px; gap: 20px; }
-  .barra-lateral { position: static; width: 100%; max-height: none; display: flex; flex-wrap: wrap; gap: 0 18px; }
+  .barra-lateral-caixa { position: static; width: 100%; max-height: none; }
+  .barra-lateral { border-right: none; margin-right: 0; display: flex; flex-wrap: wrap; gap: 0 18px; }
   .lateral-secao { margin-bottom: 10px; flex: 1 1 220px; }
 }
 
