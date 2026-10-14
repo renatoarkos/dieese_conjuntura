@@ -25,6 +25,7 @@ Nenhum script deste repositório aplica migrações automaticamente nesta fase.
 |---|---|---|
 | 0001 | `migrations/0001_criar_raw_ingestoes.sql` | Cria `raw_ingestoes` — log de metadados de cada execução dos motores de coleta (fonte, script, timestamp, caminho no Storage, status). RLS habilitada, sem policy pública. |
 | 0002 | `migrations/0002_criar_camada_curated.sql` | Cria `indicadores` (catálogo) e `indicadores_serie` (série temporal) — alimentadas por `pipelines/curated/`, leitura pública (RLS). Cria também `perfis` (contas do painel interno DIEESE 360, cadastradas por um administrador). Ver ADR 0005. |
+| 0003 | `migrations/0003_catalogo_bloco_2_3_4.sql` | Só `insert` — 26 indicadores novos dos blocos Monetário/Crédito, Inflação e Mercado de Trabalho. Como é DML (não DDL), já foi aplicada via API REST (`service_role`) em 2026-10-14, sem precisar do SQL Editor — o arquivo existe para manter o catálogo reproduzível do zero. |
 
 ## Supabase Storage
 

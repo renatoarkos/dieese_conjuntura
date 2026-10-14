@@ -117,9 +117,9 @@ jobs:
         run: python3 pipelines/ingestao/bloco_5_caged/coleta_caged_microdados_ftp.py
 
       # --- Camada CURATED (ADR 0005) — transforma o RAW recém-coletado acima
-      # em pontos prontos para o painel (frontend/). Cobre só os indicadores
-      # do bloco_1_macroeconomia coletados neste workflow — os demais blocos
-      # ainda não têm transformação CURATED (ver ADR 0005, "O que não resolve"). ---
+      # em pontos prontos para o painel (frontend/). Endividamento PEIC (.xlsx
+      # sem parser) e Cesta básica (PDF do DIEESE, sem extração de texto) não
+      # têm transformação ainda — ver docs/08-decisoes-adr/0005-... ---
       - name: "CURATED: Câmbio"
         continue-on-error: true
         run: python3 pipelines/curated/transformar_cambio_bcb.py
@@ -143,6 +143,34 @@ jobs:
       - name: "CURATED: Índice de Commodities Brasil"
         continue-on-error: true
         run: python3 pipelines/curated/transformar_commodities_bcb.py
+
+      - name: "CURATED: Juros por modalidade"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_juros_modalidade_bcb.py
+
+      - name: "CURATED: Endividamento — parte BCB"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_endividamento_bcb.py
+
+      - name: "CURATED: Saldo de crédito SFN"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_saldo_credito_sfn_bcb.py
+
+      - name: "CURATED: IPCA"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_ipca_sidra.py
+
+      - name: "CURATED: INPC"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_inpc_sidra.py
+
+      - name: "CURATED: IGP-M"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_igpm_bcb.py
+
+      - name: "CURATED: Preços de combustíveis"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_combustiveis_anp.py
 
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4

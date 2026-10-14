@@ -37,6 +37,14 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_expectativas_focus_bcb.py
 
+      # --- Camada CURATED (ADR 0005). Focus não tem transformação ainda —
+      # é insumo bruto de nowcasting (milhares de projeções por indicador),
+      # publicar um único número exigiria escolher uma convenção de
+      # referência não confirmada (ver docs/08-decisoes-adr/0005-...). ---
+      - name: "CURATED: Selic"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_selic_bcb.py
+
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4
         with:

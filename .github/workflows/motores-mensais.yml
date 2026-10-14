@@ -89,6 +89,30 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/curated/transformar_bndes_desembolsos.py
 
+      - name: "CURATED: Taxa de desocupação"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_desocupacao_sidra.py
+
+      - name: "CURATED: População ocupada"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_posicao_ocupacao_sidra.py
+
+      - name: "CURATED: Taxa de participação"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_taxa_participacao_sidra.py
+
+      - name: "CURATED: Rendimento médio real"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_rendimento_medio_real_sidra.py
+
+      - name: "CURATED: Taxa de sindicalização"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_sindicalizacao_sidra.py
+
+      - name: "CURATED: Desemprego comparado (ILOSTAT)"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_desemprego_ilostat.py
+
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4
         with:
