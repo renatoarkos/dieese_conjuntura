@@ -18,13 +18,29 @@
   // Indicadores mensais que compõem o ticker de topo.
   var TICKER = ['cambio_dolar', 'commodities_geral', 'balanca_saldo', 'pmc_volume_vendas', 'pms_volume_servicos', 'pim_producao_industrial', 'bndes_desembolsos'];
 
+  var ICONES_DIMENSAO = {
+    macroeconomia: 'assets/dimensoes/icone-macroeconomia.png',
+    monetario_credito: 'assets/dimensoes/icone-monetario-credito.png',
+    inflacao: 'assets/dimensoes/icone-inflacao.png',
+    mercado_trabalho: 'assets/dimensoes/icone-mercado-trabalho.png',
+    caged: 'assets/dimensoes/icone-caged.png'
+  };
+
   function montarGradeDimensoes() {
     var alvo = document.getElementById('grade-dimensoes');
     var html = '';
     var i = 1;
     Object.keys(D.DIMENSOES).forEach(function (chave) {
       var dim = D.DIMENSOES[chave];
-      html += '<div class="cartao-dimensao"><span class="num">Dimensão ' + (i++) + '</span><h3>' + esc(dim.nome) + '</h3><p>' + esc(dim.descricao) + '</p></div>';
+      var icone = ICONES_DIMENSAO[chave] || '';
+      html += '<div class="cartao-dimensao">' +
+        '<div class="cartao-dimensao-topo">' +
+          '<span class="num">Dimensão ' + (i++) + '</span>' +
+          (icone ? '<img src="' + esc(icone) + '" alt="" class="cartao-dimensao-icone" width="48" height="48" loading="lazy">' : '') +
+        '</div>' +
+        '<h3>' + esc(dim.nome) + '</h3>' +
+        '<p>' + esc(dim.descricao) + '</p>' +
+      '</div>';
     });
     alvo.innerHTML = html;
   }

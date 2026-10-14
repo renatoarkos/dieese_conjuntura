@@ -89,8 +89,18 @@ img { max-width: 100%; display: block; }
 .login-form .marca { display: flex; flex-direction: column; margin-bottom: 40px; text-decoration: none; }
 .login-form .marca strong { font: 800 1.6rem var(--fonte-titulo); color: var(--azul); }
 .login-form .marca span { color: var(--cinza-700); font-size: .9rem; }
-.login-lateral { position: relative; background: var(--azul); clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%); overflow: hidden; }
-.login-lateral .mancha { position: absolute; inset: 0; background: repeating-linear-gradient(135deg, #0a0aa0 0 14px, var(--azul) 14px 28px); }
+.login-lateral {
+  position: relative;
+  background: var(--azul) url('../assets/login/login-lateral.png') center / cover no-repeat;
+  clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
+  overflow: hidden;
+}
+.login-lateral .mancha {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(3, 0, 134, 0.42) 0%, rgba(10, 10, 160, 0.22) 100%);
+  mix-blend-mode: multiply;
+}
 @media (max-width: 760px) {
   .login { grid-template-columns: 1fr; }
   .login-lateral { display: none; }
@@ -120,11 +130,18 @@ img { max-width: 100%; display: block; }
   mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
 }
 .hero .container { position: relative; }
+.hero-container { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 480px); gap: 48px; align-items: center; }
 .hero-rotulo { display: inline-flex; align-items: center; gap: 8px; background: var(--azul-50); color: var(--azul); font: 700 .78rem var(--fonte-titulo); letter-spacing: .04em; text-transform: uppercase; padding: 6px 14px; border-radius: 999px; margin-bottom: 18px; }
 .hero h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); max-width: 16ch; color: var(--ink); }
 .hero h1 .destaque { color: var(--azul); }
 .hero p.lead { font-size: 1.15rem; color: var(--cinza-700); max-width: 54ch; }
 .hero-acoes { display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+.hero-midia { position: relative; }
+.hero-foto { width: 100%; height: auto; border-radius: 18px; box-shadow: 0 24px 60px rgba(3, 0, 134, .22); display: block; }
+@media (max-width: 860px) {
+  .hero-container { grid-template-columns: 1fr; }
+  .hero-midia { order: -1; max-width: 420px; margin: 0 auto; }
+}
 
 /* ---------------------------------------------------------------- ticker (indicadores diários) */
 .ticker { background: var(--azul); color: #fff; overflow: hidden; position: relative; }
@@ -152,10 +169,17 @@ img { max-width: 100%; display: block; }
 .secao h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
 .secao .lead { color: var(--cinza-700); max-width: 62ch; margin-bottom: 32px; }
 .grade-dimensoes { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-.cartao-dimensao { background: #fff; border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px; }
+.cartao-dimensao { background: #fff; border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px; transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s, border-color .18s; }
+.cartao-dimensao:hover { transform: translateY(-3px); box-shadow: var(--sombra); border-color: var(--azul-300); }
+.cartao-dimensao-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .cartao-dimensao .num { font: 800 .78rem var(--fonte-titulo); color: var(--azul-300); text-transform: uppercase; letter-spacing: .06em; }
+.cartao-dimensao-icone { flex: 0 0 auto; border-radius: 10px; }
 .cartao-dimensao h3 { margin: 6px 0 8px; font-size: 1.1rem; }
 .cartao-dimensao p { color: var(--cinza-700); font-size: .92rem; margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .cartao-dimensao { transition: box-shadow .18s, border-color .18s; }
+  .cartao-dimensao:hover { transform: none; }
+}
 
 /* ---------------------------------------------------------------- grade de indicadores */
 .grade-indicadores { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
