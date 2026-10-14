@@ -7,7 +7,7 @@
   var esc = P.esc;
 
   var DIMENSOES = {
-    macroeconomia: { nome: 'Macroeconomia', descricao: 'Atividade econômica, comércio exterior, investimento e contas públicas — o quadro geral da economia brasileira.' },
+    macroeconomia: { nome: 'Macroeconomia', descricao: 'Atividade econômica, comércio exterior, investimento e contas públicas: o quadro geral da economia brasileira.' },
     monetario_credito: { nome: 'Monetário e crédito', descricao: 'Juros, câmbio, crédito e endividamento das famílias.' },
     inflacao: { nome: 'Inflação', descricao: 'Índices de preços, cesta básica e combustíveis.' },
     mercado_trabalho: { nome: 'Mercado de trabalho', descricao: 'Emprego, rendimento, sindicalização e negociação coletiva.' },
@@ -144,7 +144,7 @@
 
     return (
       '<article class="cartao-resumo">' +
-      '<a class="cartao-resumo-botao" href="indicador.html?id=' + esc(indicador.id) + '" aria-label="' + esc(indicador.nome) + ' — ver página completa, gráfico e tabela">' +
+      '<a class="cartao-resumo-botao" href="indicador.html?id=' + esc(indicador.id) + '" aria-label="' + esc(indicador.nome) + ', ver página completa, gráfico e tabela">' +
       '<div class="cartao-cabecalho"><span class="cartao-rotulo">' + esc(indicador.nome) + '</span>' + chip + '</div>' +
       '<strong class="cartao-valor">' + formatarValor(indicador, atual.valor) + '</strong>' +
       '<span class="cartao-data">' + esc(formatarDataReferencia(atual.data_referencia, indicador.periodicidade)) + '</span>' +
@@ -169,7 +169,7 @@
     return (
       '<div class="cartao-pendente" style="grid-column:1/-1">' +
       '<strong>' + esc(info.nome) + ' ainda não tem indicadores publicados no painel.</strong>' +
-      '<p style="margin-top:8px">Os motores de coleta desta dimensão já rodam — falta a camada de transformação para o painel (ver ADR 0005).</p>' +
+      '<p style="margin-top:8px">Os motores de coleta desta dimensão já rodam. Falta a camada de transformação para o painel (ver ADR 0005).</p>' +
       '</div>'
     );
   }

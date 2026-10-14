@@ -45,7 +45,7 @@
 
   function montarBlocoMetadados(planilha, indicador, periodoRotulo, nPontos) {
     var merges = [];
-    definirCelula(planilha, 'A1', 'DIEESE 360 — ' + indicador.nome, estiloTitulo());
+    definirCelula(planilha, 'A1', 'DIEESE 360: ' + indicador.nome, estiloTitulo());
     merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: 1 } });
 
     var linhasMeta = [

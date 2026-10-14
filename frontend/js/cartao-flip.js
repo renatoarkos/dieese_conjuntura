@@ -29,7 +29,7 @@
     return (
       '<article class="cartao-flip">' +
       '<div class="cartao-flip-interior" role="button" tabindex="0" aria-pressed="false" ' +
-      'aria-label="' + esc(indicador.nome) + ' — clique para virar o cartão e ver a explicação">' +
+      'aria-label="' + esc(indicador.nome) + ', clique para virar o cartão e ver a explicação">' +
       '<div class="cartao-flip-frente">' +
       '<div class="cartao-cabecalho"><span class="cartao-rotulo">' + esc(indicador.nome) + '</span>' + chip + '</div>' +
       '<strong class="cartao-valor">' + esc(D.formatarValor(indicador, atual.valor)) + '</strong>' +

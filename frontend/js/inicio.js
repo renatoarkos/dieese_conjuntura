@@ -69,7 +69,7 @@
   function iniciar() {
     montarGradeDimensoes();
     if (!P.sb) {
-      document.getElementById('grade-amostra').innerHTML = '<p class="aviso demo">Não foi possível conectar ao Supabase — confira js/config.js.</p>';
+      document.getElementById('grade-amostra').innerHTML = '<p class="aviso demo">Não foi possível conectar ao Supabase. Confira js/config.js.</p>';
       return;
     }
     D.carregarIndicadores().then(function (indicadores) {
