@@ -30,12 +30,18 @@
     caged: 'Admissões e desligamentos formais apurados por microdado todo mês, com granularidade menor que a RAIS anual. Antecipa movimentos do mercado de trabalho formal entre uma apuração anual e outra.'
   };
 
-  // Indicadores que compõem o ticker de topo: um recorte entre dimensões,
-  // priorizando os de atualização mais frequente.
   var TICKER = ['selic', 'cambio_dolar', 'ipca', 'commodities_geral', 'balanca_saldo', 'taxa_desocupacao', 'bndes_desembolsos'];
-  // Indicadores em destaque no resumo do dia — um recorte entre dimensões,
-  // cada um vira um cartão giratório com gráfico completo no carrossel.
-  var DESTAQUES = ['cambio_dolar', 'selic', 'ipca', 'taxa_desocupacao'];
+  // Indicadores em destaque no resumo do dia: 8 séries chave distribuídas em grid completo
+  var DESTAQUES = [
+    'cambio_dolar',
+    'selic',
+    'ipca',
+    'taxa_desocupacao',
+    'balanca_saldo',
+    'rendimento_medio_real',
+    'reajustes_acima_inpc',
+    'commodities_geral'
+  ];
 
   // Frase "vs. <período>" explícita — usada em toda exibição de variação
   // (ticker, lista de maiores variações, destaque), a pedido do responsável
@@ -45,43 +51,57 @@
     return 'vs. ' + D.formatarDataReferencia(pontoAnterior.data_referencia, indicador.periodicidade);
   }
 
-  // Só a casca da grade (ícone + nome) — a árvore de indicadores de cada
-  // dimensão é preenchida depois, quando os dados chegam (ver
-  // preencherArvoreDimensoes). É <a>, não <div>: cada cartão é um link para
-  // a seção detalhada da própria dimensão mais abaixo.
+  // Montagem moderna e comercial dos cartões de dimensão (SaaS intelligence grid)
   function montarGradeDimensoes() {
     var alvo = document.getElementById('grade-dimensoes');
     var html = '';
     var i = 1;
-    Object.keys(D.DIMENSOES).forEach(function (chave) {
+    ORDEM_DIMENSOES.forEach(function (chave) {
       var dim = D.DIMENSOES[chave];
       var icone = ICONES_DIMENSAO[chave] || '';
+      var numFmt = i < 10 ? '0' + i : i;
       html += '<a class="cartao-dimensao" href="#dimensao-' + esc(chave) + '">' +
         '<div class="cartao-dimensao-topo">' +
-        '<span class="num">Dimensão ' + (i++) + '</span>' +
-        (icone ? '<img src="' + esc(icone) + '" alt="" class="cartao-dimensao-icone" width="48" height="48" loading="lazy">' : '') +
+        '<div class="cartao-dimensao-kicker-grupo">' +
+        '<span class="num">Dimensão ' + numFmt + '</span>' +
+        '<span class="cartao-dimensao-qtd" id="qtd-' + esc(chave) + '">...</span>' +
         '</div>' +
-        '<h3>' + esc(dim.nome) + '</h3>' +
-        '<ul class="cartao-dimensao-arvore" id="arvore-' + esc(chave) + '"><li>Carregando indicadores…</li></ul>' +
+        (icone ? '<div class="cartao-dimensao-icone-moldura"><img src="' + esc(icone) + '" alt="" class="cartao-dimensao-icone" width="52" height="52" loading="lazy"></div>' : '') +
+        '</div>' +
+        '<h3 class="cartao-dimensao-titulo">' + esc(dim.nome) + '</h3>' +
+        '<p class="cartao-dimensao-desc">' + esc(dim.descricao) + '</p>' +
+        '<div class="cartao-dimensao-indicadores-wrapper">' +
+        '<span class="cartao-dimensao-subtitulo">Indicadores monitorados:</span>' +
+        '<div class="cartao-dimensao-tags" id="arvore-' + esc(chave) + '"><span class="cartao-dimensao-carregando">Carregando indicadores…</span></div>' +
+        '</div>' +
+        '<div class="cartao-dimensao-rodape">' +
+        '<span>Explorar dimensão</span>' +
+        '<svg class="cartao-dimensao-seta" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>' +
+        '</div>' +
         '</a>';
+      i++;
     });
     alvo.innerHTML = html;
   }
 
-  // Preenche a árvore de cada cartão da grade com até 5 nomes de indicador
-  // reais + "e mais N" — nunca repete a descrição de uma linha, que já
-  // aparece por extenso na seção detalhada da dimensão (evita mostrar o
-  // mesmo texto duas vezes, redundância relatada pelo responsável do
-  // projeto, 2026-10-14).
+  // Preenche as tags com nomes reais dos indicadores + badge "+ N indicadores"
   function preencherArvoreDimensoes(porDimensao) {
     ORDEM_DIMENSOES.forEach(function (chave) {
       var alvo = document.getElementById('arvore-' + chave);
+      var badgeQtd = document.getElementById('qtd-' + chave);
       if (!alvo) return;
       var lista = porDimensao[chave] || [];
-      if (!lista.length) { alvo.innerHTML = '<li>Em preparação.</li>'; return; }
-      var visiveis = lista.slice(0, 5);
-      var html = visiveis.map(function (ind) { return '<li>' + esc(ind.nome) + '</li>'; }).join('');
-      if (lista.length > visiveis.length) html += '<li class="mais">+ ' + (lista.length - visiveis.length) + ' indicador(es)</li>';
+      if (badgeQtd) {
+        badgeQtd.textContent = lista.length + (lista.length === 1 ? ' série' : ' séries');
+      }
+      if (!lista.length) { alvo.innerHTML = '<span class="tag-ind vazia">Em preparação</span>'; return; }
+      var visiveis = lista.slice(0, 4);
+      var html = visiveis.map(function (ind) {
+        return '<span class="tag-ind" title="' + esc(ind.nome) + '">' + esc(ind.nome) + '</span>';
+      }).join('');
+      if (lista.length > visiveis.length) {
+        html += '<span class="tag-ind mais">+ ' + (lista.length - visiveis.length) + ' indicadores</span>';
+      }
       alvo.innerHTML = html;
     });
   }
@@ -97,14 +117,7 @@
     alvo.innerHTML = itens.join('') + itens.join('');
   }
 
-  // Tabela de maiores variações: usa D.calcularVariacao, que compara cada
-  // indicador na unidade certa (pontos percentuais para quem já é expresso
-  // em %, variação percentual para os demais) — nunca "percentual da
-  // percentual", que gerava número sem sentido (ex. IPCA "+356%", achado
-  // pelo responsável do projeto, 2026-10-14). Cada linha mostra também
-  // "vs. <período>" e é um botão, não um link: clicar abre o cartão
-  // giratório em modal (cartao-modal.js) em vez de navegar — mesma regra já
-  // fixada para qualquer cartão da plataforma.
+  // Tabela de maiores variações com ranking #1, #2... e duas colunas diagramadas
   function montarListaVariacoes(indicadores, series, direcao, limite) {
     var linhas = indicadores.map(function (ind) {
       var variacao = D.calcularVariacao(ind, series[ind.id] || []);
@@ -114,53 +127,99 @@
     linhas.sort(function (a, b) { return Math.abs(b.variacao.valor) - Math.abs(a.variacao.valor); });
     linhas = linhas.slice(0, limite);
     if (!linhas.length) return '<li><span class="nome">Nenhuma variação ' + (direcao === 'alta' ? 'positiva' : 'negativa') + ' no período.</span></li>';
-    return linhas.map(function (l) {
-      return '<li><button type="button" class="resumo-variacoes-linha" data-id="' + esc(l.indicador.id) + '">' +
+    return linhas.map(function (l, idx) {
+      var pos = idx + 1;
+      return '<li><button type="button" class="resumo-variacoes-linha ' + direcao + '" data-id="' + esc(l.indicador.id) + '">' +
+        '<span class="rank-pos rank-' + direcao + '">#' + pos + '</span>' +
         '<span class="nome">' + esc(l.indicador.nome) + '<span class="vs-periodo">' + esc(vsPeriodo(l.indicador, l.variacao.anterior)) + '</span></span>' +
-        '<span class="percentual ' + direcao + '">' + (direcao === 'alta' ? '▲' : '▼') + ' ' + Math.abs(l.variacao.valor).toFixed(1) + ' ' + esc(l.variacao.sufixo) + '</span>' +
+        '<span class="percentual ' + direcao + '">' + (direcao === 'alta' ? '▲ +' : '▼ -') + Math.abs(l.variacao.valor).toFixed(1) + ' ' + esc(l.variacao.sufixo) + '</span>' +
         '</button></li>';
     }).join('');
   }
 
-  // Monta só a casca do resumo do dia (carrossel de destaque + as duas
-  // listas, todos em estado "carregando") — nenhuma rede ainda, roda assim
-  // que o DOM existe.
+  // Monta a estrutura do resumo do dia:
+  // - Lado esquerdo: painel com grid completo de gráficos cobrindo todo o quadro
+  // - Lado direito: DUAS colunas lado a lado (Maiores Altas e Maiores Baixas) com títulos customizados
   function montarEstruturaResumoDia() {
     var alvo = document.getElementById('resumo-dia');
     alvo.innerHTML =
       '<div class="resumo-destaque">' +
-      '<div class="carrossel-cabecalho"><h3>Indicadores em destaque</h3>' +
-      '<div class="carrossel-setas">' +
-      '<button type="button" class="carrossel-seta" id="seta-ant-destaque" aria-label="Indicador em destaque anterior">‹</button>' +
-      '<button type="button" class="carrossel-seta" id="seta-prox-destaque" aria-label="Próximo indicador em destaque">›</button>' +
-      '</div></div>' +
-      '<div class="carrossel-trilho" id="carrossel-destaque"><p class="aviso demo">Carregando…</p></div>' +
+      '<div class="destaque-topo-bloco">' +
+      '<div>' +
+      '<span class="hero-rotulo" style="margin-bottom:4px;display:inline-block">Termômetro da conjuntura</span>' +
+      '<h3>Indicadores em destaque</h3>' +
+      '<p class="destaque-subtitulo">Séries centrais atualizadas com gráficos analíticos completos. Clique em qualquer cartão para ver o gráfico ampliado e notas metodológicas.</p>' +
+      '</div>' +
+      '</div>' +
+      '<div class="destaque-grade" id="carrossel-destaque"><p class="aviso demo">Carregando indicadores…</p></div>' +
       '</div>' +
       '<div class="resumo-variacoes">' +
-      '<div><h3>Maiores altas</h3><ul class="resumo-variacoes-lista" id="resumo-altas"><li>Carregando…</li></ul></div>' +
-      '<div><h3>Maiores baixas</h3><ul class="resumo-variacoes-lista" id="resumo-baixas"><li>Carregando…</li></ul></div>' +
+      '<div class="variacoes-coluna-bloco altas">' +
+      '<div class="variacoes-cabecalho">' +
+      '<div class="variacoes-tag-topo tag-alta">▲ Aumentos</div>' +
+      '<h4>Maiores Altas</h4>' +
+      '<span class="variacoes-desc">Maiores variações positivas</span>' +
+      '</div>' +
+      '<ul class="resumo-variacoes-lista" id="resumo-altas"><li>Carregando…</li></ul>' +
+      '</div>' +
+      '<div class="variacoes-coluna-bloco baixas">' +
+      '<div class="variacoes-cabecalho">' +
+      '<div class="variacoes-tag-topo tag-baixa">▼ Reduções</div>' +
+      '<h4>Maiores Baixas</h4>' +
+      '<span class="variacoes-desc">Maiores reduções e quedas</span>' +
+      '</div>' +
+      '<ul class="resumo-variacoes-lista" id="resumo-baixas"><li>Carregando…</li></ul>' +
+      '</div>' +
       '</div>';
   }
 
-  // Carrossel de 2-4 indicadores em destaque, cada um um cartão giratório
-  // com gráfico completo na frente (não só sparkline) — pedido do
-  // responsável do projeto (2026-10-14): "o quadro pode ser um carrossel
-  // que vai mostrando esses indicadores com o cartão e o gráfico".
+  // Preenche a grade completa de indicadores em destaque (8 cartões com gráficos completos)
   function preencherDestaque(indicadores, series) {
-    var trilho = document.getElementById('carrossel-destaque');
+    var grade = document.getElementById('carrossel-destaque');
     var indicadoresPorId = {};
-    var disponiveis = DESTAQUES.map(function (id) {
+    var disponiveis = [];
+    DESTAQUES.forEach(function (id) {
       var ind = indicadores.filter(function (i) { return i.id === id; })[0];
-      if (ind) indicadoresPorId[id] = ind;
-      return ind;
-    }).filter(Boolean);
-    if (!disponiveis.length) { trilho.innerHTML = '<p class="aviso demo">Nenhum indicador em destaque publicado ainda.</p>'; return; }
-    trilho.innerHTML = disponiveis.map(function (ind) {
-      return '<div class="carrossel-item destaque-item">' + window.DIEESE360.montarCartaoFlip(ind, series[ind.id] || [], { graficoCompleto: true }) + '</div>';
+      if (ind && series[ind.id] && series[ind.id].length >= 2) {
+        disponiveis.push(ind);
+        indicadoresPorId[ind.id] = ind;
+      }
+    });
+    // Se faltar para 8, preenche com os outros indicadores que têm séries publicadas
+    if (disponiveis.length < 8) {
+      indicadores.forEach(function (ind) {
+        if (disponiveis.indexOf(ind) === -1 && series[ind.id] && series[ind.id].length >= 2) {
+          disponiveis.push(ind);
+          indicadoresPorId[ind.id] = ind;
+        }
+      });
+    }
+    disponiveis = disponiveis.slice(0, 8);
+    if (!disponiveis.length) { grade.innerHTML = '<p class="aviso demo">Nenhum indicador em destaque publicado ainda.</p>'; return; }
+    
+    grade.innerHTML = disponiveis.map(function (ind) {
+      return '<div class="destaque-card-wrapper" data-id="' + esc(ind.id) + '">' +
+        window.DIEESE360.montarCartaoFlip(ind, series[ind.id] || [], { graficoCompleto: true, classeExtra: 'destaque-cartao-flip' }) +
+        '</div>';
     }).join('');
-    window.DIEESE360.ligarCartoesFlip(trilho);
-    window.DIEESE360.preencherGraficosCompletos(trilho, indicadoresPorId, series);
-    ligarSetasCarrossel(trilho, document.getElementById('seta-ant-destaque'), document.getElementById('seta-prox-destaque'));
+    
+    window.DIEESE360.ligarCartoesFlip(grade);
+    window.DIEESE360.preencherGraficosCompletos(grade, indicadoresPorId, series);
+    
+    // Ao clicar em cada cartão da grade, abre o cartão ampliado em modal com rotação e metodologia
+    grade.querySelectorAll('.destaque-card-wrapper').forEach(function (wrapper) {
+      wrapper.addEventListener('click', function (e) {
+        // Se clicou no link de página completa do verso, deixa navegar
+        if (e.target.closest('a')) return;
+        var id = wrapper.getAttribute('data-id');
+        var ind = indicadoresPorId[id];
+        if (ind) {
+          D.carregarSerie(id, 24).then(function (serie) {
+            window.DIEESE360.abrirCartaoModal(ind, serie);
+          });
+        }
+      });
+    });
   }
 
   function preencherVariacoes(indicadores, series) {
@@ -169,9 +228,7 @@
     ligarCliquesVariacoes(indicadores);
   }
 
-  // Clique numa linha da tabela de variações busca a série completa (só
-  // essa, sob demanda — a lista usa só 2 pontos por indicador) e abre o
-  // cartão giratório em modal, sem navegar para outra página.
+  // Clique numa linha da tabela de variações busca a série completa e abre o cartão giratório em modal
   function ligarCliquesVariacoes(indicadores) {
     document.querySelectorAll('.resumo-variacoes-linha').forEach(function (botao) {
       botao.addEventListener('click', function () {
