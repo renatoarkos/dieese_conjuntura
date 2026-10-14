@@ -15,7 +15,14 @@
   var D = window.DIEESE360.dados;
   var esc = P.esc;
 
-  function montarCartaoFlip(indicador, serieAsc) {
+  // opcoes.graficoCompleto: troca a sparkline pequena por uma área vazia
+  // marcada com data-grafico-completo (o chamador preenche com
+  // DIEESE360.montarGraficoLinha depois de inserir o HTML no DOM — a
+  // sparkline é só SVG estático, mas o gráfico completo precisa do elemento
+  // já anexado). Usado pelo carrossel de destaque e pelo cartão modal da
+  // home (ver inicio.js e cartao-modal.js) — mesmo conteúdo, cartão maior.
+  function montarCartaoFlip(indicador, serieAsc, opcoes) {
+    opcoes = opcoes || {};
     if (!serieAsc.length) return D.montarCartaoVazio(indicador);
     var atual = serieAsc[serieAsc.length - 1];
     var tendencia = D.calcularTendencia(indicador, serieAsc);
@@ -25,16 +32,19 @@
     var comparacao = tendencia
       ? tendencia.seta + ' ' + D.formatarValor(indicador, Math.abs(tendencia.delta)) + ' no período, comparado a ' + D.formatarDataReferencia(tendencia.anterior.data_referencia, indicador.periodicidade)
       : 'Ainda não há ponto anterior para comparar.';
+    var grafico = opcoes.graficoCompleto
+      ? '<div class="cartao-flip-grafico-area" data-grafico-completo="' + esc(indicador.id) + '"></div>'
+      : D.montarSparkline(serieAsc);
 
     return (
-      '<article class="cartao-flip">' +
+      '<article class="cartao-flip' + (opcoes.classeExtra ? ' ' + esc(opcoes.classeExtra) : '') + '">' +
       '<div class="cartao-flip-interior" role="button" tabindex="0" aria-pressed="false" ' +
       'aria-label="' + esc(indicador.nome) + ', clique para virar o cartão e ver a explicação">' +
       '<div class="cartao-flip-frente">' +
       '<div class="cartao-cabecalho"><span class="cartao-rotulo">' + esc(indicador.nome) + '</span>' + chip + '</div>' +
       '<strong class="cartao-valor">' + esc(D.formatarValor(indicador, atual.valor)) + '</strong>' +
       '<span class="cartao-data">' + esc(D.formatarDataReferencia(atual.data_referencia, indicador.periodicidade)) + '</span>' +
-      D.montarSparkline(serieAsc) +
+      grafico +
       '<span class="cartao-dica">⟳ clique para entender</span>' +
       '</div>' +
       '<div class="cartao-flip-verso">' +
@@ -50,6 +60,22 @@
       '</div>' +
       '</article>'
     );
+  }
+
+  // Preenche, para um container já no DOM, todo gráfico completo pendente
+  // (ver opcoes.graficoCompleto acima) — chamar depois de innerHTML e de
+  // ligarCartoesFlip. seriesPorId: {indicador_id: serieAsc}.
+  function preencherGraficosCompletos(container, indicadoresPorId, seriesPorId) {
+    container.querySelectorAll('[data-grafico-completo]').forEach(function (el) {
+      var id = el.getAttribute('data-grafico-completo');
+      var indicador = indicadoresPorId[id];
+      var serie = seriesPorId[id] || [];
+      if (!indicador || serie.length < 2) { el.innerHTML = '<p class="aviso demo">Pontos insuficientes para o gráfico.</p>'; return; }
+      window.DIEESE360.montarGraficoLinha(el, serie, {
+        formatarValor: function (v) { return D.formatarValor(indicador, v); },
+        formatarData: D.formatarDataCurta
+      });
+    });
   }
 
   function ligarCartoesFlip(container) {
@@ -75,4 +101,5 @@
   window.DIEESE360 = window.DIEESE360 || {};
   window.DIEESE360.montarCartaoFlip = montarCartaoFlip;
   window.DIEESE360.ligarCartoesFlip = ligarCartoesFlip;
+  window.DIEESE360.preencherGraficosCompletos = preencherGraficosCompletos;
 })();

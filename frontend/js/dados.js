@@ -35,6 +35,31 @@
       });
   }
 
+  // Busca a série de VÁRIOS indicadores numa única consulta (um "in"), em vez
+  // de uma consulta por indicador — a home tem 55 indicadores publicados, e
+  // 55 requisições em paralelo é o que deixava "Resumo do dia" preso em
+  // "carregando" (relatado pelo responsável do projeto, 2026-10-14). O corte
+  // por indicador acontece no cliente, não dá pra pedir "últimos N por grupo"
+  // direto no PostgREST sem uma function/RPC nova.
+  function carregarSeriesPorIndicadores(indicadorIds, limitePorIndicador) {
+    if (!indicadorIds.length) return Promise.resolve({});
+    return P.sb.from('indicadores_serie').select('indicador_id, data_referencia, valor, metadata')
+      .in('indicador_id', indicadorIds)
+      .order('data_referencia', { ascending: false })
+      .then(function (r) {
+        if (r.error) throw r.error;
+        var porId = {};
+        (r.data || []).forEach(function (linha) {
+          (porId[linha.indicador_id] = porId[linha.indicador_id] || []).push(linha);
+        });
+        var limite = limitePorIndicador || 24;
+        Object.keys(porId).forEach(function (id) {
+          porId[id] = porId[id].slice(0, limite).reverse(); // cronológico (mais antigo primeiro)
+        });
+        return porId;
+      });
+  }
+
   // ------------------------------------------------------------------
   // Formatação
   // ------------------------------------------------------------------
@@ -99,11 +124,11 @@
     return { delta: delta, direcaoMudanca: direcaoMudanca, classe: classe, seta: seta, anterior: anterior };
   }
 
-  // Variação percentual entre os dois últimos pontos, independente da
-  // unidade do indicador — é o que permite comparar indicadores de unidades
-  // diferentes (R$, %, índice) numa mesma tabela de "maiores variações",
-  // do mesmo jeito que um ranking de ativos compara ativos de preços
-  // diferentes: sempre em variação percentual, nunca em delta absoluto.
+  // Variação percentual entre os dois últimos pontos — só faz sentido para
+  // indicador cuja unidade NÃO é "%": para R$, US$ ou índice, a variação
+  // percentual compara preços/níveis igual a um ranking de ativos. Mantida
+  // separada de calcularVariacao (abaixo) porque "percentual da percentual"
+  // não é uma operação válida — ver nota em calcularVariacao.
   function calcularVariacaoPercentual(serieAsc) {
     if (serieAsc.length < 2) return null;
     var atual = serieAsc[serieAsc.length - 1];
@@ -111,6 +136,30 @@
     if (!anterior.valor) return null; // evita divisão por zero
     var percentual = ((atual.valor - anterior.valor) / Math.abs(anterior.valor)) * 100;
     return { percentual: percentual, atual: atual, anterior: anterior };
+  }
+
+  // Variação pronta para exibir, já escolhendo a unidade de comparação
+  // correta conforme o tipo do indicador: quando o indicador JÁ é expresso
+  // em % (taxa de juros, inflação do mês, taxa de desocupação etc.),
+  // comparar em variação percentual seria "percentual da percentual" — uma
+  // queda de -0,3% para 0,8% viraria uma alta de 356%, um número sem
+  // leitura econômica (foi o que o responsável do projeto encontrou no
+  // ticker do IPCA, 2026-10-14). Nesse caso a comparação correta é a
+  // diferença em pontos percentuais (p.p.) entre os dois períodos. Para os
+  // demais indicadores (R$, US$, índice, contagem), variação percentual
+  // continua sendo a comparação certa.
+  function calcularVariacao(indicador, serieAsc) {
+    if (serieAsc.length < 2) return null;
+    var anterior = serieAsc[serieAsc.length - 2];
+    var ehPercentual = (indicador.unidade || '').indexOf('%') >= 0;
+    if (ehPercentual) {
+      var atual = serieAsc[serieAsc.length - 1];
+      var pp = atual.valor - anterior.valor;
+      return { valor: pp, sufixo: 'p.p.', direcao: pp > 0 ? 'alta' : (pp < 0 ? 'baixa' : 'neutra'), anterior: anterior };
+    }
+    var variacao = calcularVariacaoPercentual(serieAsc);
+    if (!variacao) return null;
+    return { valor: variacao.percentual, sufixo: '%', direcao: variacao.percentual > 0 ? 'alta' : (variacao.percentual < 0 ? 'baixa' : 'neutra'), anterior: anterior };
   }
 
   // ------------------------------------------------------------------
@@ -190,21 +239,24 @@
 
   // ------------------------------------------------------------------
   // Ticker de topo — faixa fina com uma linha só por item (nome, valor,
-  // variação percentual), estilo portal de dados de mercado. Reaproveita
-  // calcularVariacaoPercentual para a mesma base de comparação (%) usada na
-  // tabela de "maiores variações" do resumo do dia.
+  // variação), estilo portal de dados de mercado. Usa calcularVariacao, que
+  // já escolhe p.p. ou % conforme a unidade do indicador — ver nota lá.
   // ------------------------------------------------------------------
   function montarItemTicker(indicador, serieAsc) {
     if (!serieAsc.length) return '';
     var atual = serieAsc[serieAsc.length - 1];
-    var variacao = calcularVariacaoPercentual(serieAsc);
-    var classe = !variacao ? 'neutra' : (variacao.percentual > 0 ? 'alta' : (variacao.percentual < 0 ? 'baixa' : 'neutra'));
-    var seta = classe === 'alta' ? '▲' : (classe === 'baixa' ? '▼' : '—');
+    var variacao = calcularVariacao(indicador, serieAsc);
+    var seta = !variacao ? '—' : (variacao.direcao === 'alta' ? '▲' : (variacao.direcao === 'baixa' ? '▼' : '—'));
+    // "vs. <período>" explícito ao lado da variação — sem isso não dá pra
+    // saber contra o que o indicador está sendo comparado (pedido do
+    // responsável do projeto, 2026-10-14).
+    var vsPeriodo = variacao ? 'vs. ' + formatarDataReferencia(variacao.anterior.data_referencia, indicador.periodicidade) : '';
     return (
-      '<span class="ticker-topo-item">' +
+      '<span class="ticker-topo-item" title="' + esc(vsPeriodo) + '">' +
       '<span class="nome">' + esc(indicador.nome) + '</span>' +
       '<span class="valor">' + esc(formatarValor(indicador, atual.valor)) + '</span>' +
-      (variacao ? '<span class="delta ' + classe + '">' + seta + ' ' + formatarNumero(Math.abs(variacao.percentual), 1) + '%</span>' : '') +
+      (variacao ? '<span class="delta ' + esc(variacao.direcao) + '">' + seta + ' ' + formatarNumero(Math.abs(variacao.valor), 1) + ' ' + esc(variacao.sufixo) + '</span>' : '') +
+      (vsPeriodo ? '<span class="vs-periodo">' + esc(vsPeriodo) + '</span>' : '') +
       '</span>'
     );
   }
@@ -214,11 +266,13 @@
     DIMENSOES: DIMENSOES,
     carregarIndicadores: carregarIndicadores,
     carregarSerie: carregarSerie,
+    carregarSeriesPorIndicadores: carregarSeriesPorIndicadores,
     formatarValor: formatarValor,
     formatarDataReferencia: formatarDataReferencia,
     formatarDataCurta: formatarDataCurta,
     calcularTendencia: calcularTendencia,
     calcularVariacaoPercentual: calcularVariacaoPercentual,
+    calcularVariacao: calcularVariacao,
     montarCartao: montarCartao,
     montarCartaoVazio: montarCartaoVazio,
     montarCartaoDimensaoPendente: montarCartaoDimensaoPendente,

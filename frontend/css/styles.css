@@ -184,6 +184,7 @@ img { max-width: 100%; display: block; }
 .ticker-topo-item .delta.alta { color: #5ce08a; }
 .ticker-topo-item .delta.baixa { color: #ff8585; }
 .ticker-topo-item .delta.neutra { color: #b9bce0; }
+.ticker-topo-item .vs-periodo { font-size: .68rem; opacity: .55; }
 @media (prefers-reduced-motion: reduce) {
   .ticker-topo-trilho { animation: none; flex-wrap: wrap; width: 100%; }
 }
@@ -192,20 +193,54 @@ img { max-width: 100%; display: block; }
    maiores variações) — tradução do bloco "Ibovespa" dos portais de mercado para dados reais do
    catálogo: sem ações, sem criptoativos (fora da missão e das fontes do DIEESE). */
 .resumo-dia { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; align-items: stretch; }
-.resumo-destaque { border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px; background: #fff; }
-.resumo-destaque-topo { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 4px; }
+.resumo-destaque { border: 1px solid var(--linha); border-radius: var(--raio); padding: 20px; background: #fff; }
+.resumo-destaque > .carrossel-cabecalho { margin-bottom: 14px; }
+.resumo-destaque > .carrossel-cabecalho h3 { font-size: .86rem; text-transform: uppercase; letter-spacing: .04em; color: var(--cinza-700); margin: 0; }
+.destaque-item { flex: 0 0 min(100%, 360px); height: 400px; scroll-snap-align: start; }
+.destaque-item .cartao-flip-frente, .destaque-item .cartao-flip-verso { padding: 18px; }
+.cartao-flip-grafico-area { flex: 1 1 auto; min-height: 120px; margin: 4px 0; }
+.cartao-flip-grafico-area .grafico-linha { width: 100%; height: auto; display: block; }
+
+/* ---------------------------------------------------------------- cartão giratório em modal
+   (ver js/cartao-modal.js) — usado quando não há cartão próprio na tela pra girar no lugar,
+   ex.: clique numa linha da tabela de maiores variações do resumo do dia. */
+.cartao-modal-fundo {
+  position: fixed; inset: 0; background: rgba(3, 0, 134, .55); z-index: 200;
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  opacity: 0; pointer-events: none; transition: opacity .18s;
+}
+.cartao-modal-fundo.aberto { opacity: 1; pointer-events: auto; }
+.cartao-modal-caixa { position: relative; width: min(420px, 100%); }
+.cartao-modal-caixa .cartao-modal-cartao { height: 460px; }
+.cartao-modal-fechar {
+  position: absolute; top: -14px; right: -14px; z-index: 2;
+  width: 32px; height: 32px; border-radius: 999px; border: none; background: #fff; color: var(--azul);
+  font-size: 1.1rem; line-height: 1; cursor: pointer; box-shadow: var(--sombra);
+}
+body.cartao-modal-travado { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .cartao-modal-fundo { transition: none; }
+}
 .resumo-destaque-rotulo { font: 700 .82rem var(--fonte-texto); color: var(--cinza-700); }
-.resumo-destaque-valor { font: 800 clamp(1.8rem, 4vw, 2.4rem) var(--fonte-titulo); color: var(--azul); line-height: 1; font-variant-numeric: tabular-nums; }
-.resumo-destaque-data { font-size: .8rem; color: var(--ink-muda); margin: 4px 0 14px; }
+.resumo-destaque-valor { font: 800 clamp(1.6rem, 4vw, 2.1rem) var(--fonte-titulo); color: var(--azul); line-height: 1; font-variant-numeric: tabular-nums; margin-top: 8px; }
+.resumo-destaque-data { font-size: .8rem; color: var(--ink-muda); margin: 4px 0 10px; }
+.resumo-destaque-grafico-area { flex: 1 1 auto; min-height: 150px; margin-bottom: 4px; }
+.resumo-destaque-grafico-area .grafico-linha { width: 100%; height: auto; display: block; }
+.comparacao-periodo { font-size: .74rem; color: var(--ink-muda); font-weight: 400; }
 .resumo-variacoes { border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px; background: #fff; display: flex; flex-direction: column; gap: 14px; }
 .resumo-variacoes h3 { font-size: .86rem; text-transform: uppercase; letter-spacing: .04em; color: var(--cinza-700); margin: 0; }
 .resumo-variacoes-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-.resumo-variacoes-lista li a {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  padding: 7px 0; border-bottom: 1px solid var(--fundo-suave); color: var(--ink); font-size: .86rem;
+/* Cada linha é um <button>, não um <a> — clicar abre o cartão giratório em
+   modal (cartao-modal.js) em vez de navegar, ver inicio.js. */
+.resumo-variacoes-lista li button {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%;
+  padding: 7px 0; border: none; border-bottom: 1px solid var(--fundo-suave); background: none;
+  color: var(--ink); font: inherit; font-size: .86rem; text-align: left; cursor: pointer;
 }
-.resumo-variacoes-lista li:last-child a { border-bottom: none; }
-.resumo-variacoes-lista .nome { font-weight: 600; }
+.resumo-variacoes-lista li:last-child button { border-bottom: none; }
+.resumo-variacoes-lista li button:hover .nome { color: var(--azul); }
+.resumo-variacoes-lista .nome { font-weight: 600; display: flex; flex-direction: column; }
+.resumo-variacoes-lista .nome .vs-periodo { font-weight: 400; font-size: .72rem; color: var(--ink-muda); }
 .resumo-variacoes-lista .percentual { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .resumo-variacoes-lista .percentual.alta { color: var(--status-boa); }
 .resumo-variacoes-lista .percentual.baixa { color: var(--status-critica); }
@@ -213,9 +248,23 @@ img { max-width: 100%; display: block; }
   .resumo-dia { grid-template-columns: 1fr; }
 }
 
-/* ---------------------------------------------------------------- carrossel por dimensão */
-.carrossel-dimensao { padding: 48px 0; }
-.carrossel-dimensao:nth-child(even) { background: #fff; }
+/* ---------------------------------------------------------------- carrossel por dimensão
+   Cada dimensão tem uma cor de identidade (borda superior + fundo do ícone), reaproveitando
+   só tokens de marca já existentes — nenhuma cor nova. Sem isso as 5 seções ficavam "tudo uma
+   cor só" (relatado pelo responsável do projeto, 2026-10-14): o fundo branco por trás de
+   cartões brancos não cria nenhuma separação visível entre uma dimensão e a próxima. */
+.carrossel-dimensao { padding: 48px 0; background: #fff; border-top: 4px solid var(--linha); }
+.carrossel-dimensao:nth-child(even) { background: var(--azul-50); }
+#dimensao-macroeconomia { border-top-color: var(--azul); }
+#dimensao-monetario_credito { border-top-color: var(--ouro); }
+#dimensao-inflacao { border-top-color: var(--verde); }
+#dimensao-mercado_trabalho { border-top-color: var(--azul-hover); }
+#dimensao-caged { border-top-color: var(--ouro-hover); }
+#dimensao-macroeconomia .secao-dimensao-icone { background: var(--azul-50); }
+#dimensao-monetario_credito .secao-dimensao-icone { background: var(--ouro-50); }
+#dimensao-inflacao .secao-dimensao-icone { background: var(--verde-50); }
+#dimensao-mercado_trabalho .secao-dimensao-icone { background: var(--azul-100); }
+#dimensao-caged .secao-dimensao-icone { background: var(--ouro-100); }
 .carrossel-cabecalho { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
 .carrossel-setas { display: flex; gap: 8px; flex: 0 0 auto; }
 .carrossel-seta {
@@ -255,16 +304,37 @@ img { max-width: 100%; display: block; }
   .secao-dupla.invertida .secao-foto-caixa { order: 0; }
 }
 
+/* Alternância explícita de fundo entre as seções institucionais — branco e
+   azul-50, não branco e "quase branco" (var(--fundo-suave) era próxima
+   demais de #fff pra criar separação visível; "está tudo uma cor só",
+   relatado pelo responsável do projeto, 2026-10-14). */
+.secao-clara { background: #fff; }
+.secao-suave { background: var(--azul-50); }
+
 .faq-titulo-caixa { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
 .faq-titulo-caixa h2 { margin-bottom: 0; }
 .secao-titulo-icone { width: 40px; height: 40px; border-radius: 8px; flex: 0 0 auto; }
-.cartao-dimensao { background: #fff; border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px; transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s, border-color .18s; }
+/* .cartao-dimensao é um <a> (link-âncora para a seção detalhada da própria
+   dimensão) — reset do estilo padrão de link, senão o navegador aplica
+   sublinhado azul e o elemento vira inline, quebrando a grade (bug relatado
+   pelo responsável do projeto, 2026-10-14). */
+.cartao-dimensao {
+  display: block; text-decoration: none; color: inherit;
+  background: #fff; border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px;
+  transition: transform .18s cubic-bezier(.2,.8,.2,1), box-shadow .18s, border-color .18s;
+}
 .cartao-dimensao:hover { transform: translateY(-3px); box-shadow: var(--sombra); border-color: var(--azul-300); }
 .cartao-dimensao-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .cartao-dimensao .num { font: 800 .78rem var(--fonte-titulo); color: var(--ouro-hover); text-transform: uppercase; letter-spacing: .06em; }
 .cartao-dimensao-icone { flex: 0 0 auto; border-radius: 10px; }
 .cartao-dimensao h3 { margin: 6px 0 8px; font-size: 1.1rem; }
-.cartao-dimensao p { color: var(--cinza-700); font-size: .92rem; margin-bottom: 0; }
+.cartao-dimensao p { color: var(--cinza-700); font-size: .92rem; margin-bottom: 10px; }
+/* Árvore de indicadores: lista compacta dos nomes publicados na dimensão —
+   substitui a descrição repetida (que já aparece por extenso na seção
+   detalhada mais abaixo), evitando mostrar o mesmo texto duas vezes. */
+.cartao-dimensao-arvore { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--fundo-suave); padding-top: 10px; }
+.cartao-dimensao-arvore li { font-size: .8rem; color: var(--ink); padding: 3px 0; }
+.cartao-dimensao-arvore li.mais { color: var(--azul); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) {
   .cartao-dimensao { transition: box-shadow .18s, border-color .18s; }
   .cartao-dimensao:hover { transform: none; }
@@ -445,7 +515,7 @@ img { max-width: 100%; display: block; }
 .conteudo-indicador { flex: 1 1 auto; min-width: 0; }
 .secao-dimensao { margin-bottom: 48px; scroll-margin-top: 90px; }
 .secao-dimensao-topo { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
-.secao-dimensao-icone { flex: 0 0 auto; border-radius: 8px; }
+.secao-dimensao-icone { flex: 0 0 auto; border-radius: 10px; padding: 5px; box-sizing: content-box; }
 .secao-dimensao h2 { font-size: 1.3rem; margin-bottom: 4px; }
 .secao-dimensao .lead { margin-bottom: 18px; }
 @media (max-width: 900px) {
