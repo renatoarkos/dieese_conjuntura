@@ -99,6 +99,20 @@
     return { delta: delta, direcaoMudanca: direcaoMudanca, classe: classe, seta: seta, anterior: anterior };
   }
 
+  // Variação percentual entre os dois últimos pontos, independente da
+  // unidade do indicador — é o que permite comparar indicadores de unidades
+  // diferentes (R$, %, índice) numa mesma tabela de "maiores variações",
+  // do mesmo jeito que um ranking de ativos compara ativos de preços
+  // diferentes: sempre em variação percentual, nunca em delta absoluto.
+  function calcularVariacaoPercentual(serieAsc) {
+    if (serieAsc.length < 2) return null;
+    var atual = serieAsc[serieAsc.length - 1];
+    var anterior = serieAsc[serieAsc.length - 2];
+    if (!anterior.valor) return null; // evita divisão por zero
+    var percentual = ((atual.valor - anterior.valor) / Math.abs(anterior.valor)) * 100;
+    return { percentual: percentual, atual: atual, anterior: anterior };
+  }
+
   // ------------------------------------------------------------------
   // Sparkline — SVG inline. Linha 2px + área a 8% de opacidade + ponto final
   // >=8px (ver skill de dataviz, marks-and-anatomy). O traçado da linha é
@@ -175,25 +189,22 @@
   }
 
   // ------------------------------------------------------------------
-  // Ticker — indicadores de atualização mais frequente (periodicidade mensal).
+  // Ticker de topo — faixa fina com uma linha só por item (nome, valor,
+  // variação percentual), estilo portal de dados de mercado. Reaproveita
+  // calcularVariacaoPercentual para a mesma base de comparação (%) usada na
+  // tabela de "maiores variações" do resumo do dia.
   // ------------------------------------------------------------------
   function montarItemTicker(indicador, serieAsc) {
     if (!serieAsc.length) return '';
     var atual = serieAsc[serieAsc.length - 1];
-    var tendencia = calcularTendencia(indicador, serieAsc);
-    var classeSeta = tendencia ? (tendencia.direcaoMudanca === 'baixa' ? 'baixa' : (tendencia.direcaoMudanca === 'alta' ? 'alta' : 'neutra')) : 'neutra';
-    var periodo = formatarDataReferencia(atual.data_referencia, indicador.periodicidade);
-    var comparacao = tendencia
-      ? 'vs. ' + formatarDataReferencia(tendencia.anterior.data_referencia, indicador.periodicidade)
-      : 'sem período anterior';
+    var variacao = calcularVariacaoPercentual(serieAsc);
+    var classe = !variacao ? 'neutra' : (variacao.percentual > 0 ? 'alta' : (variacao.percentual < 0 ? 'baixa' : 'neutra'));
+    var seta = classe === 'alta' ? '▲' : (classe === 'baixa' ? '▼' : '—');
     return (
-      '<span class="ticker-item">' +
-      '<span class="rotulo">' + esc(indicador.nome) + '</span>' +
-      '<span class="ticker-linha1">' +
-      '<span class="valor">' + formatarValor(indicador, atual.valor) + '</span>' +
-      (tendencia ? '<span class="delta ' + classeSeta + '">' + tendencia.seta + ' ' + formatarValor(indicador, Math.abs(tendencia.delta)) + '</span>' : '') +
-      '</span>' +
-      '<span class="ticker-linha2">' + esc(periodo) + ' · ' + esc(comparacao) + '</span>' +
+      '<span class="ticker-topo-item">' +
+      '<span class="nome">' + esc(indicador.nome) + '</span>' +
+      '<span class="valor">' + esc(formatarValor(indicador, atual.valor)) + '</span>' +
+      (variacao ? '<span class="delta ' + classe + '">' + seta + ' ' + formatarNumero(Math.abs(variacao.percentual), 1) + '%</span>' : '') +
       '</span>'
     );
   }
@@ -207,6 +218,7 @@
     formatarDataReferencia: formatarDataReferencia,
     formatarDataCurta: formatarDataCurta,
     calcularTendencia: calcularTendencia,
+    calcularVariacaoPercentual: calcularVariacaoPercentual,
     montarCartao: montarCartao,
     montarCartaoVazio: montarCartaoVazio,
     montarCartaoDimensaoPendente: montarCartaoDimensaoPendente,

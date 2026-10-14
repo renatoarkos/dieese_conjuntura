@@ -15,6 +15,10 @@
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="assets/hero/og-compartilhamento.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+  <link rel="shortcut icon" href="assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
@@ -36,6 +40,12 @@
     </div>
   </header>
 
+  <section class="ticker-topo" aria-label="Indicadores de atualização mais frequente">
+    <div class="ticker-topo-trilho" id="ticker-trilho">
+      <span class="ticker-topo-item">Carregando indicadores…</span>
+    </div>
+  </section>
+
   <section class="hero">
     <div class="container hero-container">
       <div class="hero-conteudo">
@@ -44,7 +54,7 @@
         <p class="lead">Dados, indicadores e análise em tempo real, organizados por dimensão socioeconômica, para apoiar a elaboração dos boletins de conjuntura e dar subsídio imediato a todo o DIEESE.</p>
         <div class="hero-acoes">
           <a class="btn btn-vermelho" href="login.html">Entrar no painel</a>
-          <a class="link-editorial" href="#amostra">Ver indicadores →</a>
+          <a class="link-editorial" href="#dimensoes">Ver indicadores →</a>
         </div>
       </div>
       <div class="hero-midia">
@@ -53,9 +63,13 @@
     </div>
   </section>
 
-  <section class="ticker" aria-label="Indicadores de atualização mais frequente">
-    <div class="ticker-trilho" id="ticker-trilho">
-      <span class="ticker-item"><span class="rotulo">Carregando indicadores…</span></span>
+  <section class="secao" id="resumo" style="background:#fff">
+    <div class="container">
+      <h2>Resumo do dia</h2>
+      <p class="lead">Um indicador em destaque e as maiores variações entre os últimos pontos publicados em todas as dimensões, calculadas em cima dos dados reais já coletados, não uma lista de ativos financeiros.</p>
+      <div class="resumo-dia" id="resumo-dia">
+        <p>Carregando indicadores…</p>
+      </div>
     </div>
   </section>
 
@@ -93,15 +107,7 @@
     </div>
   </section>
 
-  <section class="secao" id="amostra">
-    <div class="container">
-      <h2>Uma amostra dos indicadores</h2>
-      <p class="lead">Dez indicadores de macroeconomia, atualizados automaticamente. Clique em qualquer cartão para ver a explicação, a fonte e o gráfico da série histórica completa.</p>
-      <div class="grade-indicadores" id="grade-amostra">
-        <p>Carregando indicadores…</p>
-      </div>
-    </div>
-  </section>
+  <div id="secoes-dimensao-home"></div>
 
   <section class="secao" id="faq" style="background:#fff">
     <div class="container">
