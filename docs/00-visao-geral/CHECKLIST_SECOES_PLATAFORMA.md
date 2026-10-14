@@ -23,8 +23,8 @@ Cada item cita de qual seção de `VISAO_DO_PRODUTO.md` ele vem, quando aplicáv
 | ✅ | "O que é o DIEESE 360" | — | Texto institucional sobre a plataforma em si. |
 | ✅ | Dimensões (grade com as 5 áreas temáticas) | — | |
 | ✅ | Amostra de indicadores (cartão giratório) | — | Revertido em 2026-10-14 para virar no lugar, não navegar. |
-| ⬜ | **Quem somos** | pedido 2026-10-14 | Sobre o DIEESE enquanto instituição — não confundir com "o que é a plataforma" (já existe). Precisa de texto institucional oficial do DIEESE (checar `materiais/originais/` ou pedir à equipe). |
-| ⬜ | **O que é o Boletim de Conjuntura** | pedido 2026-10-14 | O que o boletim traz, periodicidade de divulgação, histórico. **Periodicidade exata não confirmada em fonte primária** nesta rodada — os nomes de arquivo (`ATR_Conjuntura_2025.12`, pastas `Dados_2025.03/05/07`) sugerem cadência mensal/bimestral, mas isso é inferência, não confirmação; vale perguntar à equipe do DIEESE. |
+| ✅ | **Quem somos** | pedido 2026-10-14 | Implementado em 2026-10-14 com texto baseado na página institucional oficial `dieese.org.br/materialinstitucional/quemSomos.html` (fundação 1955, ~700 associados, 17 escritórios, 2 observatórios do trabalho) — fonte citada no próprio texto da seção. |
+| ✅ | **O que é o Boletim de Conjuntura** | pedido 2026-10-14 | Implementado em 2026-10-14 com base na série pública `dieese.org.br/boletimdeconjuntura` (desde nov/2014, edição mais recente identificada nº 54/mai-2026). **Periodicidade não é mensal fixa** — sinalizado explicitamente no texto, não inventado. **Pendência**: não confirmado se este produto público é o mesmo que a "Apresentação de Conjuntura" interna (`ATR_Conjuntura_*.pptx`) usada como material de origem do catálogo — nomes/formatos distintos, tratados como possivelmente diferentes. |
 | ⬜ | Calendário de divulgações oficiais | VISÃO §11 (DIVULGAÇÕES) | Acompanhar o calendário de divulgação de cada fonte (BCB, IBGE etc.) e indicar a próxima publicação esperada por indicador. Precisa de fonte oficial de calendário por instituição — não inventar datas. |
 
 ## B. Catálogo e exploração de dados
