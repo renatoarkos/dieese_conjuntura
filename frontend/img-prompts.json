@@ -112,6 +112,36 @@
       "funcao": "Decorativa"
     },
     {
+      "file": "contato/icone-contato.png",
+      "aspect": "1:1",
+      "resolution": "1K",
+      "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000, traço limpo, cantos arredondados, sem texto. Um envelope simples fechado com uma pequena @ ou um telefone estilizado ao lado.",
+      "uso": "Cabeçalho da seção/rodapé de Contato",
+      "tamanho_de_uso": "600 x 600 px (exibida a 56 px)",
+      "alt": "",
+      "funcao": "Decorativa"
+    },
+    {
+      "file": "meupainel/icone-meu-painel.png",
+      "aspect": "1:1",
+      "resolution": "1K",
+      "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000, traço limpo, cantos arredondados, sem texto. Um grid de 4 blocos de tamanhos diferentes (2 pequenos, 1 médio, 1 grande), sugerindo um painel customizável, sem ícone de \"arrastar\" literal (sem setas cruzadas).",
+      "uso": "Cabeçalho da página 'Meu painel' (meu-painel.html), ao lado do kicker",
+      "tamanho_de_uso": "600 x 600 px (exibida a 56 px)",
+      "alt": "",
+      "funcao": "Decorativa: reforça a ideia de montagem customizável"
+    },
+    {
+      "file": "icons/favicon.png",
+      "aspect": "1:1",
+      "resolution": "512px",
+      "prompt": "Ilustração vetorial plana, quadrada, extremamente simples (precisa ser legível em 16px). Fundo azul-marinho #030086 sólido, um único elemento branco centralizado: as letras \"360\" em negrito, ou um círculo/anel estilizado remetendo a \"360 graus\". Sem gradiente, sem detalhe fino que suma em tamanho pequeno.",
+      "uso": "Favicon (aba do navegador) e ícone de atalho/PWA, todas as páginas",
+      "tamanho_de_uso": "512 x 512 px (gerar também recortes em 32x32 e 16x16 a partir deste)",
+      "alt": "",
+      "funcao": "Identificação da aba do navegador — hoje o site não tem favicon nenhum"
+    },
+    {
       "file": "login/login-lateral.png",
       "aspect": "3:4",
       "resolution": "2K",
