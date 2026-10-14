@@ -26,12 +26,14 @@ Cada item cita de qual seção de `VISAO_DO_PRODUTO.md` ele vem, quando aplicáv
 | ✅ | **Quem somos** | pedido 2026-10-14 | Implementado em 2026-10-14 com texto baseado na página institucional oficial `dieese.org.br/materialinstitucional/quemSomos.html` (fundação 1955, ~700 associados, 17 escritórios, 2 observatórios do trabalho) — fonte citada no próprio texto da seção. |
 | ✅ | **O que é o Boletim de Conjuntura** | pedido 2026-10-14 | Implementado em 2026-10-14 com base na série pública `dieese.org.br/boletimdeconjuntura` (desde nov/2014, edição mais recente identificada nº 54/mai-2026). **Periodicidade não é mensal fixa** — sinalizado explicitamente no texto, não inventado. **Pendência**: não confirmado se este produto público é o mesmo que a "Apresentação de Conjuntura" interna (`ATR_Conjuntura_*.pptx`) usada como material de origem do catálogo — nomes/formatos distintos, tratados como possivelmente diferentes. |
 | ⬜ | Calendário de divulgações oficiais | VISÃO §11 (DIVULGAÇÕES) | Acompanhar o calendário de divulgação de cada fonte (BCB, IBGE etc.) e indicar a próxima publicação esperada por indicador. Precisa de fonte oficial de calendário por instituição — não inventar datas. |
+| ✅ | FAQ sobre o painel | pedido 2026-10-14 | Implementado como acordeão nativo (`<details>/<summary>`) — só as perguntas aparecem, resposta expande ao clicar. |
+| ✅ | Contato (canais oficiais + redes sociais do DIEESE) | pedido 2026-10-14 | Unificado com o rodapé da página (fundo navy, grade de colunas). Instagram dedicado ao Boletim/Painel de Conjuntura marcado como "em preparação" — ainda não existe. |
 
 ## B. Catálogo e exploração de dados
 
 | Status | Seção | Origem | Observação |
 |---|---|---|---|
-| 🟡 | Catálogo Mestre de Indicadores | VISÃO §7 | Cada indicador já tem ficha completa (fonte, metodologia, periodicidade etc.) na própria página do indicador — falta uma **visão de catálogo consolidada**, pesquisável/filtrável, listando todos de uma vez (hoje só existe espalhado pela barra lateral). |
+| ✅ | Catálogo Mestre de Indicadores | VISÃO §7 | Implementado em 2026-10-14 (`frontend/catalogo.html`): tabela densa e filtrável (busca por nome/fonte, filtro por dimensão) com todos os indicadores publicados — fonte, periodicidade e classificação visíveis sem abrir a página individual. |
 | 🟡 | Exploração multidimensional (filtro de período, vista gráfico/tabela/infográfico/mapa) | VISÃO §9 | Já existe **por indicador individual** (`indicador.html`). Falta o modo "explorador" de verdade: combinar/comparar múltiplos indicadores na mesma tela, tabela dinâmica cruzando dimensões. |
 | ⬜ | Explorador de Dados (combinar séries, segmentações, tabelas dinâmicas) | VISÃO §9 | Feature grande — montar comparações livres entre indicadores de dimensões diferentes, não pré-definidas. |
 | ⬜ | Dashboards editoriais | VISÃO §10 | Visões pré-montadas pela equipe técnica, com narrativa e indicadores selecionados para comunicar uma leitura específica — diferente do Explorador (livre) e dos cartões por dimensão (genéricos). |
