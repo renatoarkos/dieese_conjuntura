@@ -398,6 +398,8 @@ img { max-width: 100%; display: block; }
 
 .conteudo-indicador { flex: 1 1 auto; min-width: 0; }
 .secao-dimensao { margin-bottom: 48px; scroll-margin-top: 90px; }
+.secao-dimensao-topo { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
+.secao-dimensao-icone { flex: 0 0 auto; border-radius: 8px; }
 .secao-dimensao h2 { font-size: 1.3rem; margin-bottom: 4px; }
 .secao-dimensao .lead { margin-bottom: 18px; }
 @media (max-width: 900px) {

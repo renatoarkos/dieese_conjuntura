@@ -12,11 +12,30 @@
 
   var ORDEM_DIMENSOES = ['macroeconomia', 'monetario_credito', 'inflacao', 'mercado_trabalho', 'caged'];
 
+  // Mesmos ícones já gerados para os cartões de dimensão da home (ver
+  // js/inicio.js) — reaproveitados aqui para nenhuma seção do painel ficar
+  // só com texto (pedido do responsável do projeto, 2026-10-14).
+  var ICONES_DIMENSAO = {
+    macroeconomia: 'assets/dimensoes/icone-macroeconomia.png',
+    monetario_credito: 'assets/dimensoes/icone-monetario-credito.png',
+    inflacao: 'assets/dimensoes/icone-inflacao.png',
+    mercado_trabalho: 'assets/dimensoes/icone-mercado-trabalho.png',
+    caged: 'assets/dimensoes/icone-caged.png'
+  };
+
   function montarSecoesVazias() {
     var raiz = document.getElementById('secoes-dimensao');
     raiz.innerHTML = ORDEM_DIMENSOES.map(function (chave) {
       var dim = D.DIMENSOES[chave];
-      return '<section class="secao-dimensao" id="' + chave + '"><h2>' + esc(dim.nome) + '</h2><p class="lead">' + esc(dim.descricao) + '</p><div class="grade-indicadores" id="grade-' + chave + '"></div></section>';
+      var icone = ICONES_DIMENSAO[chave] || '';
+      return (
+        '<section class="secao-dimensao" id="' + chave + '">' +
+        '<div class="secao-dimensao-topo">' +
+        (icone ? '<img src="' + esc(icone) + '" alt="" class="secao-dimensao-icone" width="40" height="40" loading="lazy">' : '') +
+        '<div><h2>' + esc(dim.nome) + '</h2><p class="lead">' + esc(dim.descricao) + '</p></div>' +
+        '</div>' +
+        '<div class="grade-indicadores" id="grade-' + chave + '"></div></section>'
+      );
     }).join('');
   }
 
