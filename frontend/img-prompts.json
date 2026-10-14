@@ -82,6 +82,16 @@
       "funcao": "Caracteriza o DIEESE como entidade do movimento sindical, não como empresa de tecnologia"
     },
     {
+      "file": "secoes/o-que-e-dieese-360.png",
+      "aspect": "4:3",
+      "resolution": "2K",
+      "prompt": "Fotografia documental. Plano fechado de um monitor exibindo um painel de dados abstrato (blocos de cor azul-marinho organizados em grid, sem texto legível, mesmo estilo do hero da home), com uma mão fora de foco em primeiro plano segurando um bloco de notas. Mesa de escritório técnico claro, luz natural. Um único detalhe vermelho discreto.",
+      "uso": "Seção 'O que é o DIEESE 360', ao lado do texto — completa o ritmo visual junto com 'Quem somos' e 'Boletim de Conjuntura', que já têm foto",
+      "tamanho_de_uso": "1200 x 900 px",
+      "alt": "Monitor exibindo um painel de indicadores abstrato, com um bloco de notas em primeiro plano",
+      "funcao": "Caracteriza a plataforma como ferramenta de trabalho técnico, sem repetir a foto do hero"
+    },
+    {
       "file": "secoes/boletim-conjuntura.png",
       "aspect": "4:3",
       "resolution": "2K",
