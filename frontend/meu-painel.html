@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Meu painel · DIEESE 360</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#030086">
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/vendor-gridstack.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="container">
+      <a class="marca-topo" href="index.html">
+        <img src="assets/brand/logo-dieese-wordmark.png" alt="DIEESE" width="110" height="24">
+        <strong>360</strong>
+        <span>painel interno</span>
+      </a>
+      <nav class="nav-topo">
+        <a class="nav-link" href="painel.html">Indicadores</a>
+        <a class="nav-link" href="catalogo.html">Catálogo</a>
+        <span id="usuario-nome" style="color:var(--cinza-700);font-size:.88rem"></span>
+        <a href="#" id="sair">Sair</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="secao" style="padding-bottom:0">
+    <div class="container meupainel-topo">
+      <div>
+        <span class="hero-rotulo">Montagem customizada</span>
+        <h1 style="font-size:clamp(1.6rem,3.6vw,2.2rem)">Meu painel</h1>
+        <p class="lead" style="margin-bottom:0">Escolha indicadores, arraste para reordenar e redimensione cada cartão. O layout fica salvo na sua conta.</p>
+      </div>
+      <div class="meupainel-acoes">
+        <select id="meupainel-seletor" class="meupainel-seletor" aria-label="Adicionar indicador ao painel">
+          <option value="">+ Adicionar indicador…</option>
+        </select>
+        <button type="button" class="btn btn-vermelho btn-pequeno" id="meupainel-salvar">Salvar painel</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <p id="meupainel-status" class="aviso" role="status" hidden></p>
+      <div class="grid-stack" id="meupainel-grid"></div>
+      <p id="meupainel-vazio" class="aviso demo">Seu painel está vazio — use o seletor acima para adicionar o primeiro indicador.</p>
+    </div>
+  </section>
+
+  <script src="js/vendor/supabase.js"></script>
+  <script src="js/vendor/gridstack.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/dados.js"></script>
+  <script src="js/grafico-linha.js"></script>
+  <script src="js/meu-painel.js"></script>
+</body>
+</html>

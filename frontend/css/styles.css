@@ -498,6 +498,23 @@ img { max-width: 100%; display: block; }
 .faq-item summary:focus-visible { outline: 2px solid var(--azul-300); outline-offset: 2px; }
 .faq-item p { margin: 0 0 16px; color: var(--cinza-700); max-width: 68ch; }
 
+/* ---------------------------------------------------------------- Meu painel (montagem customizada) */
+.meupainel-topo { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding-bottom: 20px; }
+.meupainel-acoes { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.meupainel-seletor { font: 600 .86rem var(--fonte-texto); padding: 9px 12px; border: 1px solid var(--linha); border-radius: var(--raio); background: #fff; color: var(--ink); max-width: 260px; }
+#meupainel-vazio[hidden] { display: none; }
+
+.grid-stack { background: var(--fundo-suave); border-radius: var(--raio); min-height: 80px; }
+.grid-stack-item-content { inset: 4px !important; }
+.meupainel-cartao { height: 100%; display: flex; flex-direction: column; background: #fff; border: 1px solid var(--linha); border-radius: var(--raio); overflow: hidden; }
+.meupainel-cartao-topo { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--linha); cursor: move; }
+.meupainel-cartao-topo strong { font-size: .86rem; color: var(--ink); }
+.meupainel-remover { width: 22px; height: 22px; border-radius: 4px; border: none; background: none; color: var(--ink-muda); font-size: 1.1rem; line-height: 1; cursor: pointer; flex: 0 0 auto; }
+.meupainel-remover:hover { background: #fdeceb; color: var(--vermelho); }
+.meupainel-cartao-corpo { flex: 1 1 auto; min-height: 0; padding: 8px 12px; overflow: hidden; }
+.meupainel-cartao-corpo .grafico-linha-caixa { height: 100%; }
+.meupainel-cartao-corpo .grafico-linha { height: 100%; }
+
 /* ---------------------------------------------------------------- Catálogo Mestre */
 .catalogo-controles { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 14px; }
 .catalogo-busca { flex: 1 1 260px; font: 400 .92rem var(--fonte-texto); padding: 10px 14px; border: 1px solid var(--linha); border-radius: var(--raio); background: #fff; color: var(--ink); }
