@@ -101,7 +101,7 @@ img { max-width: 100%; display: block; }
 .login { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; min-height: 100dvh; }
 .login-form { display: flex; flex-direction: column; justify-content: center; padding: 48px clamp(24px, 8vw, 96px); background: #fff; }
 .login-form .marca { display: flex; flex-direction: column; margin-bottom: 40px; text-decoration: none; }
-.login-form .marca img { height: 34px; width: auto; margin-bottom: 10px; }
+.login-form .marca img { height: 34px; width: auto; align-self: flex-start; margin-bottom: 10px; }
 .login-form .marca strong { font: 800 1.6rem var(--fonte-titulo); color: var(--azul); }
 .login-form .marca span { color: var(--cinza-700); font-size: .9rem; }
 .login-lateral {
