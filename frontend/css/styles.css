@@ -434,6 +434,17 @@ img { max-width: 100%; display: block; }
 .mapa-tooltip strong { display: block; font: 700 .9rem var(--fonte-titulo); }
 .mapa-tooltip .valor { font: 800 1rem var(--fonte-titulo); color: #fff; }
 
+/* ---------------------------------------------------------------- FAQ do painel */
+.faq-lista { display: grid; gap: 22px; margin-top: 8px; }
+.faq-item h3 { font-size: 1rem; color: var(--azul); margin-bottom: 4px; }
+.faq-item p { margin: 0; color: var(--ink); }
+
+/* ---------------------------------------------------------------- contato */
+.contato-grade { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin-top: 18px; }
+.contato-bloco h3 { font-size: .95rem; color: var(--azul); margin-bottom: 8px; }
+.contato-bloco p { margin: 0 0 4px; font-size: .9rem; color: var(--ink); }
+.contato-bloco a { font-weight: 600; }
+
 /* ---------------------------------------------------------------- rodapé */
 .rodape { background: #fff; border-top: 1px solid var(--linha); padding: 32px 0; color: var(--ink-muda); font-size: .82rem; }
 .rodape .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
