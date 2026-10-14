@@ -37,6 +37,12 @@ jobs:
       - name: Instalar py7zr (extração de .7z do Novo CAGED)
         run: pip install py7zr
 
+      # pdftotext (poppler-utils) — extrai o texto dos boletins PDF do DIEESE
+      # (ICT, Greves, De Olho nas Negociações). Geralmente já vem no runner
+      # ubuntu-latest, mas instala explicitamente para não depender disso.
+      - name: Instalar poppler-utils (pdftotext, boletins PDF do DIEESE)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
       # --- Bloco 1 — Macroeconomia ---
       - name: Câmbio (BCB/SGS)
         continue-on-error: true
@@ -189,6 +195,18 @@ jobs:
       - name: "CURATED: Salário médio CAGED"
         continue-on-error: true
         run: python3 pipelines/curated/transformar_salario_caged.py
+
+      - name: "CURATED: ICT-DIEESE"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_ict_dieese.py
+
+      - name: "CURATED: Balanço das Greves"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_greves_dieese.py
+
+      - name: "CURATED: Reajustes e pisos salariais"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_negociacao_coletiva_dieese.py
 
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4

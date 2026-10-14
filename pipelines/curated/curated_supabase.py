@@ -30,7 +30,10 @@ indicador futuro precisar disso, reaproveitar `reconstruir_arquivo()` diretament
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
+import tempfile
+import unicodedata
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -108,6 +111,30 @@ def baixar_objeto_storage(storage_path: str) -> bytes:
     )
     with urllib.request.urlopen(req, timeout=120) as resposta:
         return resposta.read()
+
+
+# ------------------------------------------------------------------------
+# Extrair texto de um PDF (boletins institucionais do DIEESE — ICT, Greves,
+# De Olho nas Negociações). Usa o binário `pdftotext` (poppler-utils), já
+# confirmado presente no runner `ubuntu-latest` do GitHub Actions e instalado
+# localmente via MSYS2/Git for Windows. `-layout` preserva a posição
+# aproximada do texto na página — necessário porque esses boletins são
+# predominantemente gráficos, não texto corrido; `NFC` normaliza acentos
+# (alguns PDFs gerados por LibreOffice saem em NFD, o que quebra regex
+# literal contra o mesmo texto digitado em UTF-8 normal).
+# ------------------------------------------------------------------------
+def extrair_texto_pdf(conteudo_pdf: bytes) -> str:
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+        tmp.write(conteudo_pdf)
+        caminho_tmp = tmp.name
+    try:
+        resultado = subprocess.run(
+            ["pdftotext", "-layout", "-enc", "UTF-8", caminho_tmp, "-"],
+            capture_output=True, text=True, encoding="utf-8", check=True,
+        )
+    finally:
+        Path(caminho_tmp).unlink(missing_ok=True)
+    return unicodedata.normalize("NFC", resultado.stdout)
 
 
 # ------------------------------------------------------------------------

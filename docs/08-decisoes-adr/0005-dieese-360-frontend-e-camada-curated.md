@@ -104,9 +104,12 @@ trabalho interna), não o dado bruto. A home pública mostra só uma amostra cur
   território, escolaridade e faixa de renda; adiados deliberadamente para não triplicar
   o tempo de reprocessamento dos 79 meses de CAGED numa só rodada — ver
   `ESTADO_DO_PROJETO.md`, entrada de 2026-10-14 (tarde).
-- **Indicadores de fonte só-PDF** (ICT, Greves ×3, Reajustes, Pisos salariais) — exigem
-  extração texto→número de boletins PDF do próprio DIEESE, engenharia ainda não
-  construída neste projeto (diferente do parsing de JSON/CSV feito até aqui).
+- **Indicadores de fonte só-PDF** — resolvido parcialmente em 2026-10-14 (tarde): ICT,
+  total/horas de Greves, Reajustes (acima/abaixo do INPC) e Pisos salariais (médio/mediano)
+  agora têm transformação real, via extração de texto (`pdftotext`) de frases em prosa
+  isoladas fora da área dos gráficos. Greves por categoria/reivindicação (indicadores 30-31
+  do Catálogo Mestre) continuam sem transformação — exigiriam reconstruir dados de dentro
+  de gráfico, não testado como confiável nesta rodada.
 - **UCI/CNI e PEIC** — RAW é `.xlsx` binário, precisa de parser dedicado construído a
   partir da estrutura real da planilha, não adivinhado.
 - **PIB Mundial/FMI** — a resposta SDMX 3.0 capturada no RAW, inspecionada diretamente,
