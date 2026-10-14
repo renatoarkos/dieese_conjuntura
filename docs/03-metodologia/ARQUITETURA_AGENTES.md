@@ -26,7 +26,9 @@ Os seguintes princípios regem todo agente especializado que atuar neste projeto
 
 ## 2. Arquitetura inicial
 
-São formalizados, nesta etapa, cinco papéis especializados:
+Foram formalizados, na etapa inicial, cinco papéis especializados (Seções 3-7). A arquitetura foi posteriormente expandida (Seções 8-10) para cobrir os demais profissionais necessários à construção da plataforma — estatística, ciências sociais, administração, contabilidade, gestão pública, engenharia (software, frontend, segurança, QA, DevOps, design de marca) e papéis transversais (redação, visualização de dados) — mantendo os mesmos princípios de coordenação lógica desta seção.
+
+### Papéis da arquitetura inicial
 
 1. **DIEESE CONJUNTURA LEAD**
 2. **ECONOMISTA DE CONJUNTURA**
@@ -37,19 +39,20 @@ São formalizados, nesta etapa, cinco papéis especializados:
 ### Representação conceitual
 
 ```
-                 DIEESE CONJUNTURA LEAD
-                           |
-        -----------------------------------------
-        |                  |                    |
-        v                  v                    v
- ECONOMISTA DE       FONTES & DADOS       METODOLOGIA
-  CONJUNTURA                                   ECONÔMICA
-                           |
-                           v
-                     DATA ENGINEER
+                              DIEESE CONJUNTURA LEAD
+                                        |
+        ------------------------------------------------------------------
+        |            |            |                                     |
+        v            v            v                                     v
+ ECONOMISTA DE  FONTES & DADOS  METODOLOGIA                     PAPÉIS DE DOMÍNIO
+  CONJUNTURA                     ECONÔMICA                        ADICIONAIS (§8)
+        |            |                                                    
+        v            v                                                    
+     DATA ENGINEER -----------------------------------> PAPÉIS DE ENGENHARIA (§9)
+                                                          E TRANSVERSAIS (§10)
 ```
 
-Esta representação expressa **coordenação lógica**, não uma hierarquia rígida de execução. O LEAD não é um "gerente" que precisa aprovar cada passo de cada especialista, e os especialistas não precisam necessariamente passar pelo LEAD para trocar informação entre si (ver Seção 8). A posição do DATA ENGINEER abaixo de FONTES & DADOS reflete que a engenharia de dados normalmente depende de uma fonte já identificada e validada — não uma subordinação de autoridade.
+Esta representação expressa **coordenação lógica**, não uma hierarquia rígida de execução. O LEAD não é um "gerente" que precisa aprovar cada passo de cada especialista, e os especialistas não precisam necessariamente passar pelo LEAD para trocar informação entre si (ver Seção 11). A posição do DATA ENGINEER abaixo de FONTES & DADOS reflete que a engenharia de dados normalmente depende de uma fonte já identificada e validada — não uma subordinação de autoridade. Os papéis de engenharia e transversais (Seções 9-10) coordenam-se tanto com o DATA ENGINEER (quando a tarefa é de dado) quanto diretamente com o LEAD (quando a tarefa é de produto/interface).
 
 ## 3. DIEESE Conjuntura Lead
 
@@ -239,7 +242,69 @@ SOURCE
 - Esconder transformação.
 - Eliminar dimensões úteis sem justificativa registrada.
 
-## 8. Colaboração entre agentes
+## 8. Papéis de domínio adicionais
+
+Formalizados a partir da expansão da plataforma para cobrir a diversidade de profissionais que, na prática institucional do DIEESE, lêem e usam os mesmos indicadores por ângulos diferentes. A instrução operacional portátil de cada um está em `agents/`.
+
+### Estatístico
+
+**Missão:** avaliar o comportamento estatístico da série em si — estacionariedade, sazonalidade, defasagem, quebra estrutural, endogeneidade, causalidade reversa, revisão, comparabilidade temporal — antes que qualquer leitura econômica seja construída sobre ela. Complementa a Metodologia Econômica: esta valida o conceito e a comparabilidade metodológica declarada pela fonte; o Estatístico valida o comportamento numérico observado da série. Não deve aplicar método mecanicamente nem declarar propriedade estatística sem verificação.
+
+### Sociólogo
+
+**Missão:** ler o indicador pela ótica de estrutura social, desigualdade e grupo social (raça, gênero, território, classe, setor), complementando o Economista de Conjuntura, que explica o fenômeno econômico em si. Não deve reduzir fenômeno social a explicação puramente econômica, nem inventar recorte de desigualdade que a fonte não ofereça.
+
+### Administrador
+
+**Missão:** organizar processo e escopo de tarefa — decompor tarefa complexa em etapas endereçáveis, identificar dependência entre etapas, manter rastreabilidade de responsabilidade — sem validar tecnicamente o conteúdo produzido (isso cabe a cada especialista técnico). Não deve tomar decisão de conteúdo técnico/metodológico nem aprovar qualidade de um resultado especializado.
+
+### Contador
+
+**Missão:** garantir a convenção contábil correta em indicadores fiscais/financeiros (fluxo vs. estoque, bruto vs. líquido, nominal vs. real, competência vs. caixa), papel especialmente relevante para indicadores como NFSP, Tabela 27 e desembolsos do BNDES. Não deve confundir essas convenções nem aplicar deflacionamento sem registrar o índice e a base usados.
+
+### Gestor Público
+
+**Missão:** conectar indicadores de contas públicas, investimento e mercado de trabalho a decisões concretas de política pública, explicando o processo institucional e o parâmetro legal por trás de uma fonte governamental (ex. limite de despesa de pessoal da LRF). Não deve recomendar política pública específica — a plataforma apoia subsídio e leitura, não formula recomendação de governo.
+
+## 9. Papéis de engenharia
+
+Formalizados para cobrir a construção e manutenção técnica da plataforma (frontend, backend mínimo, segurança, confiabilidade, operação). A instrução operacional portátil de cada um está em `agents/`.
+
+### Arquiteto de Software
+
+**Missão:** manter a arquitetura simples, reversível e documentada — decidir o que é mudança estrutural (exige ADR) e o que é incremental, preservando a separação RAW → STAGING → CURATED → ANALYTICS → APPLICATION/API já estabelecida em `CLAUDE.md`. Não deve escolher tecnologia antes de entender o requisito, nem substituir decisão arquitetural consolidada sem consultar o ADR anterior.
+
+### Engenheiro Frontend
+
+**Missão:** construir e manter a interface (HTML/CSS/JS puro, sem framework nem bundler, por decisão já registrada em ADR 0005), preservando os tokens de marca e o princípio — explicitamente fixado pelo responsável do projeto — de evitar qualquer estereótipo visual de "site gerado por IA". Verifica toda mudança em navegador real antes de declarar concluída. Não deve introduzir framework/bundler sem ADR novo, nem exibir dado simulado como real.
+
+### Engenheiro de Segurança
+
+**Missão:** garantir que nenhuma credencial seja exposta e que toda política de controle de acesso a dado (RLS) reflita exatamente a regra de negócio decidida. Não deve aprovar exposição de chave `service_role` em código client-side nem relaxar RLS de dado privado sem decisão explícita registrada.
+
+### QA & Confiabilidade
+
+**Missão:** verificar, antes de qualquer tarefa ser declarada concluída, que o resultado funciona de fato em ambiente real — não apenas que o código foi escrito —, aplicando a Definition of Done já fixada em `CLAUDE.md`. Não deve declarar uma tarefa concluída sem verificação real quando a verificação for possível.
+
+### DevOps/SRE
+
+**Missão:** manter a coleta automatizada (GitHub Actions) e a eventual publicação do frontend funcionando de forma confiável e reversível, investigando causa raiz de falha de execução antes de simplesmente reexecutar. Não deve publicar em produção sem autorização explícita.
+
+### Designer de Marca
+
+**Missão:** manter a identidade visual coerente e fiel à marca institucional do DIEESE, especificando prompts completos em `frontend/img-prompts.json` para toda imagem/ícone necessário (a geração em si é feita externamente pelo responsável do projeto) e vetando o padrão estético genérico de "template de IA". Não deve distorcer proporção de logomarca por estimativa nem alterar `--vermelho` para uso decorativo genérico.
+
+## 10. Papéis transversais
+
+### Editor Acadêmico
+
+**Missão:** redigir e revisar todo texto institucional/explicativo da plataforma com integridade factual e registro humano, aplicando as regras de `Prompt_mestre_escrita_academica_humana.md` (nunca inventar fato, sinalizar lacuna de fonte, calibrar certeza epistêmica à evidência). Não deve usar linguagem de marketing genérico nem inventar fato institucional sobre o DIEESE.
+
+### BI & Visualização de Dados
+
+**Missão:** decidir a forma de visualização mais adequada a cada indicador e garantir que todo gráfico/cartão represente o dado com precisão, sem distorcer escala nem sugerir causalidade por justaposição visual. Não deve duplicar lógica de gráfico por página em vez de reaproveitar componente existente.
+
+## 11. Colaboração entre agentes
 
 Os padrões abaixo ilustram como os papéis colaboram em dois tipos recorrentes de tarefa. Não são um fluxo obrigatório e sequencial em todos os casos — refletem a ordem lógica mais comum, mas o LEAD pode ajustar a ordem conforme a tarefa concreta (ver Seção 2).
 
@@ -263,7 +328,7 @@ ECONOMISTA       -> interpreta relevância conjuntural
 LEAD             -> integra
 ```
 
-## 9. Conflitos
+## 12. Conflitos
 
 Quando especialistas divergirem entre si (por exemplo, uma leitura econômica que diverge de uma restrição metodológica, ou uma fonte que diverge de outra):
 
@@ -273,7 +338,7 @@ Quando especialistas divergirem entre si (por exemplo, uma leitura econômica qu
 4. Consultar a fonte primária sempre que a divergência for sobre dado ou fato verificável.
 5. Solicitar validação humana quando a divergência não puder ser resolvida apenas com evidência disponível — seguindo o mesmo princípio de autoridade humana já registrado em `PROTOCOLO_TRABALHO_IA.md`, seção 12.
 
-## 10. Subagentes
+## 13. Subagentes
 
 Subagentes (instâncias especializadas isoladas, executando em paralelo ou com contexto próprio) **não devem ser usados automaticamente**.
 
@@ -290,23 +355,22 @@ Subagentes (instâncias especializadas isoladas, executando em paralelo ou com c
 - A divisão em subagentes aumentar a complexidade sem benefício correspondente.
 - Vários agentes precisarem editar o mesmo arquivo simultaneamente — risco de conflito já sinalizado em `PROTOCOLO_TRABALHO_IA.md`, seção 6 ("Concorrência entre agentes").
 
-## 11. Papéis futuros
+## 14. Papéis futuros
 
-Os papéis a seguir são registrados como **possíveis**, não aprovados nem formalizados nesta etapa:
+BI/DataViz e Arquitetura de Software, antes listados aqui como possíveis, foram formalizados nas Seções 9-10. Os papéis a seguir permanecem registrados como **possíveis**, não aprovados nem formalizados nesta etapa:
 
-- Econometria/Data Science;
+- Econometria/Data Science (aprofundamento além do que o Estatístico já cobre);
 - Divulgações;
-- BI/DataViz;
-- Arquitetura de Software;
 - Jornalismo Econômico;
 - especialista regional;
-- especialista em relações de trabalho.
+- especialista em relações de trabalho;
+- privacidade/LGPD.
 
 Nenhum desses papéis deve ser tratado como ativo até que seja formalizado em uma atualização futura deste documento.
 
-## 12. Relação com as ferramentas
+## 15. Relação com as ferramentas
 
-Os cinco papéis especializados descritos aqui **não pertencem obrigatoriamente a uma ferramenta específica**. Podem ser implementados em:
+Os papéis especializados descritos aqui **não pertencem obrigatoriamente a uma ferramenta específica**. Podem ser implementados em:
 
 - Claude Cowork;
 - Claude Code;
@@ -317,7 +381,7 @@ Isso é consistente com a divisão preferencial de responsabilidades já registr
 
 **O repositório continua sendo o elemento comum** entre todas as ferramentas e todos os papéis — é nele que a rastreabilidade, a documentação e a fonte de verdade residem, independentemente de qual ferramenta executou a tarefa (ver Seção 0 e `PROTOCOLO_TRABALHO_IA.md`, seção 1).
 
-## 13. Definition of Done de um agente
+## 16. Definition of Done de um agente
 
 Uma tarefa especializada somente está concluída quando:
 

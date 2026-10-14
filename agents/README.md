@@ -6,13 +6,43 @@ Este diretório reúne as instruções operacionais portáteis dos papéis espec
 
 ## Agentes disponíveis
 
+**Coordenação**
+
 | Arquivo | Papel |
 |---|---|
 | `conjuntura-lead.md` | DIEESE Conjuntura Lead — coordenação multidisciplinar |
+
+**Dados e economia**
+
+| Arquivo | Papel |
+|---|---|
 | `economista-conjuntura.md` | Economista de Conjuntura — interpretação econômica |
 | `fontes-dados.md` | Especialista em Fontes & Dados — descoberta e validação de fontes |
 | `metodologia-economica.md` | Especialista em Metodologia Econômica — consistência conceitual e estatística |
 | `data-engineer.md` | Data Engineer — desenho e avaliação de engenharia de dados |
+| `estatistico.md` | Estatístico — comportamento estatístico da série (estacionariedade, sazonalidade, quebras) |
+| `sociologo.md` | Sociólogo — leitura do dado pela ótica de estrutura social e desigualdade |
+| `administrador.md` | Administrador — organização de processo e escopo de tarefa |
+| `contador.md` | Contador — convenção contábil (fluxo/estoque, bruto/líquido, nominal/real) |
+| `gestor-publico.md` | Gestor Público — conexão do indicador a política pública e processo institucional |
+
+**Engenharia**
+
+| Arquivo | Papel |
+|---|---|
+| `arquiteto-software.md` | Arquiteto de Software — estrutura, ADRs, simplicidade e reversibilidade |
+| `engenheiro-frontend.md` | Engenheiro Frontend — interface vanilla HTML/CSS/JS, acessibilidade |
+| `engenheiro-seguranca.md` | Engenheiro de Segurança — credenciais, RLS, superfície de ataque |
+| `qa-confiabilidade.md` | QA & Confiabilidade — verificação real antes de declarar concluído |
+| `devops-sre.md` | DevOps/SRE — CI de coleta, agendamento, deploy |
+| `designer-marca.md` | Designer de Marca — identidade visual, `img-prompts.json`, anti-estereótipo de IA |
+
+**Transversais**
+
+| Arquivo | Papel |
+|---|---|
+| `editor-academico.md` | Editor Acadêmico — redação institucional com integridade factual |
+| `bi-dataviz.md` | BI & Visualização de Dados — escolha e correção de visualização |
 
 A descrição completa de cada papel — missão, responsabilidades, limites, diagrama de coordenação, padrões de colaboração e protocolo de conflitos — está em `docs/03-metodologia/ARQUITETURA_AGENTES.md`. Os arquivos deste diretório são a versão operacional, pronta para ser usada como instrução de um agente; `ARQUITETURA_AGENTES.md` é a versão de referência, que explica o porquê da arquitetura.
 
@@ -34,6 +64,10 @@ Em qualquer conflito aparente entre o que está escrito nos arquivos deste diret
 ## Adaptação à sintaxe de cada ferramenta
 
 Os arquivos aqui são escritos em markdown simples e neutro, deliberadamente portáteis entre Claude Cowork, Claude Code, Antigravity e ambientes futuros. Cada ferramenta pode exigir uma sintaxe própria para declarar um agente (por exemplo, um cabeçalho de configuração específico, um formato de arquivo particular, ou um mecanismo de registro de subagente). **O conteúdo destes arquivos pode e deve ser adaptado a essa sintaxe específica quando necessário** — o que não pode mudar, nessa adaptação, é o conteúdo substantivo: missão, responsabilidades, procedimento, limites e regras obrigatórias registrados em cada um.
+
+### Camada nativa `.claude/agents/`
+
+`.claude/agents/` contém, para cada papel listado acima, um arquivo curto no formato nativo do Claude Code (título, `## Papel` resumido, `## Protocolo` fixo em 6 passos) que aponta de volta para o arquivo correspondente neste diretório como fonte da instrução completa. Essa camada existe para que o papel seja diretamente selecionável como agente no Claude Code sem duplicar o conteúdo substantivo — qualquer mudança de missão, responsabilidades, procedimento ou limites deve ser feita aqui, em `agents/`, nunca diretamente em `.claude/agents/`.
 
 ## Versionamento
 
