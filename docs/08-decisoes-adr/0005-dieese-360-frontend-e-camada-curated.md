@@ -19,6 +19,17 @@ também foram geradas e integradas (hero da home, ícone por dimensão, imagem l
 login). Verificado com Playwright contra o banco real: as 41 séries carregam e renderizam
 corretamente, agrupadas por dimensão, na página interna (`painel.html`).
 
+**Atualização 2026-10-14 (tarde)**: QF07, QF09 e QF10 resolvidas por comparação direta
+com a planilha interna mais recente do DIEESE (ver `migrations/0004_...sql`) — a camada
+CURATED chega a **46 séries**, agora cobrindo os 5 blocos (CAGED publicado pela primeira
+vez: salário médio real de admissão/desligamento, com recorte por sexo em
+`metadata.por_sexo`, calculado a partir do microdado bruto via `py7zr`, única dependência
+de terceiros do projeto). A exportação em Excel (`indicador.html`) foi reescrita com
+título, cores de marca e bloco de metodologia — troca de biblioteca de `xlsx.mini.min.js`
+(não escreve estilo) para `xlsx-js-style`. 35 notas metodológicas do catálogo foram
+enriquecidas com fonte/tabela/código exatos. QF04 e QF08 permanecem abertas — achados
+novos registrados em `ESTADO_DO_PROJETO.md`.
+
 ## Contexto
 
 O projeto tem 35 motores de coleta (`pipelines/ingestao/`) rodando em produção, mas nunca
@@ -84,9 +95,15 @@ trabalho interna), não o dado bruto. A home pública mostra só uma amostra cur
 
 ## O que este ADR NÃO resolve
 
-- **CAGED (bloco 5) com dado real** — única dimensão ainda sem série publicada; a
-  interface já mostra um estado "em construção" explícito para ela, não um cartão vazio
-  silencioso. A ingestão RAW já roda; falta só a camada de transformação.
+- **CAGED (bloco 5) — só 2 dos indicadores do bloco têm dado real** (salário médio de
+  admissão/desligamento, com recorte por sexo). O saldo de admissões/desligamentos por
+  grupamento de atividade (indicador 14 do Catálogo Mestre) continua sem transformação —
+  a ingestão RAW já roda; falta só o script de agregação, mesmo padrão já validado em
+  `transformar_salario_caged.py`.
+- **Recortes de microdado além de sexo** — o responsável do projeto pediu também
+  território, escolaridade e faixa de renda; adiados deliberadamente para não triplicar
+  o tempo de reprocessamento dos 79 meses de CAGED numa só rodada — ver
+  `ESTADO_DO_PROJETO.md`, entrada de 2026-10-14 (tarde).
 - **Indicadores de fonte só-PDF** (ICT, Greves ×3, Reajustes, Pisos salariais) — exigem
   extração texto→número de boletins PDF do próprio DIEESE, engenharia ainda não
   construída neste projeto (diferente do parsing de JSON/CSV feito até aqui).
@@ -96,8 +113,12 @@ trabalho interna), não o dado bruto. A home pública mostra só uma amostra cur
   não contém observações numéricas utilizáveis, só metadados de estrutura; a URL de
   coleta provavelmente precisa de ajuste (ex. `dimensionAtObservation=AllDimensions`)
   antes de um transform poder ser escrito corretamente.
-- **NFSP e PIB per capita** — bloqueados em decisão de metodologia do responsável
-  (QF07, QF08), não em engenharia.
+- **PIB per capita (QF08)** — a fonte real é "BCB-Depec" (confirmado pelo rótulo da
+  própria planilha do DIEESE), não SIDRA; endpoint/fórmula exata do BCB não localizada
+  nesta rodada — ver achado detalhado em `ESTADO_DO_PROJETO.md`.
+- **Rendimento médio real (QF04)** — achado novo: a aba real do DIEESE é um recorte por
+  Grande Região × categoria específica, não o total Brasil hoje publicado; precisa de
+  confirmação do DIEESE antes de mudar o recorte do indicador.
 - **Focus/Expectativas** — falta decidir a convenção de mês de referência antes de
   gravar a série.
 - Nenhum desses itens ganhou valor inventado para preencher a lacuna.

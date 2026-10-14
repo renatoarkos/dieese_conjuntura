@@ -31,6 +31,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Única dependência de terceiros do projeto (o resto é stdlib puro —
+      # ver ADR 0001/0002): py7zr, para extrair os microdados do Novo CAGED
+      # (.7z), usada só pela transformação curated de salário médio CAGED.
+      - name: Instalar py7zr (extração de .7z do Novo CAGED)
+        run: pip install py7zr
+
       # --- Bloco 1 — Macroeconomia ---
       - name: Câmbio (BCB/SGS)
         continue-on-error: true
@@ -68,6 +74,10 @@ jobs:
       - name: Endividamento — parte BCB (família RNDBF)
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_2_monetario_credito/coleta_endividamento_bcb.py
+
+      - name: NFSP (BCB/SGS 5760)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_2_monetario_credito/coleta_nfsp_bcb.py
 
       - name: Endividamento — parte PEIC (FecomercioSP)
         continue-on-error: true
@@ -152,6 +162,10 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/curated/transformar_endividamento_bcb.py
 
+      - name: "CURATED: NFSP"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_nfsp_bcb.py
+
       - name: "CURATED: Saldo de crédito SFN"
         continue-on-error: true
         run: python3 pipelines/curated/transformar_saldo_credito_sfn_bcb.py
@@ -171,6 +185,10 @@ jobs:
       - name: "CURATED: Preços de combustíveis"
         continue-on-error: true
         run: python3 pipelines/curated/transformar_combustiveis_anp.py
+
+      - name: "CURATED: Salário médio CAGED"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_salario_caged.py
 
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4

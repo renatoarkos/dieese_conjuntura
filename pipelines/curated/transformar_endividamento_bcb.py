@@ -1,18 +1,22 @@
 """Transformação CURATED do endividamento familiar — parte BCB (ADR 0005) — a partir
 do RAW gravado por
 `pipelines/ingestao/bloco_2_monetario_credito/coleta_endividamento_bcb.py`
-(BCB/SGS, família RNDBF, 3 séries candidatas).
+(BCB/SGS, família RNDBF, 5 séries).
 
 ===============================================================================
-POR QUE 3 INDICADORES SEPARADOS, NÃO UM SÓ "ENDIVIDAMENTO"
+POR QUE 5 INDICADORES SEPARADOS, NÃO UM SÓ "ENDIVIDAMENTO"
 ===============================================================================
-Qual destas 3 séries corresponde exatamente à "Tabela 27" citada pelo
-material do DIEESE não está confirmado (QF10, pendência não bloqueante — ver
-docs/00-visao-geral/ESTADO_DO_PROJETO.md). Publicar uma só, escolhida a dedo,
-seria inventar uma correspondência que não foi validada. Por isso as 3 viram
-indicadores próprios, cada um rotulado pelo que de fato mede — quando QF10
-for respondida, basta decidir qual (ou quais) manter em destaque, sem
-precisar refazer a coleta nem a transformação.
+**QF10 resolvida em 2026-10-14** por leitura direta da aba `T15` da planilha
+interna mais recente do DIEESE (leitura somente-leitura de
+`materiais/originais/dieese/`): a aba expõe uma linha "SGS" com os 4 códigos
+exatos que compõem a "Tabela 27" — 29037 e 29038 (Endividamento, Total e sem
+financiamento imobiliário) e 29034 e 29035 (Comprometimento de renda
+dessazonalizado, Total e sem financiamento imobiliário). O 5º código, 29265
+(comprometimento de renda SEM ajuste sazonal), não faz parte da Tabela 27 —
+é publicado como indicador complementar legítimo, claramente distinto, não
+como candidato ambíguo. Os 5 continuam como indicadores próprios (em vez de
+um "endividamento" único) porque medem coisas diferentes (saldo de dívida x
+comprometimento de renda; com x sem financiamento imobiliário).
 """
 
 import json
@@ -26,8 +30,10 @@ SCRIPT_ORIGEM = "pipelines/ingestao/bloco_2_monetario_credito/coleta_endividamen
 
 CODIGO_PARA_INDICADOR = {
     "29034": "comprometimento_renda_com_ajuste",
+    "29035": "comprometimento_renda_sem_imovel",
     "29265": "comprometimento_renda_sem_ajuste",
     "29037": "endividamento_familias_acumulado_12m",
+    "29038": "endividamento_familias_sem_imovel",
 }
 
 

@@ -18,22 +18,23 @@ A resposta é uma lista de objetos `{"data": "DD/MM/AAAA", "valor": "..."}`, um
 por observação, em ordem cronológica, sem cabeçalho.
 
 ===============================================================================
-POR QUE TRÊS SÉRIES PARA UM SÓ INDICADOR
+POR QUE CINCO SÉRIES PARA UM SÓ INDICADOR
 ===============================================================================
 Este script cobre a parte BCB do indicador "endividamento familiar" do
 material do DIEESE — a parte PEIC/FecomercioSP é coletada à parte, em
 `coleta_endividamento_peic_fecomercio.py`, neste mesmo bloco.
 
-O material do DIEESE cita esse indicador como "Tabela 27" — um rótulo interno
-do DIEESE, sem correspondência literal confirmada no catálogo do BCB. A
-família de séries RNDBF ("Indicadores de Endividamento e Comprometimento de
-Renda das Famílias", do Depec/BCB) é a candidata identificada como correspondente,
-com 3 séries confirmadas por teste real da API — mas qual delas (ou qual
-combinação) corresponde exatamente à "Tabela 27" do DIEESE não está
-confirmado com certeza (ver docs/04-fontes/bcb.md para mais detalhe). Por
-isso este script coleta as 3 como séries RAW separadas, sem decidir a
-combinação — essa decisão é uma transformação/curadoria que pertence à camada
-STAGING, não a esta coleta.
+O material do DIEESE cita esse indicador como "Tabela 27". **QF10 resolvida
+em 2026-10-14** por leitura direta da aba `T15` da planilha interna mais
+recente do DIEESE (`materiais/originais/dieese/`, leitura somente-leitura):
+a própria aba tem uma linha "SGS" expondo os 4 códigos exatos que compõem a
+Tabela 27 — 29037 (Endividamento — Total), 29038 (Endividamento — sem
+financiamento imobiliário), 29034 (Comprometimento de renda, dessazonalizado
+— Total) e 29035 (Comprometimento de renda, dessazonalizado — sem
+financiamento imobiliário). 29265 (comprometimento de renda, SEM ajuste
+sazonal) não faz parte da Tabela 27 — é mantido aqui como indicador
+complementar legítimo (dado real do BCB, só não é o que a Tabela 27 mostra),
+não como candidato ambíguo.
 
 ===============================================================================
 O QUE ESTE SCRIPT FAZ, PASSO A PASSO
@@ -61,9 +62,11 @@ from supabase_raw import registrar_coleta
 # nome oficial completo de cada série e o histórico da ambiguidade com a
 # "Tabela 27" do material do DIEESE.
 SERIES = {
-    "29034": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.29034/dados?formato=json",  # Comprometimento de renda, com ajuste sazonal
-    "29265": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.29265/dados?formato=json",  # Comprometimento de renda, sem ajuste sazonal
-    "29037": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.29037/dados?formato=json",  # Endividamento das famílias (acumulado 12 meses)
+    "29034": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.29034/dados?formato=json",  # Comprometimento de renda, dessazonalizado, Total (Tabela 27)
+    "29035": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.29035/dados?formato=json",  # Comprometimento de renda, dessazonalizado, sem financiamento imobiliário (Tabela 27)
+    "29265": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.29265/dados?formato=json",  # Comprometimento de renda, SEM ajuste sazonal (complementar, não é Tabela 27)
+    "29037": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.29037/dados?formato=json",  # Endividamento das famílias, Total (Tabela 27)
+    "29038": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.29038/dados?formato=json",  # Endividamento das famílias, sem financiamento imobiliário (Tabela 27)
 }
 
 DESTINO = Path(__file__).resolve().parents[3] / "data" / "raw" / "bcb_sgs"

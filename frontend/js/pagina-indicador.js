@@ -175,7 +175,8 @@
     });
     document.getElementById('btn-exportar').addEventListener('click', function () {
       var serieFiltrada = filtrarPorPeriodo(estado.serieCompleta, estado.periodo);
-      window.DIEESE360.exportarSerieExcel(indicador, serieFiltrada);
+      var rotuloPeriodo = (PERIODOS.filter(function (p) { return p.chave === estado.periodo; })[0] || {}).rotulo || 'Série completa';
+      window.DIEESE360.exportarSerieExcel(indicador, serieFiltrada, rotuloPeriodo);
     });
   }
 
