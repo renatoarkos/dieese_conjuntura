@@ -2,7 +2,12 @@
 
 ## Status
 
-Aceito e em implementação — 2026-10-14.
+Aceito e em implementação — 2026-10-14. **Parcialmente substituído em 2026-10-15 pelo
+ADR 0008** (`docs/08-decisoes-adr/0008-microdados-parquet-storage-duckdb-wasm.md`): a carga em
+Postgres estourou a cota de Database Size do plano gratuito do Supabase durante a execução real
+(ver ADR 0008 para o incidente e a nova decisão — microdado passa para Parquet em Supabase
+Storage, consultado via DuckDB-WASM no navegador). Este registro permanece como histórico da
+decisão original e não deve ser apagado.
 
 ## Contexto
 

@@ -95,7 +95,16 @@
       });
   }
 
+  var salvandoPainel = false; // trava reentrância: sem isto, 2 cliques rápidos (antes do 1º upsert
+  // responder) disparam 2 upserts concorrentes, ambos sem painelIdSalvo ainda
+  // definido — como a tabela não tem unique(usuario_id), isso cria 2 linhas
+  // duplicadas em paineis_customizados para a mesma conta (achado QA C05).
   function salvarPainel() {
+    if (salvandoPainel) return;
+    salvandoPainel = true;
+    var botao = document.getElementById('meupainel-salvar');
+    if (botao) botao.disabled = true;
+
     var layout = grid.save(false).map(function (n) {
       return { id: n.id, x: n.x, y: n.y, w: n.w, h: n.h };
     });
@@ -108,6 +117,9 @@
       mostrarStatus('Painel salvo.', '');
     }).catch(function (erro) {
       mostrarStatus(P.mensagemErro(erro), 'demo');
+    }).then(function () {
+      salvandoPainel = false;
+      if (botao) botao.disabled = false;
     });
   }
 
