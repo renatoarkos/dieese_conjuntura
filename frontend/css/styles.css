@@ -1100,6 +1100,13 @@ body.modal-ind-travado { overflow: hidden; }
 .catalogo-tabela a:hover { text-decoration: underline; }
 .catalogo-classif { display: inline-block; font: 700 .76rem var(--fonte-titulo); color: var(--ouro-hover); background: var(--ouro-50); padding: 2px 8px; border-radius: 4px; }
 
+/* ---------------------------------------------------------------- explorador de microdado (RAIS/CAGED) */
+.micro-controles { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; margin-bottom: 14px; }
+.micro-campo { display: flex; flex-direction: column; gap: 4px; }
+.micro-campo label { font: 700 .74rem var(--fonte-texto); text-transform: uppercase; letter-spacing: .04em; color: var(--cinza-700); }
+.micro-aviso { font-size: .82rem; color: var(--ink-muda); margin-bottom: 10px; min-height: 1.2em; }
+.micro-nota { font-size: .78rem; color: var(--ink-muda); margin-top: 14px; max-width: 72ch; }
+
 /* ---------------------------------------------------------------- rodapé */
 .rodape { background: #fff; border-top: 1px solid var(--linha); padding: 32px 0; color: var(--ink-muda); font-size: .82rem; }
 .rodape .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }

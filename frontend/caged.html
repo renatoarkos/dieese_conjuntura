@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Novo CAGED · DIEESE 360</title>
+  <meta name="theme-color" content="#030086">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+  <link rel="shortcut icon" href="assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=20261015a">
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="container">
+      <a class="marca-topo" href="index.html">
+        <img src="assets/brand/logo-dieese-wordmark.png" alt="DIEESE" width="117" height="24">
+        <strong>360</strong>
+        <span>painel interno</span>
+      </a>
+      <nav class="nav-topo">
+        <a class="nav-link" href="painel.html">Painel</a>
+        <a class="nav-link" href="meu-painel.html">Meu painel</a>
+        <a class="nav-link" href="catalogo.html">Catálogo</a>
+        <a class="nav-link" href="rais.html">RAIS</a>
+        <a class="nav-link" href="caged.html" aria-current="page">Novo CAGED</a>
+        <span id="usuario-nome" style="color:var(--cinza-700);font-size:.88rem"></span>
+        <a href="#" id="sair">Sair</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="secao" style="padding-bottom:0">
+    <div class="container">
+      <span class="hero-rotulo">Microdado completo</span>
+      <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);max-width:28ch">Novo CAGED — admissões e desligamentos, registro por registro</h1>
+      <p class="lead">Explore admissões, desligamentos e saldo por UF, ocupação, setor de atividade ou sexo, com salário médio de admissão deflacionado pelo IPCA. Cruzamento calculado no banco de dados, não no navegador.</p>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <div class="micro-controles">
+        <div class="micro-campo">
+          <label for="micro-corte">Ver por</label>
+          <select id="micro-corte" class="meupainel-seletor">
+            <option value="uf">UF</option>
+            <option value="cbo">Ocupação (grande grupo CBO)</option>
+            <option value="cnae">Setor (seção CNAE)</option>
+            <option value="sexo">Sexo</option>
+          </select>
+        </div>
+        <div class="micro-campo" id="micro-campo-uf">
+          <label for="micro-uf">Filtrar por UF</label>
+          <select id="micro-uf" class="meupainel-seletor">
+            <option value="">Todas as UFs</option>
+          </select>
+        </div>
+        <div class="micro-campo">
+          <label for="micro-competencia">Competência (AAAAMM, opcional)</label>
+          <input type="text" id="micro-competencia" class="meupainel-seletor" placeholder="ex. 202607" maxlength="6" style="max-width:160px">
+        </div>
+      </div>
+      <p class="micro-aviso" id="micro-status" aria-live="polite"></p>
+      <div class="catalogo-tabela-caixa">
+        <table class="catalogo-tabela" id="micro-tabela">
+          <thead><tr id="micro-cabecalho"></tr></thead>
+          <tbody id="micro-corpo"><tr><td>Carregando…</td></tr></tbody>
+        </table>
+      </div>
+      <p class="micro-nota">Sem competência selecionada, os números somam todos os meses já carregados. Salário real deflacionado pelo IPCA (número-índice derivado da série já publicada, base jan/2020) — deflator provisório, não confirmado como o que o próprio DIEESE usa para rendimentos.</p>
+    </div>
+  </section>
+
+  <script src="js/vendor/supabase.js"></script>
+  <script src="js/config.js?v=20261015a"></script>
+  <script src="js/app.js?v=20261015a"></script>
+  <script src="js/dados.js?v=20261015a"></script>
+  <script src="js/microdados.js?v=20261015a"></script>
+  <script src="js/caged.js?v=20261015a"></script>
+</body>
+</html>
