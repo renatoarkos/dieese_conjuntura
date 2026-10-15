@@ -1129,7 +1129,8 @@ body.modal-ind-travado { overflow: hidden; }
    num só bloco escuro, em vez de uma seção de conteúdo seguida de uma
    barra fina solta (pedido do responsável: "diagrame melhor esse rodapé"). */
 .rodape-completo { background: var(--azul); color: #fff; padding: 48px 0 0; margin-top: 56px; }
-.rodape-grade { display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 32px; padding-bottom: 40px; }
+.rodape-grade { display: grid; grid-template-columns: 1.3fr repeat(5, 1fr); gap: 28px; padding-bottom: 40px; }
+.rodape-em-construcao { font-size: .76rem !important; opacity: .65 !important; margin-top: 10px; border-top: 1px solid rgba(255, 255, 255, .15); padding-top: 10px; }
 .rodape-marca img { filter: brightness(0) invert(1); margin-bottom: 10px; }
 .rodape-marca strong { display: block; font: 800 1.3rem var(--fonte-titulo); }
 .rodape-marca span { display: block; font-size: .82rem; opacity: .75; margin-bottom: 14px; }
@@ -1147,7 +1148,7 @@ body.modal-ind-travado { overflow: hidden; }
 .rodape-link-rede svg { flex: 0 0 auto; fill: currentColor; }
 .rodape-barra { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 18px 0; border-top: 1px solid rgba(255, 255, 255, .18); font-size: .78rem; opacity: .75; }
 @media (max-width: 960px) {
-  .rodape-grade { grid-template-columns: repeat(2, 1fr); }
+  .rodape-grade { grid-template-columns: repeat(3, 1fr); }
   .rodape-marca { grid-column: 1 / -1; }
 }
 @media (max-width: 560px) {
