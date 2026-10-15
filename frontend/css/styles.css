@@ -202,7 +202,7 @@ img { max-width: 100%; display: block; }
 /* ---------------------------------------------------------------- resumo do dia — layout portal de dados
    Gráficos ganham mais espaço (2fr). Altas/Baixas fica em coluna compacta (0.7fr).
    Estilo: tabular, preciso, sem elementos decorativos desnecessários. */
-.resumo-dia { display: grid; grid-template-columns: 2fr 0.7fr; gap: 28px; align-items: start; margin-top: 24px; }
+.resumo-dia { display: grid; grid-template-columns: 1.6fr minmax(260px, 0.9fr); gap: 28px; align-items: start; margin-top: 24px; }
 .resumo-destaque {
   border: 1px solid var(--linha); border-top: 3px solid var(--azul); border-radius: 0; padding: 20px; background: #fff;
 }
@@ -213,12 +213,12 @@ img { max-width: 100%; display: block; }
 /* Grade completa de gráficos no quadro da esquerda — preenche 100% da área sem espaços vazios */
 .destaque-grade {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   flex: 1 1 auto;
 }
 @media (min-width: 1400px) {
-  .destaque-grade { grid-template-columns: repeat(4, 1fr); }
+  .destaque-grade { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
   .destaque-grade { grid-template-columns: 1fr; }
@@ -442,12 +442,19 @@ body.modal-ind-travado { overflow: hidden; }
   .modal-ind-info { overflow-y: visible; padding: 16px; }
 }
 
-/* Painel lateral de variações — compacto, coluna única empilhada */
+/* Painel lateral de variações — compacto, coluna única empilhada.
+   min-width:0 em cada nível é a correção, não um extra: sem ele, um nome de
+   indicador longo ("Reajustes salariais acima do INPC") trava a largura
+   mínima do item em flex/grid aninhado no tamanho do próprio conteúdo
+   (comportamento padrão do CSS, não um bug do navegador), e o texto acaba
+   espremido letra por letra — relatado pelo responsável do projeto,
+   2026-10-15, com captura de tela. */
 .resumo-variacoes {
   display: flex;
   flex-direction: column;
   gap: 12px;
   background: transparent;
+  min-width: 0;
 }
 .variacoes-coluna-bloco {
   border: 1px solid var(--linha);
@@ -457,6 +464,7 @@ body.modal-ind-travado { overflow: hidden; }
   background: #fff;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 .variacoes-coluna-bloco.altas { border-left-color: #16a34a; }
 .variacoes-coluna-bloco.baixas { border-left-color: #dc2626; }
@@ -482,14 +490,16 @@ body.modal-ind-travado { overflow: hidden; }
 .resumo-variacoes-lista {
   list-style: none; margin: 0; padding: 0;
   display: flex; flex-direction: column; gap: 2px;
+  min-width: 0;
 }
+.resumo-variacoes-lista li { min-width: 0; }
 .resumo-variacoes-linha {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: start;
-  gap: 6px;
+  gap: 8px;
   width: 100%;
-  padding: 6px 4px;
+  padding: 7px 4px;
   border-bottom: 1px solid var(--fundo-suave);
   background: none;
   border-top: none; border-left: none; border-right: none; border-radius: 0;
@@ -505,7 +515,7 @@ body.modal-ind-travado { overflow: hidden; }
   font: 700 0.7rem var(--fonte-titulo);
   color: var(--cinza-500);
   padding-top: 2px;
-  min-width: 20px;
+  min-width: 18px;
 }
 .rank-alta { color: #16a34a; }
 .rank-baixa { color: #dc2626; }
@@ -514,10 +524,14 @@ body.modal-ind-travado { overflow: hidden; }
   display: flex;
   flex-direction: column;
   line-height: 1.3;
+  min-width: 0;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .resumo-variacoes-linha .nome .vs-periodo {
   font-weight: 400; font-size: .66rem; color: var(--ink-muda); margin-top: 1px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .resumo-variacoes-linha .percentual {
   font-weight: 700;
@@ -532,7 +546,7 @@ body.modal-ind-travado { overflow: hidden; }
 @media (max-width: 960px) {
   .resumo-dia { grid-template-columns: 1fr; }
   .resumo-variacoes { flex-direction: row; gap: 12px; }
-  .variacoes-coluna-bloco { flex: 1 1 0; }
+  .variacoes-coluna-bloco { flex: 1 1 0; min-width: 0; }
 }
 @media (max-width: 580px) {
   .resumo-variacoes { flex-direction: column; }

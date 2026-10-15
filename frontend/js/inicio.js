@@ -129,7 +129,7 @@
     if (!linhas.length) return '<li><span class="nome">Nenhuma variação ' + (direcao === 'alta' ? 'positiva' : 'negativa') + ' no período.</span></li>';
     return linhas.map(function (l, idx) {
       var pos = idx + 1;
-      return '<li><button type="button" class="resumo-variacoes-linha ' + direcao + '" data-id="' + esc(l.indicador.id) + '">' +
+      return '<li><button type="button" class="resumo-variacoes-linha ' + direcao + '" data-id="' + esc(l.indicador.id) + '" title="' + esc(l.indicador.nome) + '">' +
         '<span class="rank-pos rank-' + direcao + '">#' + pos + '</span>' +
         '<span class="nome">' + esc(l.indicador.nome) + '<span class="vs-periodo">' + esc(vsPeriodo(l.indicador, l.variacao.anterior)) + '</span></span>' +
         '<span class="percentual ' + direcao + '">' + (direcao === 'alta' ? '▲ +' : '▼ -') + Math.abs(l.variacao.valor).toFixed(1) + ' ' + esc(l.variacao.sufixo) + '</span>' +
