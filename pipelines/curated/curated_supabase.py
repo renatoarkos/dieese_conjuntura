@@ -138,6 +138,23 @@ def extrair_texto_pdf(conteudo_pdf: bytes) -> str:
 
 
 # ------------------------------------------------------------------------
+# Ler uma série já publicada em indicadores_serie (usado por transformações
+# derivadas de outro indicador já na própria plataforma, ex. número-índice
+# do IPCA encadeado a partir da variação mensal já publicada — ver
+# derivar_ipca_numero_indice.py).
+# ------------------------------------------------------------------------
+def ler_serie_publicada(indicador_id: str) -> list[dict]:
+    _exigir_credenciais()
+    query = f"indicador_id=eq.{indicador_id}&select=data_referencia,valor&order=data_referencia.asc"
+    req = urllib.request.Request(
+        f"{_SUPABASE_URL}/rest/v1/indicadores_serie?{query}",
+        headers=_headers(),
+    )
+    with urllib.request.urlopen(req, timeout=60) as resposta:
+        return json.loads(resposta.read().decode("utf-8"))
+
+
+# ------------------------------------------------------------------------
 # Gravar pontos em indicadores_serie
 # ------------------------------------------------------------------------
 def registrar_serie(indicador_id: str, pontos: list[dict]) -> None:

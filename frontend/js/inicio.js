@@ -145,11 +145,9 @@
     alvo.innerHTML =
       '<div class="resumo-destaque">' +
       '<div class="destaque-topo-bloco">' +
-      '<div>' +
-      '<span class="hero-rotulo" style="margin-bottom:4px;display:inline-block">Termômetro da conjuntura</span>' +
+      '<span class="secao-kicker">Termômetro da conjuntura</span>' +
       '<h3>Indicadores em destaque</h3>' +
-      '<p class="destaque-subtitulo">Séries centrais atualizadas com gráficos analíticos completos. Clique em qualquer cartão para ver o gráfico ampliado e notas metodológicas.</p>' +
-      '</div>' +
+      '<p class="destaque-subtitulo">Clique em qualquer cartão para ver o gráfico ampliado e as notas metodológicas.</p>' +
       '</div>' +
       '<div class="destaque-grade" id="carrossel-destaque"><p class="aviso demo">Carregando indicadores…</p></div>' +
       '</div>' +
@@ -293,10 +291,31 @@
   function preencherCarrossel(chave, indicadoresDim, series) {
     var trilho = document.getElementById('carrossel-' + chave);
     if (!indicadoresDim.length) { trilho.innerHTML = D.montarCartaoDimensaoPendente(chave); return; }
+    var indicadoresPorId = {};
     trilho.innerHTML = indicadoresDim.map(function (ind) {
-      return '<div class="carrossel-item">' + window.DIEESE360.montarCartaoFlip(ind, series[ind.id] || []) + '</div>';
+      indicadoresPorId[ind.id] = ind;
+      return '<div class="carrossel-item" data-id="' + esc(ind.id) + '" role="button" tabindex="0" ' +
+        'aria-label="' + esc(ind.nome) + ', clique para ver gráfico ampliado e metodologia">' +
+        window.DIEESE360.montarCartaoFlip(ind, series[ind.id] || []) + '</div>';
     }).join('');
-    window.DIEESE360.ligarCartoesFlip(trilho);
+    // ADR 0007: clique abre o modal ampliado — nunca gira o cartão pequeno
+    trilho.querySelectorAll('.carrossel-item').forEach(function (item) {
+      function abrirModal() {
+        var id = item.getAttribute('data-id');
+        var ind = indicadoresPorId[id];
+        if (!ind) return;
+        D.carregarSerie(id, 36).then(function (serie) {
+          window.DIEESE360.abrirCartaoModal(ind, serie);
+        });
+      }
+      item.addEventListener('click', function (e) {
+        if (e.target.closest('a')) return;
+        abrirModal();
+      });
+      item.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirModal(); }
+      });
+    });
     ligarSetasCarrossel(trilho, document.getElementById('seta-ant-' + chave), document.getElementById('seta-prox-' + chave));
   }
 

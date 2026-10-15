@@ -121,19 +121,27 @@ img { max-width: 100%; display: block; }
   .login-lateral { display: none; }
 }
 
-/* ---------------------------------------------------------------- cabeçalho */
-.cabecalho { background: #fff; border-bottom: 1px solid var(--linha); position: sticky; top: 0; z-index: 50; }
-.cabecalho .container { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 24px; }
-.marca-topo { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0; }
-.marca-topo img { height: 28px; width: auto; flex: 0 0 auto; }
-.marca-topo strong { font: 800 1.3rem var(--fonte-titulo); color: var(--azul); white-space: nowrap; }
-.marca-topo span { color: var(--cinza-700); font-size: .82rem; display: none; }
+/* ---------------------------------------------------------------- cabeçalho — estilo portal de dados (FRED/World Bank/IBGE) */
+.cabecalho { background: #fff; border-bottom: 2px solid var(--azul); position: sticky; top: 0; z-index: 50; }
+.cabecalho .container { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 24px; height: 56px; }
+.marca-topo { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0; flex: 0 0 auto; }
+.marca-topo img { height: 26px; width: auto; flex: 0 0 auto; }
+.marca-topo strong { font: 800 1.25rem var(--fonte-titulo); color: var(--azul); white-space: nowrap; }
+.marca-topo span { color: var(--cinza-700); font-size: .8rem; padding-left: 10px; margin-left: 10px; border-left: 1px solid var(--linha); display: none; }
 @media (min-width: 640px) { .marca-topo span { display: inline; } }
-.nav-topo { display: flex; align-items: center; gap: 18px; flex: 0 0 auto; }
-.nav-topo a:not(.btn) { color: var(--ink); text-decoration: none; font-weight: 600; font-size: .92rem; }
-.nav-topo a:not(.btn):hover { color: var(--azul); }
-.nav-topo .nav-link { display: none; }
-@media (min-width: 560px) { .nav-topo .nav-link { display: inline; } }
+.nav-topo { display: flex; align-items: stretch; gap: 0; flex: 1 1 auto; justify-content: flex-end; height: 100%; }
+.nav-topo a:not(.btn) {
+  display: flex; align-items: center;
+  color: var(--cinza-700); text-decoration: none; font-weight: 600; font-size: .88rem;
+  padding: 0 14px; border-bottom: 3px solid transparent; transition: color .15s, border-color .15s;
+}
+.nav-topo a:not(.btn):hover { color: var(--azul); border-bottom-color: var(--azul); }
+.nav-topo .nav-link-ativo { color: var(--azul); border-bottom-color: var(--azul); }
+.nav-topo .nav-sep { width: 1px; background: var(--linha); margin: 12px 8px; flex: 0 0 auto; }
+.nav-topo-acoes { display: flex; align-items: center; gap: 10px; padding-left: 16px; border-left: 1px solid var(--linha); margin-left: 8px; }
+.nav-link { display: none; }
+@media (min-width: 680px) { .nav-link { display: flex; } }
+@media (min-width: 900px) { .nav-link-amplo { display: flex; } }
 
 /* ---------------------------------------------------------------- hero (home pública) */
 .hero { position: relative; padding: 72px 0 56px; overflow: hidden; background: linear-gradient(180deg, #fff 0%, var(--fundo-suave) 100%); }
@@ -150,6 +158,8 @@ img { max-width: 100%; display: block; }
 /* Kicker editorial (texto + régua), não selo-pílula — ver nota de design em
    memory/feedback_evitar_estereotipo_ia_design.md. */
 .hero-rotulo { display: block; color: var(--ouro-hover); font: 700 .78rem var(--fonte-titulo); letter-spacing: .08em; text-transform: uppercase; padding-bottom: 8px; border-bottom: 3px solid var(--ouro); margin-bottom: 20px; width: fit-content; }
+/* Kicker de seção — variante compacta do hero-rotulo, usada dentro de painéis */
+.secao-kicker { display: block; color: var(--cinza-500); font: 700 .72rem var(--fonte-titulo); letter-spacing: .09em; text-transform: uppercase; padding-bottom: 6px; border-bottom: 2px solid var(--azul-300); margin-bottom: 8px; width: fit-content; }
 .hero h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); max-width: 16ch; color: var(--ink); }
 .hero h1 .destaque { color: var(--azul); }
 .hero p.lead { font-size: 1.15rem; color: var(--cinza-700); max-width: 54ch; }
@@ -189,13 +199,12 @@ img { max-width: 100%; display: block; }
   .ticker-topo-trilho { animation: none; flex-wrap: wrap; width: 100%; }
 }
 
-/* ---------------------------------------------------------------- resumo do dia (destaque +
-   maiores variações) — tradução do bloco "Ibovespa" dos portais de mercado para dados reais do
-   catálogo: sem ações, sem criptoativos (fora da missão e das fontes do DIEESE). */
-.resumo-dia { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; align-items: stretch; margin-top: 24px; }
+/* ---------------------------------------------------------------- resumo do dia — layout portal de dados
+   Gráficos ganham mais espaço (2fr). Altas/Baixas fica em coluna compacta (0.7fr).
+   Estilo: tabular, preciso, sem elementos decorativos desnecessários. */
+.resumo-dia { display: grid; grid-template-columns: 2fr 0.7fr; gap: 28px; align-items: start; margin-top: 24px; }
 .resumo-destaque {
-  border: 1px solid var(--linha); border-radius: 18px; padding: 24px; background: #fff;
-  box-shadow: 0 4px 20px -2px rgba(3, 0, 134, 0.05); display: flex; flex-direction: column;
+  border: 1px solid var(--linha); border-top: 3px solid var(--azul); border-radius: 0; padding: 20px; background: #fff;
 }
 .destaque-topo-bloco { margin-bottom: 20px; }
 .destaque-topo-bloco h3 { font: 700 1.35rem var(--fonte-titulo); color: var(--azul); margin: 6px 0 4px; }
@@ -215,149 +224,318 @@ img { max-width: 100%; display: block; }
   .destaque-grade { grid-template-columns: 1fr; }
 }
 
+/* Cartões de destaque: mais altos, gráfico ocupa o espaço todo */
 .destaque-card-wrapper {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  transition: transform .2s ease, box-shadow .2s ease;
+  border-radius: 0;
+  transition: box-shadow .18s ease;
 }
 .destaque-card-wrapper:hover {
-  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(3, 0, 134, .14);
+  z-index: 1;
 }
 .destaque-cartao-flip {
-  height: 270px;
+  height: 300px;
   width: 100%;
 }
-.destaque-cartao-flip .cartao-flip-frente,
-.destaque-cartao-flip .cartao-flip-verso {
-  padding: 16px;
+.destaque-cartao-flip .cartao-flip-frente {
+  padding: 14px 16px;
+  border-radius: 0;
+  border-radius: var(--raio);
 }
 .destaque-cartao-flip .cartao-valor {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   margin-top: 4px;
 }
 .destaque-cartao-flip .cartao-flip-grafico-area {
-  min-height: 110px;
+  min-height: 140px;
   flex: 1 1 auto;
 }
 
-/* Modal ampliado para visualização em alta resolução */
-.cartao-modal-fundo {
-  position: fixed; inset: 0; background: rgba(3, 0, 134, .65); backdrop-filter: blur(4px); z-index: 200;
-  display: flex; align-items: center; justify-content: center; padding: 24px;
-  opacity: 0; pointer-events: none; transition: opacity .2s;
-}
-.cartao-modal-fundo.aberto { opacity: 1; pointer-events: auto; }
-.cartao-modal-caixa { position: relative; width: min(640px, 94vw); max-height: 90vh; }
-.cartao-modal-caixa .cartao-modal-cartao { height: 500px; }
-.cartao-modal-caixa .cartao-modal-cartao .cartao-flip-grafico-area { min-height: 220px; }
-.cartao-modal-fechar {
-  position: absolute; top: -14px; right: -14px; z-index: 10;
-  width: 34px; height: 34px; border-radius: 999px; border: 1px solid var(--linha); background: #fff; color: var(--azul);
-  font-size: 1.2rem; font-weight: 700; line-height: 1; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+/* ====================================================================
+   MODAL DE INDICADOR AMPLIADO — ADR 0007 (REGRA PERMANENTE)
+   Dois painéis: gráfico (esquerda, 60%) + metodologia (direita, 40%).
+   Nunca usar flip in-place com scrollbar em cartão pequeno.
+   ==================================================================== */
+.modal-ind-fundo {
+  position: fixed; inset: 0;
+  background: rgba(2, 0, 60, .72);
+  backdrop-filter: blur(3px);
+  z-index: 300;
   display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .22s ease;
 }
-.cartao-modal-fechar:hover { background: var(--vermelho); color: #fff; }
-body.cartao-modal-travado { overflow: hidden; }
+.modal-ind-fundo.aberto {
+  opacity: 1; pointer-events: auto;
+}
+.modal-ind-fundo.aberto .modal-ind-caixa {
+  transform: translateY(0);
+}
+.modal-ind-caixa {
+  position: relative;
+  width: min(960px, 96vw);
+  max-height: 90vh;
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-top: 3px solid var(--azul);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(3, 0, 134, .28);
+  transform: translateY(16px);
+  transition: transform .28s cubic-bezier(.2,.8,.2,1);
+}
+body.modal-ind-travado { overflow: hidden; }
 
-/* Quadro da direita: DUAS colunas lado a lado para Maiores Altas e Maiores Baixas */
-.resumo-variacoes {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+/* Topo do modal: nome + valor + badge + fechar */
+.modal-ind-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
   gap: 16px;
-  border: none;
-  padding: 0;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--linha);
+  background: var(--fundo-suave);
+  flex: 0 0 auto;
+}
+.modal-ind-kicker {
+  display: block;
+  font: 700 .72rem var(--fonte-titulo);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--cinza-500);
+  margin-bottom: 4px;
+}
+.modal-ind-titulo {
+  font: 700 1.2rem var(--fonte-titulo);
+  color: var(--azul);
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+.modal-ind-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.modal-ind-valor {
+  font: 800 2rem var(--fonte-titulo);
+  color: var(--azul);
+  line-height: 1;
+}
+.modal-ind-stat-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.modal-ind-data {
+  font-size: .8rem;
+  color: var(--cinza-500);
+}
+.modal-ind-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 700 .82rem var(--fonte-titulo);
+  padding: 3px 8px;
+  border-left: 3px solid;
+  font-variant-numeric: tabular-nums;
+}
+.modal-badge-alta { background: #f0faf2; border-color: #16a34a; color: #15803d; }
+.modal-badge-baixa { background: #fef2f2; border-color: #dc2626; color: #b91c1c; }
+.modal-badge-neutra { background: var(--fundo-suave); border-color: var(--cinza-500); color: var(--cinza-700); }
+.modal-ind-fechar {
+  flex: 0 0 auto;
+  width: 32px; height: 32px;
+  border: 1px solid var(--linha);
+  background: #fff;
+  color: var(--cinza-700);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 2px;
+  transition: background .14s, color .14s;
+}
+.modal-ind-fechar:hover { background: var(--vermelho); color: #fff; border-color: var(--vermelho); }
+
+/* Corpo: gráfico à esquerda, info à direita */
+.modal-ind-corpo {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  flex: 1 1 auto;
+  overflow: hidden;
+  min-height: 0;
+}
+.modal-ind-grafico-area {
+  border-right: 1px solid var(--linha);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.modal-ind-grafico-caixa {
+  flex: 1 1 auto;
+  min-height: 260px;
+  position: relative;
+}
+.modal-grafico-vazio {
+  color: var(--cinza-500);
+  font-size: .88rem;
+  margin-top: 24px;
+  text-align: center;
+}
+.modal-ind-info {
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #fff;
+}
+.modal-ind-secao {
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--fundo-suave);
+}
+.modal-ind-secao:last-of-type { border-bottom: none; }
+.modal-ind-secao h3 {
+  font: 700 .76rem var(--fonte-titulo);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--cinza-500);
+  margin: 0 0 6px;
+}
+.modal-ind-secao p {
+  font-size: .88rem;
+  color: var(--ink);
+  line-height: 1.55;
+  margin: 0;
+}
+.modal-ind-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px 12px;
+  font-size: .86rem;
+  margin: 0;
+}
+.modal-ind-dl dt { color: var(--cinza-500); white-space: nowrap; }
+.modal-ind-dl dd { margin: 0; font-weight: 600; }
+.modal-ind-link-completo {
+  display: inline-block;
+  margin-top: auto;
+  padding-top: 16px;
+  font: 700 .84rem var(--fonte-titulo);
+  color: var(--azul);
+  text-decoration: none;
+  border-top: 1px solid var(--linha);
+}
+.modal-ind-link-completo:hover { text-decoration: underline; }
+@media (max-width: 720px) {
+  .modal-ind-corpo { grid-template-columns: 1fr; grid-template-rows: 280px 1fr; overflow-y: auto; }
+  .modal-ind-grafico-area { border-right: none; border-bottom: 1px solid var(--linha); padding: 16px; }
+  .modal-ind-info { overflow-y: visible; padding: 16px; }
+}
+
+/* Painel lateral de variações — compacto, coluna única empilhada */
+.resumo-variacoes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   background: transparent;
 }
 .variacoes-coluna-bloco {
   border: 1px solid var(--linha);
-  border-radius: 18px;
-  padding: 18px 16px;
+  border-radius: 2px;
+  border-left: 3px solid;
+  padding: 14px 12px;
   background: #fff;
-  box-shadow: 0 4px 20px -2px rgba(3, 0, 134, 0.05);
   display: flex;
   flex-direction: column;
 }
-.variacoes-coluna-bloco.altas { border-top: 4px solid #16a34a; }
-.variacoes-coluna-bloco.baixas { border-top: 4px solid #dc2626; }
+.variacoes-coluna-bloco.altas { border-left-color: #16a34a; }
+.variacoes-coluna-bloco.baixas { border-left-color: #dc2626; }
 
 .variacoes-cabecalho {
-  margin-bottom: 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--fundo-suave);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--linha);
 }
 .variacoes-tag-topo {
   display: inline-block;
-  font: 700 0.68rem var(--fonte-titulo);
+  font: 700 0.66rem var(--fonte-titulo);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 3px 8px;
-  border-radius: 20px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+  color: var(--cinza-500);
 }
-.tag-alta { background: rgba(22, 163, 74, 0.12); color: #15803d; }
-.tag-baixa { background: rgba(220, 38, 38, 0.12); color: #b91c1c; }
-.variacoes-cabecalho h4 { font: 700 1.05rem var(--fonte-titulo); color: var(--azul); margin: 0 0 2px; }
-.variacoes-desc { font-size: 0.72rem; color: var(--cinza-700); }
+.tag-alta { color: #15803d; }
+.tag-baixa { color: #b91c1c; }
+.variacoes-cabecalho h4 { font: 700 .92rem var(--fonte-titulo); color: var(--azul); margin: 0 0 1px; }
+.variacoes-desc { font-size: 0.7rem; color: var(--cinza-700); }
 
 .resumo-variacoes-lista {
-  list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 2px;
 }
 .resumo-variacoes-linha {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 8px;
+  align-items: start;
+  gap: 6px;
   width: 100%;
-  padding: 8px 10px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 10px;
-  background: #fafbfe;
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--fundo-suave);
+  background: none;
+  border-top: none; border-left: none; border-right: none; border-radius: 0;
   color: var(--ink);
   font: inherit;
-  font-size: .84rem;
+  font-size: .82rem;
   text-align: left;
   cursor: pointer;
-  transition: all .16s ease;
+  transition: background .12s;
 }
-.resumo-variacoes-linha:hover {
-  background: #f0f4ff;
-  border-color: var(--azul-300);
-  transform: translateX(2px);
-}
+.resumo-variacoes-linha:hover { background: var(--fundo-suave); }
 .rank-pos {
-  font: 800 0.72rem var(--fonte-titulo);
-  padding: 3px 6px;
-  border-radius: 6px;
-  line-height: 1;
+  font: 700 0.7rem var(--fonte-titulo);
+  color: var(--cinza-500);
+  padding-top: 2px;
+  min-width: 20px;
 }
-.rank-alta { background: rgba(22, 163, 74, 0.14); color: #15803d; }
-.rank-baixa { background: rgba(220, 38, 38, 0.14); color: #b91c1c; }
+.rank-alta { color: #16a34a; }
+.rank-baixa { color: #dc2626; }
 .resumo-variacoes-linha .nome {
   font-weight: 600;
   display: flex;
   flex-direction: column;
-  line-height: 1.25;
+  line-height: 1.3;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 .resumo-variacoes-linha .nome .vs-periodo {
-  font-weight: 400; font-size: .68rem; color: var(--ink-muda); margin-top: 2px;
+  font-weight: 400; font-size: .66rem; color: var(--ink-muda); margin-top: 1px;
 }
 .resumo-variacoes-linha .percentual {
   font-weight: 700;
-  font-size: .82rem;
+  font-size: .8rem;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  padding-top: 2px;
 }
 .resumo-variacoes-linha .percentual.alta { color: #15803d; }
 .resumo-variacoes-linha .percentual.baixa { color: #b91c1c; }
 
 @media (max-width: 960px) {
   .resumo-dia { grid-template-columns: 1fr; }
+  .resumo-variacoes { flex-direction: row; gap: 12px; }
+  .variacoes-coluna-bloco { flex: 1 1 0; }
 }
 @media (max-width: 580px) {
-  .resumo-variacoes { grid-template-columns: 1fr; }
+  .resumo-variacoes { flex-direction: column; }
 }
 
 /* ---------------------------------------------------------------- carrossel por dimensão
@@ -647,34 +825,32 @@ body.cartao-modal-travado { overflow: hidden; }
 .cartao-sparkline circle { fill: var(--azul); }
 .cartao-dica { margin-top: 8px; font-size: .7rem; color: var(--azul-300); text-align: right; }
 
-/* -------- cartão giratório (flip in-place) — só na amostra pública da
-   home (index.html). Clique gira o cartão no próprio lugar, sem navegar —
-   ver js/cartao-flip.js. O cartão-resumo (acima) continua sendo usado no
-   painel interno, que navega para a página completa do indicador. -------- */
-.cartao-flip { height: 100%; min-height: 240px; perspective: 1400px; }
-.cartao-flip-interior {
-  position: relative; width: 100%; height: 100%; min-height: 240px; cursor: pointer;
-  transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+/* -------- Cartão de indicador (frente apenas — ADR 0007)
+   Sem flip in-place. O verso e toda a metodologia ficam no modal ampliado.
+   Clique em qualquer cartão → window.DIEESE360.abrirCartaoModal() -------- */
+.cartao-flip {
+  height: 100%; min-height: 240px; cursor: pointer;
+  border: 1px solid var(--linha);
+  background: #fff;
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  transition: box-shadow .16s, border-color .16s;
 }
-.cartao-flip.virado .cartao-flip-interior { transform: rotateY(180deg); }
-.cartao-flip-interior:focus-visible { outline: 3px solid var(--azul-300); outline-offset: 4px; }
-.cartao-flip-frente, .cartao-flip-verso {
-  position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
-  border-radius: var(--raio); border: 1px solid var(--linha); background: #fff; box-shadow: var(--sombra);
-  padding: 16px 18px; display: flex; flex-direction: column; overflow: hidden;
+.cartao-flip:hover { border-color: var(--azul-300); box-shadow: 0 4px 14px rgba(3,0,134,.12); }
+.cartao-flip-frente {
+  height: 100%;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
-.cartao-flip-frente:hover, .cartao-flip-interior:hover .cartao-flip-frente { border-color: var(--azul-300); }
-.cartao-flip-verso { transform: rotateY(180deg); overflow-y: auto; gap: 8px; }
-.cartao-flip-verso .cartao-rotulo { flex: 0 0 auto; }
-.cartao-flip-conceito { font-size: .84rem; color: var(--ink); line-height: 1.45; margin: 0; }
-.cartao-flip-meta { display: grid; grid-template-columns: auto 1fr; gap: 3px 8px; font-size: .78rem; margin: 0; }
-.cartao-flip-meta dt { color: var(--ink-muda); }
-.cartao-flip-meta dd { margin: 0; font-weight: 600; }
-.cartao-flip-comparacao { background: var(--azul-50); border-radius: 8px; padding: 8px 10px; font-size: .82rem; font-weight: 600; color: var(--azul); margin: 0; }
-.cartao-flip-link { margin-top: auto; font-size: .78rem; font-weight: 700; color: var(--azul); align-self: flex-start; }
-@media (prefers-reduced-motion: reduce) {
-  .cartao-flip-interior { transition: none; }
+.cartao-flip-grafico-area {
+  flex: 1 1 auto;
+  min-height: 100px;
+  margin-top: 8px;
 }
+/* Mantido para compatibilidade — não é exibido */
+.cartao-flip-verso { display: none; }
 
 /* -------- painel de detalhe: 2 cartões (informação + gráfico) -------- */
 .detalhe-fundo { position: fixed; inset: 0; z-index: 90; background: rgba(6, 6, 36, .55); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
