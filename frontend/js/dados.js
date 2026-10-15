@@ -35,29 +35,34 @@
       });
   }
 
-  // Busca a série de VÁRIOS indicadores numa única consulta (um "in"), em vez
-  // de uma consulta por indicador — a home tem 55 indicadores publicados, e
-  // 55 requisições em paralelo é o que deixava "Resumo do dia" preso em
-  // "carregando" (relatado pelo responsável do projeto, 2026-10-14). O corte
-  // por indicador acontece no cliente, não dá pra pedir "últimos N por grupo"
-  // direto no PostgREST sem uma function/RPC nova.
+  // Busca a série de VÁRIOS indicadores numa única consulta, em vez de uma
+  // consulta por indicador — a home tem 55 indicadores publicados, e 55
+  // requisições em paralelo é o que deixava "Resumo do dia" preso em
+  // "carregando" (relatado pelo responsável do projeto, 2026-10-14).
+  //
+  // Usa a função indicadores_serie_recentes (migração 0008), não uma
+  // consulta direta à tabela: o PostgREST corta em 1.000 linhas por padrão,
+  // e indicadores_serie já passa de 9.800 linhas no total — uma consulta
+  // "in(...) order by data desc" sem essa function corta pelas 1.000 linhas
+  // mais recentes DE TODA A CONSULTA, não 1.000 por indicador, derrubando
+  // silenciosamente indicadores de periodicidade mais espaçada (anual,
+  // quadrimestral) do ticker/carrossel. Achado em auditoria externa
+  // (2026-10-15, item C08). A function faz o corte "últimos N por
+  // indicador" no banco via window function — nunca depende de quantas
+  // linhas o PostgREST decide devolver.
   function carregarSeriesPorIndicadores(indicadorIds, limitePorIndicador) {
     if (!indicadorIds.length) return Promise.resolve({});
-    return P.sb.from('indicadores_serie').select('indicador_id, data_referencia, valor, metadata')
-      .in('indicador_id', indicadorIds)
-      .order('data_referencia', { ascending: false })
-      .then(function (r) {
-        if (r.error) throw r.error;
-        var porId = {};
-        (r.data || []).forEach(function (linha) {
-          (porId[linha.indicador_id] = porId[linha.indicador_id] || []).push(linha);
-        });
-        var limite = limitePorIndicador || 24;
-        Object.keys(porId).forEach(function (id) {
-          porId[id] = porId[id].slice(0, limite).reverse(); // cronológico (mais antigo primeiro)
-        });
-        return porId;
+    return P.sb.rpc('indicadores_serie_recentes', {
+      p_indicador_ids: indicadorIds,
+      p_limite: limitePorIndicador || 24
+    }).then(function (r) {
+      if (r.error) throw r.error;
+      var porId = {};
+      (r.data || []).forEach(function (linha) {
+        (porId[linha.indicador_id] = porId[linha.indicador_id] || []).push(linha);
       });
+      return porId; // já vem cronológico (mais antigo primeiro) da function
+    });
   }
 
   // ------------------------------------------------------------------
@@ -67,24 +72,40 @@
     return valor.toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
   }
 
+  // Sem balde "mil": um salário de R$ 1.951 virando "R$ 2,0 mil" não é mais
+  // legível, é menos preciso (perde os centavos) e lê estranho para uma
+  // remuneração individual — achado em auditoria externa (2026-10-15, item
+  // C03). Só compacta a partir de milhão, faixa em que BNDES/balança/saldo
+  // de crédito realmente precisam de um número mais curto.
   function formatarCompacto(valor, casasPequenas) {
     var abs = Math.abs(valor);
     if (abs >= 1e9) return formatarNumero(valor / 1e9, 1) + ' bi';
     if (abs >= 1e6) return formatarNumero(valor / 1e6, 1) + ' mi';
-    if (abs >= 1e3) return formatarNumero(valor / 1e3, 1) + ' mil';
     return formatarNumero(valor, casasPequenas == null ? 1 : casasPequenas);
   }
 
   // A unidade do catálogo decide o formato — ver migração 0002 para os valores
   // possíveis. Números grandes (R$/US$, ex. BNDES/balança) entram no formato
   // compacto; valores pequenos de moeda (ex. câmbio, ~R$ 5) usam 2 casas, para
-  // não perder a precisão que importa numa cotação — os demais mostram 1 casa.
+  // não perder a precisão que importa numa cotação.
+  //
+  // "R$ milhões" (ver migração — unidade corrigida em 6 indicadores de saldo
+  // de crédito do SFN, 2026-10-15, item C01): o valor bruto já vem em
+  // milhões de reais na própria fonte (BCB/SGS) — formatarCompacto espera
+  // reais, não milhões, então o valor precisa ser multiplicado de volta
+  // antes de formatar, senão o número sai mil vezes menor que o real
+  // (R$ 7,4 mi em vez de R$ 7,4 tri, o bug relatado pela auditoria).
+  //
+  // "%": 2 casas, não 1 — IPCA, Selic, taxa de desocupação etc. são
+  // publicados pela fonte oficial com 2 casas; arredondar para 1 descarta
+  // precisão real do dado (item C03).
   function formatarValor(indicador, valor) {
     var unidade = indicador.unidade || '';
-    if (unidade.indexOf('%') >= 0) return formatarNumero(valor, 1) + '%';
+    if (unidade.indexOf('%') >= 0) return formatarNumero(valor, 2) + '%';
+    if (unidade.indexOf('R$ milhões') === 0) return 'R$ ' + formatarCompacto(valor * 1e6, 2);
     if (unidade.indexOf('R$') === 0) return 'R$ ' + formatarCompacto(valor, 2);
     if (unidade.indexOf('US$') === 0) return 'US$ ' + formatarCompacto(valor, 2);
-    return formatarNumero(valor, 1);
+    return formatarNumero(valor, Math.abs(valor) < 10 ? 2 : 1);
   }
 
   // Versão compacta da data, para eixo/tooltip do gráfico (não repete o
