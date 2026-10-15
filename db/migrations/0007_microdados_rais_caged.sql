@@ -53,6 +53,7 @@ create index if not exists idx_rais_vinculos_ativo on rais_vinculos (vinculo_ati
 
 alter table rais_vinculos enable row level security;
 
+drop policy if exists "rais_vinculos: leitura autenticada" on rais_vinculos;
 create policy "rais_vinculos: leitura autenticada"
     on rais_vinculos for select
     to authenticated
@@ -89,6 +90,7 @@ create index if not exists idx_caged_mov_sexo on caged_movimentacoes (sexo_codig
 
 alter table caged_movimentacoes enable row level security;
 
+drop policy if exists "caged_movimentacoes: leitura autenticada" on caged_movimentacoes;
 create policy "caged_movimentacoes: leitura autenticada"
     on caged_movimentacoes for select
     to authenticated
@@ -107,7 +109,9 @@ create policy "caged_movimentacoes: leitura autenticada"
 create or replace function rais_por_uf(p_ano smallint default null)
 returns table (uf text, vinculos bigint, remuneracao_media_nominal numeric, remuneracao_media_real numeric)
 language sql stable security invoker as $$
-    select uf_trab, count(*), round(avg(vl_rem_dezembro_nom), 2), round(avg(vl_rem_dezembro_real), 2)
+    select uf_trab as uf, count(*) as vinculos,
+           round(avg(vl_rem_dezembro_nom), 2) as remuneracao_media_nominal,
+           round(avg(vl_rem_dezembro_real), 2) as remuneracao_media_real
     from rais_vinculos
     where vinculo_ativo_3112 and (p_ano is null or ano = p_ano)
     group by uf_trab
@@ -117,7 +121,9 @@ $$;
 create or replace function rais_por_cbo(p_ano smallint default null, p_uf text default null)
 returns table (cbo_grande_grupo text, vinculos bigint, remuneracao_media_nominal numeric, remuneracao_media_real numeric)
 language sql stable security invoker as $$
-    select cbo_2002_grande_grupo, count(*), round(avg(vl_rem_dezembro_nom), 2), round(avg(vl_rem_dezembro_real), 2)
+    select cbo_2002_grande_grupo as cbo_grande_grupo, count(*) as vinculos,
+           round(avg(vl_rem_dezembro_nom), 2) as remuneracao_media_nominal,
+           round(avg(vl_rem_dezembro_real), 2) as remuneracao_media_real
     from rais_vinculos
     where vinculo_ativo_3112 and (p_ano is null or ano = p_ano) and (p_uf is null or uf_trab = p_uf)
     group by cbo_2002_grande_grupo
@@ -127,7 +133,9 @@ $$;
 create or replace function rais_por_cnae(p_ano smallint default null, p_uf text default null)
 returns table (cnae_divisao text, vinculos bigint, remuneracao_media_nominal numeric, remuneracao_media_real numeric)
 language sql stable security invoker as $$
-    select cnae20_divisao, count(*), round(avg(vl_rem_dezembro_nom), 2), round(avg(vl_rem_dezembro_real), 2)
+    select cnae20_divisao as cnae_divisao, count(*) as vinculos,
+           round(avg(vl_rem_dezembro_nom), 2) as remuneracao_media_nominal,
+           round(avg(vl_rem_dezembro_real), 2) as remuneracao_media_real
     from rais_vinculos
     where vinculo_ativo_3112 and (p_ano is null or ano = p_ano) and (p_uf is null or uf_trab = p_uf)
     group by cnae20_divisao
@@ -148,10 +156,10 @@ create or replace function caged_por_uf(p_competencia text default null)
 returns table (uf text, admissoes bigint, desligamentos bigint, saldo bigint, salario_medio_admissao_real numeric)
 language sql stable security invoker as $$
     select uf,
-           count(*) filter (where saldo_movimentacao = 1),
-           count(*) filter (where saldo_movimentacao = -1),
-           sum(saldo_movimentacao),
-           round(avg(salario_mensal_real) filter (where saldo_movimentacao = 1), 2)
+           count(*) filter (where saldo_movimentacao = 1) as admissoes,
+           count(*) filter (where saldo_movimentacao = -1) as desligamentos,
+           sum(saldo_movimentacao) as saldo,
+           round(avg(salario_mensal_real) filter (where saldo_movimentacao = 1), 2) as salario_medio_admissao_real
     from caged_movimentacoes
     where (p_competencia is null or competencia_mov = p_competencia)
     group by uf
@@ -161,11 +169,11 @@ $$;
 create or replace function caged_por_cbo(p_competencia text default null, p_uf text default null)
 returns table (cbo_grande_grupo text, admissoes bigint, desligamentos bigint, saldo bigint, salario_medio_admissao_real numeric)
 language sql stable security invoker as $$
-    select cbo2002_grande_grupo,
-           count(*) filter (where saldo_movimentacao = 1),
-           count(*) filter (where saldo_movimentacao = -1),
-           sum(saldo_movimentacao),
-           round(avg(salario_mensal_real) filter (where saldo_movimentacao = 1), 2)
+    select cbo2002_grande_grupo as cbo_grande_grupo,
+           count(*) filter (where saldo_movimentacao = 1) as admissoes,
+           count(*) filter (where saldo_movimentacao = -1) as desligamentos,
+           sum(saldo_movimentacao) as saldo,
+           round(avg(salario_mensal_real) filter (where saldo_movimentacao = 1), 2) as salario_medio_admissao_real
     from caged_movimentacoes
     where (p_competencia is null or competencia_mov = p_competencia) and (p_uf is null or uf = p_uf)
     group by cbo2002_grande_grupo
@@ -175,11 +183,11 @@ $$;
 create or replace function caged_por_cnae(p_competencia text default null, p_uf text default null)
 returns table (cnae_secao text, admissoes bigint, desligamentos bigint, saldo bigint, salario_medio_admissao_real numeric)
 language sql stable security invoker as $$
-    select cnae20_secao,
-           count(*) filter (where saldo_movimentacao = 1),
-           count(*) filter (where saldo_movimentacao = -1),
-           sum(saldo_movimentacao),
-           round(avg(salario_mensal_real) filter (where saldo_movimentacao = 1), 2)
+    select cnae20_secao as cnae_secao,
+           count(*) filter (where saldo_movimentacao = 1) as admissoes,
+           count(*) filter (where saldo_movimentacao = -1) as desligamentos,
+           sum(saldo_movimentacao) as saldo,
+           round(avg(salario_mensal_real) filter (where saldo_movimentacao = 1), 2) as salario_medio_admissao_real
     from caged_movimentacoes
     where (p_competencia is null or competencia_mov = p_competencia) and (p_uf is null or uf = p_uf)
     group by cnae20_secao
@@ -190,10 +198,10 @@ create or replace function caged_por_sexo(p_competencia text default null, p_uf 
 returns table (sexo_codigo smallint, admissoes bigint, desligamentos bigint, saldo bigint, salario_medio_admissao_real numeric)
 language sql stable security invoker as $$
     select sexo_codigo,
-           count(*) filter (where saldo_movimentacao = 1),
-           count(*) filter (where saldo_movimentacao = -1),
-           sum(saldo_movimentacao),
-           round(avg(salario_mensal_real) filter (where saldo_movimentacao = 1), 2)
+           count(*) filter (where saldo_movimentacao = 1) as admissoes,
+           count(*) filter (where saldo_movimentacao = -1) as desligamentos,
+           sum(saldo_movimentacao) as saldo,
+           round(avg(salario_mensal_real) filter (where saldo_movimentacao = 1), 2) as salario_medio_admissao_real
     from caged_movimentacoes
     where (p_competencia is null or competencia_mov = p_competencia) and (p_uf is null or uf = p_uf)
     group by sexo_codigo
