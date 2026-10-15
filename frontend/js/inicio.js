@@ -39,7 +39,7 @@
     'taxa_desocupacao',
     'balanca_saldo',
     'rendimento_medio_real',
-    'reajustes_acima_inpc',
+    'reajustes_acima_inpc_pct',
     'commodities_geral'
   ];
 
