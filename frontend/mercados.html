@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mercados financeiros · DIEESE 360</title>
+  <meta name="description" content="Índices de bolsa, criptoativos e ações da B3 com fechamento diário — painel de referência de mercado, não produzido pelo DIEESE.">
+  <meta name="theme-color" content="#030086">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+  <link rel="shortcut icon" href="assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=20261015l">
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="container">
+      <a class="marca-topo" href="index.html">
+        <img src="assets/brand/logo-dieese-wordmark.png" alt="DIEESE" width="117" height="24">
+        <strong>360</strong>
+        <span>inteligência socioeconômica</span>
+      </a>
+      <nav class="nav-topo">
+        <a class="nav-link" href="index.html#dimensoes">Dimensões</a>
+        <a class="nav-link" href="catalogo.html">Catálogo</a>
+        <a class="nav-link" href="mercados.html" aria-current="page">Mercados</a>
+        <a class="btn btn-primario btn-pequeno" href="login.html">Entrar</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="secao mercados-intro">
+    <div class="container">
+      <span class="hero-rotulo">Mercados financeiros</span>
+      <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);max-width:28ch">Índices, criptoativos e ações, num painel de bolsa</h1>
+      <p class="lead" style="max-width:68ch">Fechamento diário dos principais índices de bolsa, de dois criptoativos de maior volume e de três das ações mais negociadas da B3.</p>
+      <p class="aviso">Este painel é referência de mercado agregada pela Yahoo Finance, não um indicador socioeconômico produzido ou validado pelo DIEESE, e não deve ser lido como recomendação de investimento. Ver <a href="catalogo.html">metodologia de cada ativo no catálogo</a>.</p>
+      <p class="mercados-atualizado">Carregando…</p>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <div class="mercados-hero" id="mercados-hero">
+        <p class="aviso demo">Carregando índices…</p>
+      </div>
+
+      <div class="mercados-grupo">
+        <h2>Criptoativos</h2>
+        <p>Negociam 24 horas por dia, 7 dias por semana — o preço é o mais recente disponível no momento da coleta diária, não um fechamento de pregão.</p>
+        <div class="mercados-tabela-caixa">
+          <table class="mercados-tabela">
+            <thead>
+              <tr>
+                <th>Ativo</th>
+                <th>Gráfico (3 meses)</th>
+                <th class="mercados-col-valor">Último</th>
+                <th class="mercados-col-variacao">Variação</th>
+                <th class="mercados-col-variacao">Variação %</th>
+              </tr>
+            </thead>
+            <tbody id="mercados-corpo-cripto">
+              <tr><td colspan="5">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mercados-grupo">
+        <h2>Ações da B3</h2>
+        <p>Preço de fechamento do pregão mais recente disponível, entre as ações mais negociadas da bolsa brasileira.</p>
+        <div class="mercados-tabela-caixa">
+          <table class="mercados-tabela">
+            <thead>
+              <tr>
+                <th>Ativo</th>
+                <th>Gráfico (3 meses)</th>
+                <th class="mercados-col-valor">Último</th>
+                <th class="mercados-col-variacao">Variação</th>
+                <th class="mercados-col-variacao">Variação %</th>
+              </tr>
+            </thead>
+            <tbody id="mercados-corpo-acoes">
+              <tr><td colspan="5">Carregando…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="rodape">
+    <div class="container">
+      <span>DIEESE 360: uso interno do DIEESE.</span>
+      <span>Cotações de mercado via Yahoo Finance, referência externa — não é dado produzido pelo DIEESE.</span>
+    </div>
+  </footer>
+
+  <script src="js/vendor/supabase.js"></script>
+  <script src="js/config.js?v=20261015l"></script>
+  <script src="js/app.js?v=20261015l"></script>
+  <script src="js/dados.js?v=20261015l"></script>
+  <script src="js/animacao-dash.js?v=20261015l"></script>
+  <script src="js/mercados.js?v=20261015l"></script>
+</body>
+</html>

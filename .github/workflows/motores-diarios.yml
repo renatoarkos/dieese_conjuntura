@@ -37,6 +37,10 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_expectativas_focus_bcb.py
 
+      - name: Mercados financeiros (Yahoo Finance — ver ADR 0010)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_6_mercados/coleta_mercados_yahoo.py
+
       # --- Camada CURATED (ADR 0005). Focus não tem transformação ainda —
       # é insumo bruto de nowcasting (milhares de projeções por indicador),
       # publicar um único número exigiria escolher uma convenção de
@@ -44,6 +48,10 @@ jobs:
       - name: "CURATED: Selic"
         continue-on-error: true
         run: python3 pipelines/curated/transformar_selic_bcb.py
+
+      - name: "CURATED: Mercados financeiros"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_mercados_yahoo.py
 
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4
