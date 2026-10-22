@@ -123,25 +123,34 @@ img { max-width: 100%; display: block; }
 
 /* ---------------------------------------------------------------- cabeçalho — estilo portal de dados (FRED/World Bank/IBGE) */
 .cabecalho { background: #fff; border-bottom: 2px solid var(--azul); position: sticky; top: 0; z-index: 50; }
-.cabecalho .container { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 24px; height: 56px; }
+.cabecalho .container { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 24px; height: 64px; }
 .marca-topo { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0; flex: 0 0 auto; }
 .marca-topo img { height: 26px; width: auto; flex: 0 0 auto; }
 .marca-topo strong { font: 800 1.25rem var(--fonte-titulo); color: var(--azul); white-space: nowrap; }
-.marca-topo span { color: var(--cinza-700); font-size: .8rem; padding-left: 10px; margin-left: 10px; border-left: 1px solid var(--linha); display: none; }
+.marca-topo span { color: var(--cinza-700); font-size: .8rem; white-space: nowrap; padding-left: 10px; margin-left: 10px; border-left: 1px solid var(--linha); display: none; }
 @media (min-width: 640px) { .marca-topo span { display: inline; } }
-.nav-topo { display: flex; align-items: stretch; gap: 0; flex: 1 1 auto; justify-content: flex-end; height: 100%; }
+/* Cada link é um item de largura fixa (flex: 0 0 auto) que nunca quebra linha
+   nem encolhe abaixo do próprio texto — o bug anterior (sem essas duas
+   regras) deixava o flex espremer "Resumo do dia"/"Quem somos" até quebrar em
+   duas linhas, enquanto os rótulos de uma palavra só ficavam apertados sem
+   quebrar, dando a aparência desalinhada e "bagunçada".
+   IMPORTANTE: .nav-topo NÃO pode ter min-width:0 — como os links dentro dele
+   não encolhem, dar min-width:0 ao contêiner só fazia o conteúdo vazar por
+   cima da marca (texto sobreposto) em vez de simplesmente não caber. Sem
+   min-width:0, o contêiner respeita a largura mínima do próprio conteúdo. */
+.nav-topo { display: flex; align-items: stretch; gap: 2px; flex: 1 1 auto; justify-content: flex-end; height: 100%; }
 .nav-topo a:not(.btn) {
-  display: flex; align-items: center;
-  color: var(--cinza-700); text-decoration: none; font-weight: 600; font-size: .88rem;
-  padding: 0 14px; border-bottom: 3px solid transparent; transition: color .15s, border-color .15s;
+  display: flex; align-items: center; flex: 0 0 auto; white-space: nowrap;
+  color: var(--cinza-700); text-decoration: none; font-weight: 600; font-size: .85rem; letter-spacing: .01em;
+  padding: 0 13px; border-bottom: 3px solid transparent; transition: color .15s, border-color .15s;
 }
-.nav-topo a:not(.btn):hover { color: var(--azul); border-bottom-color: var(--azul); }
+.nav-topo a:not(.btn):hover { color: var(--azul); border-bottom-color: var(--azul-100); }
 .nav-topo .nav-link-ativo { color: var(--azul); border-bottom-color: var(--azul); }
-.nav-topo .nav-sep { width: 1px; background: var(--linha); margin: 12px 8px; flex: 0 0 auto; }
-.nav-topo-acoes { display: flex; align-items: center; gap: 10px; padding-left: 16px; border-left: 1px solid var(--linha); margin-left: 8px; }
+.nav-topo .nav-sep { width: 1px; background: var(--linha); margin: 14px 6px; flex: 0 0 auto; }
+.nav-topo-acoes { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; padding-left: 16px; border-left: 1px solid var(--linha); margin-left: 4px; }
 .nav-link { display: none; }
-@media (min-width: 680px) { .nav-link { display: flex; } }
-@media (min-width: 900px) { .nav-link-amplo { display: flex; } }
+@media (min-width: 760px) { .nav-link { display: flex; } }
+@media (min-width: 1060px) { .nav-link-amplo { display: flex; } }
 
 /* ---------------------------------------------------------------- hero (home pública) */
 .hero { position: relative; padding: 72px 0 56px; overflow: hidden; background: linear-gradient(180deg, #fff 0%, var(--fundo-suave) 100%); }
@@ -177,32 +186,52 @@ img { max-width: 100%; display: block; }
    período — o oposto do ticker anterior, que era "uma coisa em cima da outra" dentro de um cartão
    grande; agora cada item é compacto e a densidade vem da quantidade de itens na faixa, não do
    tamanho de cada um. Fica entre o cabeçalho e o hero, como no exemplo. */
-.ticker-topo { background: #0d0d1a; color: #fff; overflow: hidden; position: relative; border-bottom: 1px solid rgba(255, 255, 255, .08); }
-.ticker-topo::before, .ticker-topo::after { content: ""; position: absolute; top: 0; bottom: 0; width: 36px; z-index: 2; pointer-events: none; }
-.ticker-topo::before { left: 0; background: linear-gradient(90deg, #0d0d1a, transparent); }
-.ticker-topo::after { right: 0; background: linear-gradient(270deg, #0d0d1a, transparent); }
-.ticker-topo-trilho { display: flex; width: max-content; gap: 0; animation: ticker-rola 42s linear infinite; }
+.ticker-topo {
+  background: var(--azul); color: #fff; display: flex; align-items: stretch;
+  border-bottom: 2px solid var(--ouro);
+}
+.ticker-topo-rotulo {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+  padding: 0 18px; font: 700 .72rem var(--fonte-titulo); letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ouro-100); white-space: nowrap; border-right: 1px solid rgba(255, 255, 255, .16);
+}
+.ticker-topo-pulso {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--ouro);
+  animation: ticker-pulso 1.8s ease-in-out infinite;
+}
+@keyframes ticker-pulso { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+.ticker-topo-pista { position: relative; flex: 1 1 auto; min-width: 0; overflow: hidden; }
+.ticker-topo-pista::after {
+  content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 44px; z-index: 2; pointer-events: none;
+  background: linear-gradient(270deg, var(--azul), transparent);
+}
+.ticker-topo-trilho { display: flex; width: max-content; animation: ticker-rola 48s linear infinite; }
 .ticker-topo:hover .ticker-topo-trilho, .ticker-topo:focus-within .ticker-topo-trilho { animation-play-state: paused; }
 @keyframes ticker-rola { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .ticker-topo-item {
-  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
-  font-size: .78rem; padding: 9px 16px; border-right: 1px solid rgba(255, 255, 255, .12);
+  display: inline-flex; align-items: baseline; gap: 8px; white-space: nowrap;
+  font: 400 .82rem var(--fonte-texto); padding: 10px 20px; border-right: 1px solid rgba(255, 255, 255, .14);
 }
-.ticker-topo-item .nome { font-weight: 700; }
-.ticker-topo-item .valor { font-variant-numeric: tabular-nums; opacity: .92; }
+.ticker-topo-item .nome { font: 700 .76rem var(--fonte-titulo); color: var(--ouro-100); letter-spacing: .01em; text-transform: uppercase; }
+.ticker-topo-item .valor { font-weight: 600; font-variant-numeric: tabular-nums; color: #fff; }
 .ticker-topo-item .delta { font-weight: 700; font-variant-numeric: tabular-nums; }
-.ticker-topo-item .delta.alta { color: #5ce08a; }
-.ticker-topo-item .delta.baixa { color: #ff8585; }
-.ticker-topo-item .delta.neutra { color: #b9bce0; }
-.ticker-topo-item .vs-periodo { font-size: .68rem; opacity: .55; }
+.ticker-topo-item .delta.alta { color: #6fe39a; }
+.ticker-topo-item .delta.baixa { color: #ff9c90; }
+.ticker-topo-item .delta.neutra { color: var(--azul-300); }
+.ticker-topo-item .vs-periodo { font-size: .68rem; color: rgba(255, 255, 255, .55); }
+@media (max-width: 760px) {
+  .ticker-topo-rotulo-texto { display: none; }
+  .ticker-topo-rotulo { padding: 0 12px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .ticker-topo-trilho { animation: none; flex-wrap: wrap; width: 100%; }
+  .ticker-topo-pulso { animation: none; }
 }
 
 /* ---------------------------------------------------------------- resumo do dia — layout portal de dados
    Gráficos ganham mais espaço (2fr). Altas/Baixas fica em coluna compacta (0.7fr).
    Estilo: tabular, preciso, sem elementos decorativos desnecessários. */
-.resumo-dia { display: grid; grid-template-columns: 1.6fr minmax(260px, 0.9fr); gap: 28px; align-items: start; margin-top: 24px; }
+.resumo-dia { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(280px, 1fr); gap: 28px; align-items: start; margin-top: 24px; }
 .resumo-destaque {
   border: 1px solid var(--linha); border-top: 3px solid var(--azul); border-radius: 0; padding: 20px; background: #fff;
 }
@@ -214,10 +243,13 @@ img { max-width: 100%; display: block; }
 .destaque-grade {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 18px;
   flex: 1 1 auto;
 }
-@media (min-width: 1400px) {
+@media (min-width: 1180px) {
+  .destaque-grade { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1800px) {
   .destaque-grade { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
@@ -564,27 +596,34 @@ body.modal-ind-travado { overflow: hidden; }
 #dimensao-inflacao { border-top-color: var(--verde); }
 #dimensao-mercado_trabalho { border-top-color: var(--azul-hover); }
 #dimensao-caged { border-top-color: var(--ouro-hover); }
+/* "Mercados financeiros" usa um tom deliberadamente mais neutro/discreto que
+   as outras 5 (que são todas produção própria do DIEESE) — reforça
+   visualmente que esta dimensão é referência externa de mercado, não um
+   indicador socioeconômico do DIEESE (ver texto da seção). */
+#dimensao-mercados { border-top-color: var(--azul-300); }
 #dimensao-macroeconomia .secao-dimensao-icone { background: var(--azul-50); }
 #dimensao-monetario_credito .secao-dimensao-icone { background: var(--ouro-50); }
 #dimensao-inflacao .secao-dimensao-icone { background: var(--verde-50); }
 #dimensao-mercado_trabalho .secao-dimensao-icone { background: var(--azul-100); }
 #dimensao-caged .secao-dimensao-icone { background: var(--ouro-100); }
-.carrossel-cabecalho { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
-.carrossel-setas { display: flex; gap: 8px; flex: 0 0 auto; }
-.carrossel-seta {
-  width: 36px; height: 36px; border-radius: 999px; border: 1px solid var(--linha); background: #fff;
-  color: var(--azul); font-size: 1rem; line-height: 1; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+#dimensao-mercados .secao-dimensao-icone { background: var(--fundo-suave); }
+.carrossel-cabecalho { margin-bottom: 20px; }
+
+/* Carrossel contínuo (mesmo princípio do ticker do topo): .carrossel-trilho é
+   a janela (overflow escondido), .carrossel-pista é a faixa animada por
+   transform, com a lista de itens duplicada para o loop não ter emenda. */
+.carrossel-trilho { position: relative; overflow: hidden; }
+.carrossel-pista {
+  display: flex; gap: 16px; width: max-content;
+  animation: carrossel-rola 46s linear infinite;
 }
-.carrossel-seta:hover:not(:disabled) { border-color: var(--azul-300); background: var(--azul-50); }
-.carrossel-seta:disabled { opacity: .35; cursor: default; }
-.carrossel-trilho {
-  display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory;
-  padding-bottom: 6px; scrollbar-width: thin;
-}
-.carrossel-item { flex: 0 0 260px; height: 320px; scroll-snap-align: start; }
+.carrossel-trilho:hover .carrossel-pista, .carrossel-trilho:focus-within .carrossel-pista { animation-play-state: paused; }
+@keyframes carrossel-rola { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.carrossel-item { flex: 0 0 260px; height: 320px; }
 @media (prefers-reduced-motion: reduce) {
-  .carrossel-trilho { scroll-behavior: auto; }
+  .carrossel-trilho { overflow-x: auto; scrollbar-width: thin; }
+  .carrossel-pista { animation: none; }
+  .carrossel-item-copia { display: none; }
 }
 
 /* ---------------------------------------------------------------- seções de conteúdo */
@@ -823,9 +862,9 @@ body.modal-ind-travado { overflow: hidden; }
   .cartao-resumo-botao:hover, .cartao-resumo-botao:focus-visible { transform: none; }
 }
 
-.cartao-cabecalho { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-.cartao-rotulo { font: 700 .86rem var(--fonte-texto); color: var(--cinza-700); line-height: 1.3; }
-.chip-tendencia { display: inline-flex; align-items: center; gap: 3px; font: 700 .76rem var(--fonte-titulo); padding: 3px 9px; border-radius: 999px; white-space: nowrap; flex: 0 0 auto; }
+.cartao-cabecalho { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; min-width: 0; }
+.cartao-rotulo { font: 700 .86rem var(--fonte-texto); color: var(--cinza-700); line-height: 1.3; min-width: 0; overflow-wrap: break-word; }
+.chip-tendencia { display: inline-flex; align-items: center; gap: 3px; font: 700 .76rem var(--fonte-titulo); padding: 3px 9px; border-radius: 999px; white-space: nowrap; flex: 0 0 auto; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .chip-tendencia.boa { background: #e6f7e6; color: var(--status-boa); }
 .chip-tendencia.ruim { background: #fdeceb; color: var(--status-critica); }
 .chip-tendencia.neutra { background: var(--fundo-suave); color: var(--cinza-700); }
@@ -833,10 +872,10 @@ body.modal-ind-travado { overflow: hidden; }
 .cartao-valor { font: 800 clamp(1.5rem, 2.6vw, 1.9rem) var(--fonte-titulo); color: var(--azul); line-height: 1.05; margin-top: 10px; font-variant-numeric: proportional-nums; }
 .cartao-unidade { font-size: .72rem; font-weight: 600; color: var(--ink-muda); margin-left: 4px; }
 .cartao-data { font-size: .78rem; color: var(--ink-muda); margin-top: 2px; }
-.cartao-sparkline { margin-top: auto; width: 100%; height: 36px; }
+.cartao-sparkline { margin-top: auto; width: 100%; height: 36px; color: var(--azul); overflow: visible; }
 .cartao-sparkline path.linha { fill: none; stroke: var(--azul); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.cartao-sparkline path.area { fill: var(--azul); opacity: .08; stroke: none; }
-.cartao-sparkline circle { fill: var(--azul); }
+.cartao-sparkline path.area { stroke: none; }
+.cartao-sparkline circle.ponto { fill: var(--azul); stroke: #fff; stroke-width: 1.5; }
 .cartao-dica { margin-top: 8px; font-size: .7rem; color: var(--azul-300); text-align: right; }
 
 /* -------- Cartão de indicador (frente apenas — ADR 0007)
@@ -1154,6 +1193,55 @@ body.modal-ind-travado { overflow: hidden; }
 @media (max-width: 560px) {
   .rodape-grade { grid-template-columns: 1fr; }
 }
+
+/* ---------------------------------------------------------------- página "Mercados financeiros" (mercados.html)
+   Layout no padrão de painel de bolsa (hero de índices + tabela por
+   categoria), deliberadamente diferente do cartão-padrão do resto da
+   plataforma — pedido do responsável do projeto (2026-10-15). Ver ADR 0010:
+   esta dimensão não é dado produzido pelo DIEESE. */
+.mercados-intro { padding: 32px 0 8px; }
+.mercados-atualizado { font-size: .82rem; color: var(--ink-muda); }
+
+.mercados-hero { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 24px 0 40px; }
+@media (max-width: 900px) { .mercados-hero { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .mercados-hero { grid-template-columns: 1fr; } }
+
+.mercados-hero-card {
+  display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; min-width: 0;
+  background: #fff; border: 1px solid var(--linha); border-radius: var(--raio);
+  padding: 18px 20px; transition: box-shadow .18s ease, border-color .18s ease;
+}
+.mercados-hero-card:hover, .mercados-hero-card:focus-visible { border-color: var(--azul-300); box-shadow: 0 4px 14px rgba(3, 0, 134, .1); outline: none; }
+.mercados-hero-nome { font: 700 .82rem var(--fonte-texto); color: var(--cinza-700); text-transform: uppercase; letter-spacing: .02em; }
+.mercados-hero-valor { font: 800 1.7rem var(--fonte-titulo); color: var(--azul); font-variant-numeric: tabular-nums; }
+.mercados-hero-variacoes { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: .86rem; }
+.mercados-hero-card .cartao-sparkline { height: 32px; margin-top: 4px; }
+
+.mercados-variacao { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mercados-variacao.alta { color: var(--status-boa); }
+.mercados-variacao.baixa { color: var(--status-critica); }
+.mercados-variacao.estavel { color: var(--ink-muda); }
+.mercados-sem-dado { color: var(--ink-muda); font-size: .85rem; }
+
+.mercados-grupo { margin-bottom: 36px; }
+.mercados-grupo h2 { font: 700 1.1rem var(--fonte-titulo); color: var(--azul); margin-bottom: 4px; }
+.mercados-grupo p { color: var(--cinza-700); font-size: .88rem; margin-bottom: 14px; }
+
+.mercados-tabela-caixa { overflow-x: auto; border: 1px solid var(--linha); border-radius: var(--raio); background: #fff; }
+.mercados-tabela { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.mercados-tabela thead th { text-align: left; padding: 10px 16px; font: 700 .76rem var(--fonte-titulo); text-transform: uppercase; letter-spacing: .04em; color: var(--cinza-700); background: var(--fundo-suave); border-bottom: 1px solid var(--linha); white-space: nowrap; }
+.mercados-tabela th.mercados-col-variacao, .mercados-tabela th.mercados-col-valor { text-align: right; }
+.mercados-tabela td { padding: 12px 16px; border-bottom: 1px solid var(--linha); vertical-align: middle; }
+.mercados-tabela tbody tr:last-child td { border-bottom: none; }
+.mercados-linha { cursor: pointer; transition: background .12s ease; }
+.mercados-linha:hover, .mercados-linha:focus-visible { background: var(--fundo-suave); outline: none; }
+.mercados-col-nome { min-width: 160px; }
+.mercados-col-nome strong { display: block; color: var(--ink); }
+.mercados-col-nome span { display: block; font-size: .76rem; color: var(--ink-muda); font-variant-numeric: tabular-nums; }
+.mercados-col-grafico { width: 140px; }
+.mercados-col-grafico .cartao-sparkline { height: 30px; }
+.mercados-col-valor { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); text-align: right; }
+.mercados-col-variacao { text-align: right; }
 
 /* ---------------------------------------------------------------- responsivo geral */
 @media (max-width: 600px) {

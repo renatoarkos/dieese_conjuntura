@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=20261015c">
+  <link rel="stylesheet" href="css/styles.css?v=20261015l">
 </head>
 <body>
   <header class="cabecalho">
@@ -36,6 +36,7 @@
         <a class="nav-link" href="#resumo">Resumo do dia</a>
         <a class="nav-link" href="#dimensoes">Dimensões</a>
         <a class="nav-link" href="catalogo.html">Catálogo</a>
+        <a class="nav-link nav-link-amplo" href="mercados.html">Mercados</a>
         <a class="nav-link nav-link-amplo" href="#boletim-conjuntura">Boletim</a>
         <a class="nav-link nav-link-amplo" href="#quem-somos">Quem somos</a>
         <a class="nav-link" href="#faq">FAQ</a>
@@ -49,8 +50,11 @@
   </header>
 
   <section class="ticker-topo" aria-label="Indicadores de atualização mais frequente">
-    <div class="ticker-topo-trilho" id="ticker-trilho">
-      <span class="ticker-topo-item">Carregando indicadores…</span>
+    <span class="ticker-topo-rotulo"><span class="ticker-topo-pulso" aria-hidden="true"></span><span class="ticker-topo-rotulo-texto">Indicadores em tempo real</span></span>
+    <div class="ticker-topo-pista">
+      <div class="ticker-topo-trilho" id="ticker-trilho">
+        <span class="ticker-topo-item">Carregando indicadores…</span>
+      </div>
     </div>
   </section>
 
@@ -132,6 +136,17 @@
 
   <div id="secoes-dimensao-home"></div>
 
+  <section class="secao" id="mercados-teaser" style="background:var(--azul);color:#fff">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+      <div style="max-width:60ch">
+        <span class="hero-rotulo" style="color:var(--ouro-100);border-bottom-color:var(--ouro)">Referência de mercado, não produção do DIEESE</span>
+        <h2 style="color:#fff;margin:0 0 8px">Mercados financeiros</h2>
+        <p class="lead" style="color:rgba(255,255,255,.82)">Índices de bolsa, criptoativos e ações da B3, com fechamento diário, num painel próprio no padrão dos principais sites de cotação.</p>
+      </div>
+      <a class="btn btn-primario" href="mercados.html" style="background:#fff;color:var(--azul);border-color:#fff;flex:0 0 auto">Abrir painel de mercados →</a>
+    </div>
+  </section>
+
   <section class="secao secao-suave" id="faq">
     <div class="container">
       <div class="faq-titulo-caixa">
@@ -182,6 +197,7 @@
           <p><a href="#boletim-conjuntura">Boletim de Conjuntura</a></p>
           <p><a href="#dimensoes">Dimensões</a></p>
           <p><a href="catalogo.html">Catálogo Mestre</a></p>
+          <p><a href="mercados.html">Mercados financeiros</a></p>
           <p><a href="#faq">Perguntas frequentes</a></p>
           <p><a href="login.html">Entrar no painel</a></p>
           <p class="rodape-em-construcao">Em construção: Explorador de Dados, Biblioteca de Relações Econômicas, Dashboards editoriais, Calendário de divulgações.</p>
@@ -265,13 +281,13 @@
   </footer>
 
   <script src="js/vendor/supabase.js"></script>
-  <script src="js/config.js?v=20261015c"></script>
-  <script src="js/app.js?v=20261015c"></script>
-  <script src="js/dados.js?v=20261015c"></script>
-  <script src="js/animacao-dash.js?v=20261015c"></script>
-  <script src="js/grafico-linha.js?v=20261015c"></script>
-  <script src="js/cartao-flip.js?v=20261015c"></script>
-  <script src="js/cartao-modal.js?v=20261015c"></script>
-  <script src="js/inicio.js?v=20261015c"></script>
+  <script src="js/config.js?v=20261015l"></script>
+  <script src="js/app.js?v=20261015l"></script>
+  <script src="js/dados.js?v=20261015l"></script>
+  <script src="js/animacao-dash.js?v=20261015l"></script>
+  <script src="js/grafico-linha.js?v=20261015l"></script>
+  <script src="js/cartao-flip.js?v=20261015l"></script>
+  <script src="js/cartao-modal.js?v=20261015l"></script>
+  <script src="js/inicio.js?v=20261015l"></script>
 </body>
 </html>

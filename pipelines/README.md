@@ -95,11 +95,13 @@ pipelines/ingestao/
 │   ├── coleta_ict_dieese.py                  — Índice da Condição do Trabalho (DIEESE, boletim PDF trimestral)
 │   ├── coleta_greves_dieese.py               — Número de greves, categorias e reivindicações (DIEESE/SAG, boletim PDF semestral/anual)
 │   └── coleta_desemprego_ilostat.py          — Desemprego comparado internacionalmente (ILOSTAT/OIT, SDMX)
-└── bloco_5_caged/
-    └── coleta_caged_microdados_ftp.py        — Novo CAGED, microdados brutos (FTP MTE/PDET — sem API)
+├── bloco_5_caged/
+│   └── coleta_caged_microdados_ftp.py        — Novo CAGED, microdados brutos (FTP MTE/PDET — sem API)
+└── bloco_6_mercados/
+    └── coleta_mercados_yahoo.py              — Mercados financeiros: 4 índices, 2 criptoativos, 3 ações B3 (Yahoo Finance, endpoint público — ver ADR 0010; dado não produzido pelo DIEESE, dimensão separada do restante)
 ```
 
-**35 scripts no total**, mais `supabase_raw.py` e `google_drive_raw.py` (helpers compartilhados, não são motores de coleta — ver seção "Integração com Supabase" abaixo).
+**36 scripts no total**, mais `supabase_raw.py` e `google_drive_raw.py` (helpers compartilhados, não são motores de coleta — ver seção "Integração com Supabase" abaixo).
 
 ## Como executar
 

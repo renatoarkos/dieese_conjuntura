@@ -9,6 +9,10 @@
   var D = window.DIEESE360.dados;
   var esc = P.esc;
 
+  // 'mercados' fica fora do carrossel genérico de propósito (ver ADR 0010):
+  // tem página e diagramação próprias (mercados.html), no padrão de painel
+  // de bolsa pedido pelo responsável do projeto, em vez do cartão-padrão das
+  // outras 5 dimensões socioeconômicas.
   var ORDEM_DIMENSOES = ['macroeconomia', 'monetario_credito', 'inflacao', 'mercado_trabalho', 'caged'];
 
   var ICONES_DIMENSAO = {
@@ -17,6 +21,9 @@
     inflacao: 'assets/dimensoes/icone-inflacao.png',
     mercado_trabalho: 'assets/dimensoes/icone-mercado-trabalho.png',
     caged: 'assets/dimensoes/icone-caged.png'
+    // 'mercados' ainda sem ícone próprio gerado (ver frontend/img-prompts.json
+    // para o padrão visual a seguir) — ICONES_DIMENSAO[chave] || '' já trata
+    // a ausência sem quebrar o layout, só não mostra a imagem por enquanto.
   };
 
   // Texto mais completo por dimensão (o que é, o que cobre, por que importa
@@ -27,7 +34,8 @@
     monetario_credito: 'Cobre a taxa básica de juros, as taxas cobradas ao tomador final, o crédito concedido pelo sistema financeiro e o endividamento das famílias. Mostra como a política monetária se transmite ao custo do dinheiro no dia a dia de empresas e trabalhadores.',
     inflacao: 'Acompanha os principais índices de preços ao consumidor (IPCA, INPC, IGP-M) e itens sensíveis ao orçamento familiar, como combustíveis. É o contraponto necessário para ler qualquer variação nominal de salário ou renda em termos reais.',
     mercado_trabalho: 'Reúne emprego, desocupação, rendimento, sindicalização e negociação coletiva: o núcleo da pauta histórica do DIEESE, onde a pesquisa socioeconômica se conecta diretamente à atuação sindical.',
-    caged: 'Admissões e desligamentos formais apurados por microdado todo mês, com granularidade menor que a RAIS anual. Antecipa movimentos do mercado de trabalho formal entre uma apuração anual e outra.'
+    caged: 'Admissões e desligamentos formais apurados por microdado todo mês, com granularidade menor que a RAIS anual. Antecipa movimentos do mercado de trabalho formal entre uma apuração anual e outra.',
+    mercados: 'Índices das principais bolsas de valores, criptoativos de maior volume e algumas das ações mais negociadas da B3, com fechamento diário. Dimensão separada do restante da plataforma: é referência de mercado, não um indicador socioeconômico produzido ou validado pelo DIEESE, e não deve ser lida como recomendação de investimento.'
   };
 
   var TICKER = ['selic', 'cambio_dolar', 'ipca', 'commodities_geral', 'balanca_saldo', 'taxa_desocupacao', 'bndes_desembolsos'];
@@ -240,21 +248,6 @@
     });
   }
 
-  function ligarSetasCarrossel(trilho, setaAnterior, setaProxima) {
-    function atualizarEstado() {
-      setaAnterior.disabled = trilho.scrollLeft <= 4;
-      setaProxima.disabled = trilho.scrollLeft >= trilho.scrollWidth - trilho.clientWidth - 4;
-    }
-    function largurapasso() {
-      var item = trilho.querySelector('.carrossel-item');
-      return item ? item.getBoundingClientRect().width + 16 : trilho.clientWidth;
-    }
-    setaAnterior.addEventListener('click', function () { trilho.scrollBy({ left: -largurapasso(), behavior: 'smooth' }); });
-    setaProxima.addEventListener('click', function () { trilho.scrollBy({ left: largurapasso(), behavior: 'smooth' }); });
-    trilho.addEventListener('scroll', atualizarEstado);
-    atualizarEstado();
-  }
-
   // Só a casca das 5 seções (título, texto, trilho vazio em "carregando") —
   // nenhuma rede ainda. O carrossel de cada dimensão é preenchido depois,
   // de forma independente (ver preencherCarrossel), para a seção aparecer
@@ -276,10 +269,6 @@
         '</div>' +
         '<p class="lead">' + esc(TEXTO_DIMENSAO[chave] || dim.descricao) + '</p>' +
         '</div>' +
-        '<div class="carrossel-setas">' +
-        '<button type="button" class="carrossel-seta" id="seta-ant-' + esc(chave) + '" aria-label="Indicador anterior de ' + esc(dim.nome) + '">‹</button>' +
-        '<button type="button" class="carrossel-seta" id="seta-prox-' + esc(chave) + '" aria-label="Próximo indicador de ' + esc(dim.nome) + '">›</button>' +
-        '</div>' +
         '</div>' +
         '<div class="carrossel-trilho" id="carrossel-' + esc(chave) + '"><p class="aviso demo">Carregando indicadores…</p></div>' +
         '</div>' +
@@ -292,13 +281,22 @@
     var trilho = document.getElementById('carrossel-' + chave);
     if (!indicadoresDim.length) { trilho.innerHTML = D.montarCartaoDimensaoPendente(chave); return; }
     var indicadoresPorId = {};
-    trilho.innerHTML = indicadoresDim.map(function (ind) {
+    var itensHtml = indicadoresDim.map(function (ind) {
       indicadoresPorId[ind.id] = ind;
       return '<div class="carrossel-item" data-id="' + esc(ind.id) + '" role="button" tabindex="0" ' +
         'aria-label="' + esc(ind.nome) + ', clique para ver gráfico ampliado e metodologia">' +
         window.DIEESE360.montarCartaoFlip(ind, series[ind.id] || []) + '</div>';
     }).join('');
-    // ADR 0007: clique abre o modal ampliado — nunca gira o cartão pequeno
+    // Carrossel contínuo (igual ao ticker do topo): pista duplicada, animação
+    // translateX(-50%) em loop, pausa ao passar o mouse/focar (para dar tempo
+    // de clicar). A cópia (2ª metade) fica fora da navegação por teclado
+    // (aria-hidden/tabindex -1) e some com prefers-reduced-motion, sobrando
+    // só a lista real, com rolagem nativa (ver CSS).
+    var itensCopia = indicadoresDim.map(function (ind) {
+      return '<div class="carrossel-item carrossel-item-copia" data-id="' + esc(ind.id) + '" aria-hidden="true" tabindex="-1">' +
+        window.DIEESE360.montarCartaoFlip(ind, series[ind.id] || []) + '</div>';
+    }).join('');
+    trilho.innerHTML = '<div class="carrossel-pista">' + itensHtml + itensCopia + '</div>';
     trilho.querySelectorAll('.carrossel-item').forEach(function (item) {
       function abrirModal() {
         var id = item.getAttribute('data-id');
@@ -316,7 +314,6 @@
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirModal(); }
       });
     });
-    ligarSetasCarrossel(trilho, document.getElementById('seta-ant-' + chave), document.getElementById('seta-prox-' + chave));
   }
 
   function iniciar() {

@@ -11,7 +11,8 @@
     monetario_credito: { nome: 'Monetário e crédito', descricao: 'Juros, câmbio, crédito e endividamento das famílias.' },
     inflacao: { nome: 'Inflação', descricao: 'Índices de preços, cesta básica e combustíveis.' },
     mercado_trabalho: { nome: 'Mercado de trabalho', descricao: 'Emprego, rendimento, sindicalização e negociação coletiva.' },
-    caged: { nome: 'Novo CAGED', descricao: 'Admissões e desligamentos formais, por microdado.' }
+    caged: { nome: 'Novo CAGED', descricao: 'Admissões e desligamentos formais, por microdado.' },
+    mercados: { nome: 'Mercados financeiros', descricao: 'Índices de bolsa, ações da B3 e criptoativos, fechamento diário.' }
   };
 
   // ------------------------------------------------------------------
@@ -184,10 +185,31 @@
   }
 
   // ------------------------------------------------------------------
-  // Sparkline — SVG inline. Linha 2px + área a 8% de opacidade + ponto final
-  // >=8px (ver skill de dataviz, marks-and-anatomy). O traçado da linha é
-  // "desenhado" por animacao-dash.js via stroke-dasharray.
+  // Sparkline — SVG inline. Linha 2px suavizada (curva Catmull-Rom, não
+  // segmentos retos entre pontos — fica menos "serrilhada" com poucos
+  // pontos mensais/trimestrais) + área em degradê + ponto final >=8px com
+  // anel branco (mesma linguagem do ponto final do gráfico grande, ver
+  // js/grafico-linha.js). O traçado da linha é "desenhado" por
+  // animacao-dash.js via stroke-dasharray (funciona igual com curva, usa
+  // path.getTotalLength(), agnóstico ao tipo de comando do path).
   // ------------------------------------------------------------------
+  var _sparklineSeq = 0;
+  function _curvaSuave(pontosXY) {
+    if (pontosXY.length < 3) {
+      return pontosXY.map(function (p, i) { return (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+    }
+    var d = 'M' + pontosXY[0][0].toFixed(1) + ',' + pontosXY[0][1].toFixed(1);
+    for (var i = 0; i < pontosXY.length - 1; i++) {
+      var p0 = pontosXY[i - 1] || pontosXY[i];
+      var p1 = pontosXY[i];
+      var p2 = pontosXY[i + 1];
+      var p3 = pontosXY[i + 2] || p2;
+      var c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+      var c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+      d += ' C' + c1x.toFixed(1) + ',' + c1y.toFixed(1) + ' ' + c2x.toFixed(1) + ',' + c2y.toFixed(1) + ' ' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1);
+    }
+    return d;
+  }
   function montarSparkline(serieAsc) {
     var L = 120, A = 36, M = 4;
     if (serieAsc.length < 2) return '';
@@ -200,14 +222,19 @@
       var y = A - M - ((v - min) / amplitude) * (A - M * 2);
       return [x, y];
     });
-    var linha = pontosXY.map(function (p, i) { return (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+    var linha = _curvaSuave(pontosXY);
     var ultimo = pontosXY[pontosXY.length - 1];
     var area = linha + ' L' + ultimo[0].toFixed(1) + ',' + (A - M) + ' L' + pontosXY[0][0].toFixed(1) + ',' + (A - M) + ' Z';
+    var gid = 'spark-grad-' + (_sparklineSeq++);
     return (
       '<svg class="cartao-sparkline" viewBox="0 0 ' + L + ' ' + A + '" preserveAspectRatio="none" aria-hidden="true">' +
-      '<path class="area" d="' + area + '"></path>' +
+      '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="currentColor" stop-opacity=".22"></stop>' +
+      '<stop offset="100%" stop-color="currentColor" stop-opacity="0"></stop>' +
+      '</linearGradient></defs>' +
+      '<path class="area" d="' + area + '" style="fill:url(#' + gid + ')"></path>' +
       '<path class="linha" d="' + linha + '"></path>' +
-      '<circle cx="' + ultimo[0].toFixed(1) + '" cy="' + ultimo[1].toFixed(1) + '" r="3"></circle>' +
+      '<circle class="ponto" cx="' + ultimo[0].toFixed(1) + '" cy="' + ultimo[1].toFixed(1) + '" r="3.2"></circle>' +
       '</svg>'
     );
   }
@@ -289,6 +316,7 @@
     carregarSerie: carregarSerie,
     carregarSeriesPorIndicadores: carregarSeriesPorIndicadores,
     formatarValor: formatarValor,
+    formatarNumero: formatarNumero,
     formatarDataReferencia: formatarDataReferencia,
     formatarDataCurta: formatarDataCurta,
     calcularTendencia: calcularTendencia,

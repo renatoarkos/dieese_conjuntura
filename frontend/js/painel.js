@@ -10,7 +10,7 @@
   var D = window.DIEESE360.dados;
   var esc = P.esc;
 
-  var ORDEM_DIMENSOES = ['macroeconomia', 'monetario_credito', 'inflacao', 'mercado_trabalho', 'caged'];
+  var ORDEM_DIMENSOES = ['macroeconomia', 'monetario_credito', 'inflacao', 'mercado_trabalho', 'caged', 'mercados'];
 
   // Mesmos ícones já gerados para os cartões de dimensão da home (ver
   // js/inicio.js) — reaproveitados aqui para nenhuma seção do painel ficar
@@ -21,6 +21,7 @@
     inflacao: 'assets/dimensoes/icone-inflacao.png',
     mercado_trabalho: 'assets/dimensoes/icone-mercado-trabalho.png',
     caged: 'assets/dimensoes/icone-caged.png'
+    // 'mercados' sem ícone próprio ainda — ver mesma nota em js/inicio.js.
   };
 
   function montarSecoesVazias() {
