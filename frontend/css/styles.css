@@ -668,10 +668,14 @@ body.modal-ind-travado { overflow: hidden; }
 .faq-titulo-caixa { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
 .faq-titulo-caixa h2 { margin-bottom: 0; }
 .secao-titulo-icone { width: 40px; height: 40px; border-radius: 8px; flex: 0 0 auto; }
-/* .cartao-dimensao é um <a> (link-âncora para a seção detalhada da própria
-/* ====================================================================
-   Grade de Dimensões — Layout moderno, comercial e de alto impacto
-   ==================================================================== */
+/* Grade de Dimensões (home) — ver [[feedback_rigor_design_grafico]] e o
+   achado de 2026-10-26: esta seção usava cantos muito arredondados (18px,
+   o triplo do token --raio do resto do site), sombra dupla crescente no
+   hover e uma barra de gradiente decorativa — exatamente os sinais de
+   "card de template de IA" que o projeto já veta em texto
+   (agents/designer-marca.md). Corrigido para o mesmo padrão discreto já
+   usado em .cartao-resumo-botao/.mercados-hero-card: token --raio, token
+   --sombra, elevação sutil no hover, sem barra decorativa. */
 .grade-dimensoes {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -694,28 +698,16 @@ body.modal-ind-travado { overflow: hidden; }
   color: inherit;
   background: #ffffff;
   border: 1px solid var(--linha);
-  border-radius: 18px;
+  border-radius: var(--raio);
   padding: 24px;
-  box-shadow: 0 4px 18px -4px rgba(3, 0, 134, 0.05);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--sombra);
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
   overflow: hidden;
 }
-.cartao-dimensao::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--azul) 0%, var(--ouro) 100%);
-  opacity: 0;
-  transition: opacity 0.22s ease;
-}
 .cartao-dimensao:hover {
-  transform: translateY(-5px);
+  transform: translateY(-2px);
   border-color: var(--azul-300);
-  box-shadow: 0 16px 36px -6px rgba(3, 0, 134, 0.12), 0 0 0 1px rgba(3, 0, 134, 0.08);
-}
-.cartao-dimensao:hover::before {
-  opacity: 1;
+  box-shadow: 0 8px 20px rgba(3, 0, 134, .1);
 }
 
 .cartao-dimensao-topo {
@@ -977,7 +969,7 @@ body.modal-ind-travado { overflow: hidden; }
 .grafico-linha .marcador-governo { stroke: var(--ouro); stroke-width: 1; stroke-dasharray: 2 3; opacity: .6; }
 .grafico-linha .marcador-governo-rotulo { font: 700 8px var(--fonte-titulo); fill: var(--ouro-hover); text-anchor: middle; text-transform: uppercase; letter-spacing: .02em; }
 .grafico-linha .crosshair { stroke: var(--azul-300); stroke-width: 1; stroke-dasharray: 3 3; transition: opacity .1s; }
-.grafico-linha .crosshair-ponto { fill: var(--vermelho); stroke: #fff; stroke-width: 2; transition: opacity .1s; }
+.grafico-linha .crosshair-ponto { fill: var(--ink); stroke: #fff; stroke-width: 2; transition: opacity .1s; }
 .grafico-linha .area-hover { cursor: crosshair; }
 .grafico-tooltip {
   position: absolute; z-index: 5; pointer-events: none; transform: translate(-50%, -115%);
@@ -1425,7 +1417,7 @@ body.modal-ind-travado { overflow: hidden; }
 .politica-resumo { margin-top: 22px; }
 .politica-resumo h3 { font-size: 1rem; color: var(--azul); margin-bottom: 10px; }
 .politica-resumo-grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-.politica-resumo-item { border: 1px solid var(--linha); border-left: 3px solid var(--ouro); border-radius: 6px; padding: 10px 12px; background: #fff; }
+.politica-resumo-item { border: 1px solid var(--linha); border-radius: var(--raio); padding: 10px 12px; background: #fff; }
 .politica-resumo-governo { display: block; font: 700 var(--fs-label) var(--fonte-titulo); color: var(--cinza-700); text-transform: uppercase; letter-spacing: .02em; }
 .politica-resumo-valor { display: block; font: 800 1.1rem var(--fonte-titulo); color: var(--azul); margin-top: 2px; font-variant-numeric: tabular-nums; }
 .politica-resumo-n { display: block; font-size: var(--fs-fine); color: var(--ink-muda); margin-top: 2px; }
