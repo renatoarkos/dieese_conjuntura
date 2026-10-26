@@ -195,6 +195,47 @@ def registrar_serie(indicador_id: str, pontos: list[dict]) -> None:
         raise RuntimeError(f"Falha ao gravar indicadores_serie ({indicador_id}): HTTP {erro.code} — {detalhe}") from erro
 
 
+# ------------------------------------------------------------------------
+# Gravar pontos em mercado_b3_serie (ADR 0010 Fase 2, migração 0011) — fora
+# do par indicadores/indicadores_serie de propósito, ver docstring de
+# transformar_b3_brapi.py. Em lotes (TAMANHO_LOTE) porque o backfill de
+# histórico (transformar_b3_historico_yahoo.py) grava ~75 mil linhas de uma
+# vez (≈250 dias x ~300 ações) — um POST só com tudo seria arriscado demais.
+# ------------------------------------------------------------------------
+def registrar_serie_b3(pontos: list[dict], tamanho_lote: int = 500) -> int:
+    """Grava `pontos` em `mercado_b3_serie` via upsert (chave `ticker,
+    data_referencia`), em lotes de `tamanho_lote`. Cada ponto é um
+    dicionário com `ticker`, `data_referencia`, `preco` e, opcionalmente,
+    `variacao_pct`/`volume`/`market_cap`. Devolve quantos pontos foram
+    enviados. Não faz nada se `pontos` estiver vazio.
+    """
+    if not pontos:
+        return 0
+    _exigir_credenciais()
+    enviados = 0
+    for inicio in range(0, len(pontos), tamanho_lote):
+        lote = pontos[inicio : inicio + tamanho_lote]
+        corpo = json.dumps(lote).encode("utf-8")
+        req = urllib.request.Request(
+            f"{_SUPABASE_URL}/rest/v1/mercado_b3_serie?on_conflict=ticker,data_referencia",
+            data=corpo,
+            headers={
+                **_headers(),
+                "Content-Type": "application/json",
+                "Prefer": "resolution=merge-duplicates,return=minimal",
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resposta:
+                resposta.read()
+            enviados += len(lote)
+        except urllib.error.HTTPError as erro:
+            detalhe = erro.read().decode("utf-8", "replace")[:500]
+            raise RuntimeError(f"Falha ao gravar mercado_b3_serie (lote a partir de {inicio}): HTTP {erro.code} — {detalhe}") from erro
+    return enviados
+
+
 if __name__ == "__main__":
     print(
         "Este módulo não roda sozinho — é importado pelos scripts de "
