@@ -66,10 +66,20 @@
       "aspect": "1:1",
       "resolution": "1K",
       "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000, traço limpo, cantos arredondados, sem texto. Um documento com três linhas de lista e uma marca de verificação, representando admissão/desligamento formal.",
-      "uso": "Cartão da dimensão 'Novo CAGED'",
+      "uso": "Reservado (não usado no momento): 'Novo CAGED' deixou de ser dimensão de primeiro nível em 2026-10-26, virou subgrupo dentro de 'Mercado de trabalho' — pode ilustrar esse rótulo na barra lateral futuramente, se o projeto decidir dar ícone a subgrupo",
       "tamanho_de_uso": "600 x 600 px (exibida a 64 px)",
       "alt": "",
       "funcao": "Decorativa"
+    },
+    {
+      "file": "dimensoes/icone-mercados.png",
+      "aspect": "1:1",
+      "resolution": "1K",
+      "prompt": "Ilustração vetorial plana, quadrada, objeto único centralizado sobre fundo #F6F7FC, azul-marinho #030086 como cor principal, um pequeno acento vermelho #EC0000, traço limpo, cantos arredondados, sem texto. Uma linha de gráfico simples (sparkline) ascendente, sem eixo nem número, dentro de um quadro de cantos arredondados — nada de touro, terno, vela de candlestick ou cifrão, conforme a regra geral de estilo deste documento.",
+      "uso": "Cartão da dimensão 'Mercados financeiros', página inicial e mercados.html",
+      "tamanho_de_uso": "600 x 600 px (exibida a 64 px)",
+      "alt": "",
+      "funcao": "Decorativa — última dimensão do painel ainda sem ícone próprio (ver ICONES_DIMENSAO em frontend/js/inicio.js e painel.js, que já tratam a ausência sem quebrar o layout)"
     },
     {
       "file": "secoes/quem-somos.png",
