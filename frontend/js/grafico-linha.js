@@ -44,6 +44,27 @@
     function x(i) { return ML + (i / (serieAsc.length - 1)) * larguraUtil; }
     function y(v) { return MT + alturaUtil - ((v - minEixo) / (maxEixo - minEixo)) * alturaUtil; }
 
+    // Posição X de uma data arbitrária (não precisa ser um ponto exato da
+    // série) — interpola linearmente entre os dois pontos mais próximos pelo
+    // índice. Usado pelos marcadores verticais (opcoes.marcadores), que
+    // marcam datas de transição de governo, não pontos de dado.
+    function xPelaData(dataIso) {
+      var alvo = new Date(dataIso + 'T00:00:00').getTime();
+      var primeira = new Date(serieAsc[0].data_referencia + 'T00:00:00').getTime();
+      var ultima = new Date(serieAsc[serieAsc.length - 1].data_referencia + 'T00:00:00').getTime();
+      if (alvo <= primeira) return x(0);
+      if (alvo >= ultima) return x(serieAsc.length - 1);
+      for (var i = 0; i < serieAsc.length - 1; i++) {
+        var t1 = new Date(serieAsc[i].data_referencia + 'T00:00:00').getTime();
+        var t2 = new Date(serieAsc[i + 1].data_referencia + 'T00:00:00').getTime();
+        if (alvo >= t1 && alvo <= t2) {
+          var fracao = t2 > t1 ? (alvo - t1) / (t2 - t1) : 0;
+          return x(i) + fracao * (x(i + 1) - x(i));
+        }
+      }
+      return x(serieAsc.length - 1);
+    }
+
     var pontosXY = serieAsc.map(function (p, i) { return [x(i), y(p.valor)]; });
     var linha = pontosXY.map(function (p, i) { return (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
     var ultimo = pontosXY[pontosXY.length - 1];
@@ -69,6 +90,21 @@
     [[0, 'start'], [Math.floor((serieAsc.length - 1) / 2), 'middle'], [serieAsc.length - 1, 'end']].forEach(function (par) {
       var i = par[0], ancora = par[1];
       svgHtml += '<text class="rotulo-eixo" x="' + x(i).toFixed(1) + '" y="' + (A - 8) + '" text-anchor="' + ancora + '">' + formatarData(serieAsc[i].data_referencia) + '</text>';
+    });
+
+    // Marcadores verticais opcionais (ex. transições de governo, ver
+    // D.GOVERNOS em js/dados.js) — linha tracejada + rótulo pequeno no topo,
+    // só para datas que caem dentro do intervalo real da série (fora disso
+    // não tem o que marcar). Desenhados antes da linha/área para ficarem
+    // "atrás" do dado, nunca por cima dele.
+    (opcoes.marcadores || []).forEach(function (m) {
+      var tAlvo = new Date(m.data + 'T00:00:00').getTime();
+      var tInicio = new Date(serieAsc[0].data_referencia + 'T00:00:00').getTime();
+      var tFim = new Date(serieAsc[serieAsc.length - 1].data_referencia + 'T00:00:00').getTime();
+      if (tAlvo <= tInicio || tAlvo >= tFim) return;
+      var mx = xPelaData(m.data);
+      svgHtml += '<line class="marcador-governo" x1="' + mx.toFixed(1) + '" x2="' + mx.toFixed(1) + '" y1="' + MT + '" y2="' + (MT + alturaUtil) + '"></line>';
+      svgHtml += '<text class="marcador-governo-rotulo" x="' + mx.toFixed(1) + '" y="' + (MT - 4) + '">' + (m.rotulo ? String(m.rotulo).replace(/&/g, '&amp;').replace(/</g, '&lt;') : '') + '</text>';
     });
 
     svgHtml += '<path class="area" d="' + area + '"></path>';

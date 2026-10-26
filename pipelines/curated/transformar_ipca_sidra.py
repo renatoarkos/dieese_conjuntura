@@ -1,10 +1,15 @@
-"""Transformação CURATED do IPCA (ADR 0005) — a partir do RAW gravado por
-`pipelines/ingestao/bloco_3_inflacao/coleta_ipca_sidra.py` (SIDRA tabela 7060).
+"""Transformação CURATED do IPCA — a partir do RAW gravado por
+`pipelines/ingestao/bloco_3_inflacao/coleta_ipca_bcb.py` (BCB/SGS, série 433).
 
-A tabela cruza 4 variáveis (D2C: variação mensal/acumulada no ano/acumulada
-em 12 meses/peso) — headline = D2C='63' ("IPCA - Variação mensal"), o recorte
-mais citado como "a inflação do mês" no noticiário econômico. D4C já vem
-fixo em 7169 (índice geral) pela própria URL de coleta.
+Nome do arquivo mantido como `transformar_ipca_sidra.py` por compatibilidade
+com o resto do projeto (nenhum outro script/documentação precisa mudar de
+referência) — apesar do nome, a fonte usada agora é o BCB/SGS, não mais o
+SIDRA. Ver `coleta_ipca_bcb.py` para o raciocínio completo da troca de fonte
+(2026-10-26): mesmo indicador (`ipca`), histórico bem mais longo (desde o
+Plano Real, não só desde 2020).
+
+`coleta_ipca_sidra.py` continua no repositório, não apagado — só deixou de
+ser a fonte usada por esta transformação.
 """
 
 import json
@@ -14,9 +19,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from curated_supabase import baixar_objeto_storage, buscar_ultimo_raw, registrar_serie
 
-SCRIPT_ORIGEM = "pipelines/ingestao/bloco_3_inflacao/coleta_ipca_sidra.py"
+SCRIPT_ORIGEM = "pipelines/ingestao/bloco_3_inflacao/coleta_ipca_bcb.py"
 INDICADOR_ID = "ipca"
-D2C_ESCOLHIDO = "63"  # IPCA - Variação mensal
 
 
 def _baixar_raw() -> list:
@@ -26,19 +30,19 @@ def _baixar_raw() -> list:
     return json.loads(baixar_objeto_storage(registros[0]["storage_path"]).decode("utf-8"))
 
 
-def _data_do_mes(codigo_periodo: str) -> str:
-    return f"{codigo_periodo[:4]}-{codigo_periodo[4:6]}-01"
+def _data_iso(data_bcb: str) -> str:
+    dia, mes, ano = data_bcb.split("/")
+    return f"{ano}-{mes}-{dia}"
 
 
 def _montar_pontos(dados: list) -> list[dict]:
     pontos = []
-    for linha in dados[1:]:
-        if linha.get("D2C") != D2C_ESCOLHIDO:
+    for linha in dados:
+        valor_bruto = linha.get("valor")
+        data_bruta = linha.get("data")
+        if valor_bruto is None or not data_bruta:
             continue
-        valor_bruto = linha.get("V")
-        if valor_bruto in (None, "...", "-", "X"):
-            continue
-        pontos.append({"data_referencia": _data_do_mes(linha["D3C"]), "valor": float(valor_bruto)})
+        pontos.append({"data_referencia": _data_iso(data_bruta), "valor": float(valor_bruto)})
     return pontos
 
 

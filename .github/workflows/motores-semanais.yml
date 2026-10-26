@@ -94,13 +94,17 @@ jobs:
         run: python3 pipelines/ingestao/bloco_2_monetario_credito/coleta_saldo_credito_sfn_bcb.py
 
       # --- Bloco 3 — Inflação ---
-      - name: IPCA índice geral (SIDRA 7060)
+      # IPCA/INPC trocaram de fonte em 2026-10-26: SIDRA (7060/7063, só desde
+      # 2020) -> BCB/SGS (433/188, desde o Plano Real) — ver coleta_ipca_bcb.py
+      # para o raciocínio completo. Scripts SIDRA preservados no repositório,
+      # só não usados mais pelo agendamento.
+      - name: IPCA índice geral (BCB/SGS 433)
         continue-on-error: true
-        run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_ipca_sidra.py
+        run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_ipca_bcb.py
 
-      - name: INPC índice geral (SIDRA 7063)
+      - name: INPC índice geral (BCB/SGS 188)
         continue-on-error: true
-        run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_inpc_sidra.py
+        run: python3 pipelines/ingestao/bloco_3_inflacao/coleta_inpc_bcb.py
 
       - name: IGP-M (via BCB/SGS 189)
         continue-on-error: true

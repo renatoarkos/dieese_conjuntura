@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dimensão Política · DIEESE 360</title>
+  <meta name="description" content="Indicadores socioeconômicos já publicados na plataforma, segmentados por período de governo desde o início do Plano Real (1994).">
+  <meta name="theme-color" content="#030086">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+  <link rel="shortcut icon" href="assets/icons/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=20261026b">
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="container">
+      <a class="marca-topo" href="index.html">
+        <img src="assets/brand/logo-dieese-wordmark.png" alt="DIEESE" width="117" height="24">
+        <strong>360</strong>
+        <span>inteligência socioeconômica</span>
+      </a>
+      <nav class="nav-topo">
+        <a class="nav-link" href="index.html#dimensoes">Dimensões</a>
+        <a class="nav-link" href="catalogo.html">Catálogo</a>
+        <a class="nav-link nav-link-amplo" href="mercados.html">Mercados</a>
+        <a class="nav-link nav-link-amplo" href="politica.html" aria-current="page">Dimensão Política</a>
+        <a class="btn btn-primario btn-pequeno" href="login.html">Entrar</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="secao politica-intro">
+    <div class="container">
+      <span class="hero-rotulo">Dimensão Política</span>
+      <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);max-width:30ch">Indicadores desde o Plano Real, por período de governo</h1>
+      <p class="lead" style="max-width:68ch">Os mesmos indicadores já publicados nas outras dimensões da plataforma, reorganizados numa única linha do tempo contínua, de julho de 1994 até hoje, com os períodos de governo marcados para referência.</p>
+      <div class="aviso politica-aviso">
+        <strong>Como ler estes gráficos</strong>
+        <p>Este recorte é organizacional, não uma avaliação de desempenho de governo. Correlação não implica causalidade: nenhum destes gráficos isola o efeito de uma política pública de fatores externos (choques internacionais, ciclos de commodities, pandemia, decisões de outros países). Mudanças de metodologia ou de fonte ao longo do tempo, quando existem, não significam piora nem melhora do indicador — só mudança de régua de medição. Os períodos de governo são só um marco temporal de referência, sem nota, cor ou classificação de "melhor" ou "pior".</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="container">
+      <div class="politica-controles">
+        <label for="politica-seletor">Escolha um indicador</label>
+        <select id="politica-seletor" class="politica-seletor">
+          <option>Carregando indicadores…</option>
+        </select>
+      </div>
+      <div id="politica-corpo">
+        <p class="aviso demo">Carregando…</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="rodape">
+    <div class="container">
+      <span>DIEESE 360: uso interno do DIEESE.</span>
+      <span>Dados de fontes oficiais públicas (IBGE, BCB, MDIC, SICONFI). Ver metodologia de cada indicador no catálogo.</span>
+    </div>
+  </footer>
+
+  <script src="js/vendor/supabase.js"></script>
+  <script src="js/config.js?v=20261026b"></script>
+  <script src="js/app.js?v=20261026b"></script>
+  <script src="js/dados.js?v=20261026b"></script>
+  <script src="js/grafico-linha.js?v=20261026b"></script>
+  <script src="js/politica.js?v=20261026b"></script>
+</body>
+</html>

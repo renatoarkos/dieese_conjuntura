@@ -15,6 +15,24 @@
     mercados: { nome: 'Mercados financeiros', descricao: 'Índices de bolsa, ações da B3 e criptoativos, fechamento diário.' }
   };
 
+  // Períodos de governo desde o início do Plano Real (01/07/1994) — usados
+  // pela página "Dimensão Política" (politica.html) para desenhar marcadores
+  // verticais nos gráficos de série histórica. Datas de posse/fim de mandato
+  // são fato público, sem ambiguidade até 2023. Período em curso (Lula,
+  // reeleito no 2º turno de 25/10/2026, confirmado via TRE-SP) fica com
+  // `fim: null` — não presumir data de término de um mandato ainda não
+  // iniciado. Mesmo critério de agrupamento usado pela Folha de S.Paulo nos
+  // gráficos usados como referência para esta página: presidente/sucessão
+  // direta juntos (ex. "Dilma/Temer"), não um marcador por posse individual.
+  var GOVERNOS = [
+    { nome: 'Itamar Franco (pós-Real)', inicio: '1994-07-01', fim: '1995-01-01' },
+    { nome: 'FHC', inicio: '1995-01-01', fim: '2003-01-01' },
+    { nome: 'Lula', inicio: '2003-01-01', fim: '2011-01-01' },
+    { nome: 'Dilma/Temer', inicio: '2011-01-01', fim: '2019-01-01' },
+    { nome: 'Bolsonaro', inicio: '2019-01-01', fim: '2023-01-01' },
+    { nome: 'Lula (em curso)', inicio: '2023-01-01', fim: null }
+  ];
+
   // ------------------------------------------------------------------
   // Carregamento
   // ------------------------------------------------------------------
@@ -184,6 +202,36 @@
     return { valor: variacao.percentual, sufixo: '%', direcao: variacao.percentual > 0 ? 'alta' : (variacao.percentual < 0 ? 'baixa' : 'neutra'), anterior: anterior };
   }
 
+  // Retorno % entre o ponto mais recente e o ponto mais próximo de N dias
+  // corridos atrás — generaliza calcularVariacaoPercentual (que só compara
+  // os dois últimos pontos) para qualquer janela de tempo. Usado na página
+  // de mercados financeiros para expor retorno em 1 mês/YTD/12 meses sem
+  // precisar abrir o gráfico (inspirado no seletor de período do Yahoo
+  // Finance, que já mostra o retorno de cada janela no próprio botão — ver
+  // research/notas/INVENTARIO_BENCHMARK_MERCADOS_FINANCEIROS.md, seção 6).
+  // `serieAsc` precisa ter histórico suficiente para cobrir `dias`; se o
+  // ponto mais antigo disponível for mais recente que a janela pedida,
+  // devolve null em vez de comparar contra um "quase lá" enganoso.
+  function calcularRetornoPeriodo(serieAsc, dias) {
+    if (serieAsc.length < 2) return null;
+    var atual = serieAsc[serieAsc.length - 1];
+    var dataAtual = new Date(atual.data_referencia + 'T00:00:00');
+    var alvo = new Date(dataAtual);
+    alvo.setDate(alvo.getDate() - dias);
+    var primeiro = new Date(serieAsc[0].data_referencia + 'T00:00:00');
+    if (primeiro > alvo) return null; // histórico não cobre a janela pedida
+    // Ponto com data mais próxima do alvo, sem passar dele (igual ou mais antigo).
+    var base = serieAsc[0];
+    for (var i = 0; i < serieAsc.length; i++) {
+      var data = new Date(serieAsc[i].data_referencia + 'T00:00:00');
+      if (data > alvo) break;
+      base = serieAsc[i];
+    }
+    if (!base.valor) return null;
+    var percentual = ((atual.valor - base.valor) / Math.abs(base.valor)) * 100;
+    return { percentual: percentual, base: base, atual: atual };
+  }
+
   // ------------------------------------------------------------------
   // Sparkline — SVG inline. Linha 2px suavizada (curva Catmull-Rom, não
   // segmentos retos entre pontos — fica menos "serrilhada" com poucos
@@ -312,6 +360,7 @@
   window.DIEESE360 = window.DIEESE360 || {};
   window.DIEESE360.dados = {
     DIMENSOES: DIMENSOES,
+    GOVERNOS: GOVERNOS,
     carregarIndicadores: carregarIndicadores,
     carregarSerie: carregarSerie,
     carregarSeriesPorIndicadores: carregarSeriesPorIndicadores,
@@ -322,6 +371,7 @@
     calcularTendencia: calcularTendencia,
     calcularVariacaoPercentual: calcularVariacaoPercentual,
     calcularVariacao: calcularVariacao,
+    calcularRetornoPeriodo: calcularRetornoPeriodo,
     montarCartao: montarCartao,
     montarCartaoVazio: montarCartaoVazio,
     montarCartaoDimensaoPendente: montarCartaoDimensaoPendente,
