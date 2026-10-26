@@ -42,9 +42,12 @@
 
   // Prévia compacta da dimensão "mercados" na home (não entra no fetch geral
   // de TICKER/DESTAQUES porque é uma dimensão à parte, ver ADR 0010) — um
-  // índice nacional, um global, um criptoativo e uma ação B3, representando
-  // as 3 categorias da página própria (mercados.html).
-  var PREVIEW_MERCADOS = ['ibovespa', 'sp500', 'bitcoin', 'petr4'];
+  // índice nacional, um global e os dois criptoativos cadastrados. Não
+  // inclui mais ação da B3 (2026-10-26): petr4/vale3/itub4 foram removidos
+  // do catálogo de indicadores depois que a busca sobre as ~298 ações da
+  // B3 em mercados.html passou a cobrir o mesmo dado — escolher 1 ação
+  // fixa entre 298 pra essa prévia seria arbitrário.
+  var PREVIEW_MERCADOS = ['ibovespa', 'sp500', 'bitcoin', 'ethereum'];
 
   var TICKER = ['selic', 'cambio_dolar', 'ipca', 'commodities_geral', 'balanca_saldo', 'taxa_desocupacao', 'bndes_desembolsos'];
   // Indicadores em destaque no resumo do dia: 8 séries chave distribuídas em grid completo

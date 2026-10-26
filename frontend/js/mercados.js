@@ -21,12 +21,11 @@
 
   var INDICES = ['ibovespa', 'sp500', 'nasdaq', 'dow_jones'];
   var CRIPTO = ['bitcoin', 'ethereum'];
-  // petr4/vale3/itub4 continuam cadastrados como indicadores avulsos (fonte
-  // Yahoo, ~1 ano de histórico) — não removidos ainda, mas a tabela de 3
-  // ações que os exibia foi substituída pela busca sobre as ~300 ações da
-  // B3 (fonte brapi.dev + Yahoo, ver carregarMapaB3/carregarSerieB3 abaixo,
-  // 2026-10-26). Decisão de aposentar esses 3 indicadores fica para depois
-  // de confirmar que o histórico bate (ver plano aprovado desta sessão).
+  // petr4/vale3/itub4 existiam como indicadores avulsos (fonte Yahoo, ~1
+  // ano de histórico) até 2026-10-26 — removidos do catálogo depois de
+  // confirmar que mercado_b3_serie cobre o mesmo dado sem divergência
+  // (ver carregarMapaB3/carregarSerieB3 abaixo, mesma base que alimenta a
+  // busca sobre as ~298 ações da B3).
   var TODOS = INDICES.concat(CRIPTO);
 
   function diasDesdeInicioDoAno() {

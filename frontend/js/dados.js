@@ -90,16 +90,16 @@
     comprometimento_renda_sem_ajuste: 'Endividamento das famílias',
     comprometimento_renda_sem_imovel: 'Endividamento das famílias',
 
-    // mercados
+    // mercados — "Ações" deixou de existir como subgrupo de indicador avulso
+    // em 2026-10-26: petr4/vale3/itub4 foram removidos do catálogo depois
+    // de confirmar que mercado_b3_serie já cobre o mesmo dado (mais ~295
+    // outras ações, com busca própria em mercados.html).
     ibovespa: 'Índices',
     sp500: 'Índices',
     nasdaq: 'Índices',
     dow_jones: 'Índices',
     bitcoin: 'Criptoativos',
-    ethereum: 'Criptoativos',
-    petr4: 'Ações',
-    vale3: 'Ações',
-    itub4: 'Ações'
+    ethereum: 'Criptoativos'
   };
 
   function subgrupoDoIndicador(indicadorId) {
