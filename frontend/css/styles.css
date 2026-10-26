@@ -102,7 +102,7 @@ img { max-width: 100%; display: block; }
 .campo label { display: block; font-weight: 600; margin-bottom: 6px; }
 .campo input { width: 100%; font: 400 1rem var(--fonte-texto); padding: 12px 14px; border: 2px solid var(--linha); border-radius: 8px; background: #fff; color: var(--ink); }
 .campo input:focus { border-color: var(--azul); outline: none; box-shadow: 0 0 0 3px var(--azul-100); }
-.aviso { background: var(--azul-50); border-left: 4px solid var(--azul); border-radius: 6px; padding: 12px 16px; font-size: .88rem; margin: 18px 0; }
+.aviso { background: var(--azul-50); border-left: 4px solid var(--azul); border-radius: 6px; padding: 12px 16px; font-size: var(--fs-body-sm); margin: 18px 0; }
 .aviso.demo { background: #fff4cc; border-left-color: #c9a400; }
 .toast { position: fixed; right: 18px; bottom: 18px; z-index: 200; max-width: min(420px, calc(100vw - 36px)); background: var(--azul); color: #fff; padding: 12px 16px; border-radius: 10px; box-shadow: var(--sombra); font-size: .92rem; }
 .toast.erro { background: #fff4cc; color: #3d2f00; }
@@ -780,7 +780,7 @@ body.modal-ind-travado { overflow: hidden; }
   line-height: 1.25;
 }
 .cartao-dimensao-desc {
-  font-size: 0.88rem;
+  font-size: var(--fs-body-sm);
   color: var(--cinza-700);
   line-height: 1.45;
   margin: 0 0 16px 0;
@@ -991,7 +991,7 @@ body.modal-ind-travado { overflow: hidden; }
 .grafico-tooltip span { opacity: .85; }
 
 /* indicador "em construção" (dimensão sem dado real ainda) */
-.cartao-pendente { background: repeating-linear-gradient(135deg, var(--fundo-suave) 0 12px, #fff 12px 24px); border: 1px dashed var(--linha); border-radius: var(--raio); padding: 22px; display: flex; flex-direction: column; justify-content: center; min-height: 220px; color: var(--ink-muda); text-align: center; font-size: .86rem; }
+.cartao-pendente { background: repeating-linear-gradient(135deg, var(--fundo-suave) 0 12px, #fff 12px 24px); border: 1px dashed var(--linha); border-radius: var(--raio); padding: 22px; display: flex; flex-direction: column; justify-content: center; min-height: 220px; color: var(--ink-muda); text-align: center; font-size: var(--fs-caption); }
 
 /* ---------------------------------------------------------------- animação de entrada (ver animacao-dash.js) */
 .anim-cartao { animation: cartao-surge .7s cubic-bezier(.2, .8, .2, 1) both; }
@@ -1076,7 +1076,7 @@ body.modal-ind-travado { overflow: hidden; }
 
 .tabela-serie-caixa { max-height: 520px; overflow-y: auto; }
 .tabela-serie { width: 100%; border-collapse: collapse; font-size: .9rem; }
-.tabela-serie th { text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--linha); color: var(--ink-muda); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; position: sticky; top: 0; background: #fff; }
+.tabela-serie th { text-align: left; padding: 8px 12px; border-bottom: 2px solid var(--linha); color: var(--ink-muda); font-size: var(--fs-label); text-transform: uppercase; letter-spacing: .04em; position: sticky; top: 0; background: #fff; }
 .tabela-serie td { padding: 8px 12px; border-bottom: 1px solid var(--linha); }
 .tabela-serie-valor { text-align: right; font-weight: 700; color: var(--azul); font-variant-numeric: tabular-nums; }
 
@@ -1085,8 +1085,8 @@ body.modal-ind-travado { overflow: hidden; }
 .infografico-grade { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 .infografico-caixa { background: var(--fundo-suave); border-radius: var(--raio); padding: 18px; text-align: center; }
 .infografico-caixa strong { display: block; font: 800 1.5rem var(--fonte-titulo); color: var(--azul); margin: 6px 0; }
-.infografico-rotulo { font-size: .76rem; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-muda); }
-.infografico-data { font-size: .78rem; color: var(--ink-muda); }
+.infografico-rotulo { font-size: var(--fs-label); text-transform: uppercase; letter-spacing: .04em; color: var(--ink-muda); }
+.infografico-data { font-size: var(--fs-caption); color: var(--ink-muda); }
 
 /* ---------------------------------------------------------------- mapa coroplético por UF (ver mapa-uf.js) */
 .mapa-caixa { background: #fff; border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px; box-shadow: var(--sombra); }
