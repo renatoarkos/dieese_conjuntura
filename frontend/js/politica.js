@@ -93,7 +93,10 @@
         return;
       }
       corpo.innerHTML =
-        '<div class="politica-cabecalho-indicador"><h2>' + esc(indicador.nome) + '</h2><p>' + esc(indicador.unidade) + ' · ' + esc(indicador.fonte) + '</p></div>' +
+        '<div class="politica-cabecalho-indicador"><h2>' + esc(indicador.nome) + '</h2>' +
+        '<p>' + esc(indicador.unidade) + ' · ' + esc(indicador.fonte) + '</p>' +
+        (indicador.metodologia_md ? '<p class="politica-cabecalho-metodologia">' + esc(indicador.metodologia_md) + '</p>' : '') +
+        '</div>' +
         '<div class="grafico-linha-caixa politica-grafico" id="politica-grafico"></div>' +
         montarResumoGovernos(indicador, mediaPorGoverno(serieAsc));
       window.DIEESE360.montarGraficoLinha(document.getElementById('politica-grafico'), serieAsc, {

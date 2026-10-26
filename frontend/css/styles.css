@@ -1356,6 +1356,7 @@ body.modal-ind-travado { overflow: hidden; }
 .politica-cabecalho-indicador { margin-bottom: 12px; }
 .politica-cabecalho-indicador h2 { color: var(--azul); margin-bottom: 2px; }
 .politica-cabecalho-indicador p { color: var(--ink-muda); font-size: var(--fs-caption); margin: 0; }
+.politica-cabecalho-indicador p.politica-cabecalho-metodologia { color: var(--ink); font-size: var(--fs-body-sm); max-width: 68ch; line-height: 1.5; margin-top: 8px; }
 .politica-grafico { border: 1px solid var(--linha); border-radius: var(--raio); background: #fff; padding: 12px; }
 
 .politica-resumo { margin-top: 22px; }

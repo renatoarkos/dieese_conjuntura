@@ -33,7 +33,13 @@
       return;
     }
 
-    var L = 640, A = 300, ML = 56, MR = 16, MT = 16, MB = 32; // margens para caber o eixo
+    // MT (margem superior) é maior quando há marcadores de governo (ver
+    // abaixo): com até 10 mandatos possíveis num mesmo gráfico (desde
+    // 2026-10-26, um marcador por mandato individual, não por sucessão de
+    // governo), os rótulos alternam em 2 linhas para não se sobrepor —
+    // precisa de mais espaço no topo do que um gráfico sem marcador.
+    var temMarcadores = !!(opcoes.marcadores && opcoes.marcadores.length);
+    var L = 640, A = 300, ML = 56, MR = 16, MT = temMarcadores ? 30 : 16, MB = 32; // margens para caber o eixo
     var valores = serieAsc.map(function (p) { return p.valor; });
     var min = Math.min.apply(null, valores), max = Math.max.apply(null, valores);
     if (min === max) { min -= 1; max += 1; } // evita divisão por zero numa série plana
@@ -92,19 +98,25 @@
       svgHtml += '<text class="rotulo-eixo" x="' + x(i).toFixed(1) + '" y="' + (A - 8) + '" text-anchor="' + ancora + '">' + formatarData(serieAsc[i].data_referencia) + '</text>';
     });
 
-    // Marcadores verticais opcionais (ex. transições de governo, ver
+    // Marcadores verticais opcionais (ex. mandatos presidenciais, ver
     // D.GOVERNOS em js/dados.js) — linha tracejada + rótulo pequeno no topo,
     // só para datas que caem dentro do intervalo real da série (fora disso
     // não tem o que marcar). Desenhados antes da linha/área para ficarem
-    // "atrás" do dado, nunca por cima dele.
+    // "atrás" do dado, nunca por cima dele. O rótulo alterna entre 2 linhas
+    // (par/ímpar, pela ordem cronológica dos marcadores desenhados) — com
+    // mandatos individuais (2026-10-26) alguns ficam a 1-2 anos um do outro,
+    // perto demais pra caber lado a lado numa linha só sem sobrepor texto.
+    var indiceMarcadorVisivel = 0;
     (opcoes.marcadores || []).forEach(function (m) {
       var tAlvo = new Date(m.data + 'T00:00:00').getTime();
       var tInicio = new Date(serieAsc[0].data_referencia + 'T00:00:00').getTime();
       var tFim = new Date(serieAsc[serieAsc.length - 1].data_referencia + 'T00:00:00').getTime();
       if (tAlvo <= tInicio || tAlvo >= tFim) return;
       var mx = xPelaData(m.data);
+      var yRotulo = (indiceMarcadorVisivel % 2 === 0) ? (MT - 18) : (MT - 6);
+      indiceMarcadorVisivel++;
       svgHtml += '<line class="marcador-governo" x1="' + mx.toFixed(1) + '" x2="' + mx.toFixed(1) + '" y1="' + MT + '" y2="' + (MT + alturaUtil) + '"></line>';
-      svgHtml += '<text class="marcador-governo-rotulo" x="' + mx.toFixed(1) + '" y="' + (MT - 4) + '">' + (m.rotulo ? String(m.rotulo).replace(/&/g, '&amp;').replace(/</g, '&lt;') : '') + '</text>';
+      svgHtml += '<text class="marcador-governo-rotulo" x="' + mx.toFixed(1) + '" y="' + yRotulo + '">' + (m.rotulo ? String(m.rotulo).replace(/&/g, '&amp;').replace(/</g, '&lt;') : '') + '</text>';
     });
 
     svgHtml += '<path class="area" d="' + area + '"></path>';

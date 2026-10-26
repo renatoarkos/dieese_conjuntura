@@ -106,22 +106,33 @@
     return SUBGRUPOS[indicadorId] || null;
   }
 
-  // Períodos de governo desde o início do Plano Real (01/07/1994) — usados
+  // Mandatos presidenciais desde o início do Plano Real (01/07/1994) — usados
   // pela página "Dimensão Política" (politica.html) para desenhar marcadores
   // verticais nos gráficos de série histórica. Datas de posse/fim de mandato
-  // são fato público, sem ambiguidade até 2023. Período em curso (Lula,
-  // reeleito no 2º turno de 25/10/2026, confirmado via TRE-SP) fica com
-  // `fim: null` — não presumir data de término de um mandato ainda não
-  // iniciado. Mesmo critério de agrupamento usado pela Folha de S.Paulo nos
-  // gráficos usados como referência para esta página: presidente/sucessão
-  // direta juntos (ex. "Dilma/Temer"), não um marcador por posse individual.
+  // são fato público, sem ambiguidade até 2023; a data de saída de Dilma
+  // (31/08/2016, votação final do impeachment no Senado, mesmo dia em que
+  // Temer assumiu em caráter definitivo) também é fato histórico público sem
+  // ambiguidade. Período em curso (Lula, reeleito no 2º turno de 25/10/2026,
+  // confirmado via TRE-SP) fica com `fim: null` — não presumir data de
+  // término de um mandato ainda não iniciado.
+  //
+  // Um marcador por MANDATO individual (2026-10-26, pedido explícito do
+  // responsável do projeto: "FHC I, FHC II, Lula I, Lula II... e assim por
+  // diante"), substituindo o critério anterior de agrupar sucessão direta
+  // num só marcador (ex. "Dilma/Temer") — esse critério anterior era
+  // inspirado nos gráficos da Folha de S.Paulo usados como referência
+  // inicial, mas o responsável do projeto pediu o recorte mais granular.
   var GOVERNOS = [
     { nome: 'Itamar Franco (pós-Real)', inicio: '1994-07-01', fim: '1995-01-01' },
-    { nome: 'FHC', inicio: '1995-01-01', fim: '2003-01-01' },
-    { nome: 'Lula', inicio: '2003-01-01', fim: '2011-01-01' },
-    { nome: 'Dilma/Temer', inicio: '2011-01-01', fim: '2019-01-01' },
+    { nome: 'FHC I', inicio: '1995-01-01', fim: '1999-01-01' },
+    { nome: 'FHC II', inicio: '1999-01-01', fim: '2003-01-01' },
+    { nome: 'Lula I', inicio: '2003-01-01', fim: '2007-01-01' },
+    { nome: 'Lula II', inicio: '2007-01-01', fim: '2011-01-01' },
+    { nome: 'Dilma I', inicio: '2011-01-01', fim: '2015-01-01' },
+    { nome: 'Dilma II', inicio: '2015-01-01', fim: '2016-08-31' },
+    { nome: 'Temer', inicio: '2016-08-31', fim: '2019-01-01' },
     { nome: 'Bolsonaro', inicio: '2019-01-01', fim: '2023-01-01' },
-    { nome: 'Lula (em curso)', inicio: '2023-01-01', fim: null }
+    { nome: 'Lula III (em curso)', inicio: '2023-01-01', fim: null }
   ];
 
   // ------------------------------------------------------------------
