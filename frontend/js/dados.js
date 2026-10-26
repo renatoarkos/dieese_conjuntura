@@ -10,10 +10,101 @@
     macroeconomia: { nome: 'Macroeconomia', descricao: 'Atividade econômica, comércio exterior, investimento e contas públicas: o quadro geral da economia brasileira.' },
     monetario_credito: { nome: 'Monetário e crédito', descricao: 'Juros, câmbio, crédito e endividamento das famílias.' },
     inflacao: { nome: 'Inflação', descricao: 'Índices de preços, cesta básica e combustíveis.' },
-    mercado_trabalho: { nome: 'Mercado de trabalho', descricao: 'Emprego, rendimento, sindicalização e negociação coletiva.' },
-    caged: { nome: 'Novo CAGED', descricao: 'Admissões e desligamentos formais, por microdado.' },
+    mercado_trabalho: { nome: 'Mercado de trabalho', descricao: 'Emprego, rendimento, sindicalização, negociação coletiva e o Novo CAGED.' },
     mercados: { nome: 'Mercados financeiros', descricao: 'Índices de bolsa, ações da B3 e criptoativos, fechamento diário.' }
   };
+
+  // O "Novo CAGED" deixou de ser dimensão de primeiro nível (2026-10-26, a
+  // pedido do responsável do projeto: "não faz sentido colocar CAGED fora
+  // do mercado de trabalho... coloca como uma subdimensão"). A coluna
+  // `indicadores.dimensao` continua gravando 'caged' nas 2 séries (sem
+  // migração/UPDATE no banco — subdimensão aqui é só apresentação, não um
+  // fato novo sobre o dado) — esta função resolve qual dimensão de
+  // primeiro nível usar para agrupar/filtrar/navegar.
+  function dimensaoEfetiva(dimensaoBruta) {
+    return dimensaoBruta === 'caged' ? 'mercado_trabalho' : dimensaoBruta;
+  }
+
+  // Subgrupo (subdimensão) de cada indicador dentro da sua dimensão efetiva
+  // — só rótulo de exibição, reversível, sem afetar o catálogo no banco.
+  // Indicador sem entrada aqui continua aparecendo solto, como antes deste
+  // refinamento (2026-10-26). Levantamento feito a partir do catálogo real:
+  // ver research/notas (se houver) ou o histórico desta sessão.
+  var SUBGRUPOS = {
+    // mercado_trabalho
+    salario_medio_real_admissao_caged: 'Novo CAGED',
+    salario_medio_real_desligamento_caged: 'Novo CAGED',
+    rais_estoque_vinculos_ativos: 'RAIS',
+    rais_rendimento_medio_dezembro: 'RAIS',
+    ict_dieese: 'Negociação coletiva e sindicalismo',
+    piso_salarial_medio: 'Negociação coletiva e sindicalismo',
+    piso_salarial_mediano: 'Negociação coletiva e sindicalismo',
+    reajustes_acima_inpc_pct: 'Negociação coletiva e sindicalismo',
+    reajustes_abaixo_inpc_pct: 'Negociação coletiva e sindicalismo',
+    greves_total_ano: 'Negociação coletiva e sindicalismo',
+    greves_horas_paradas_ano: 'Negociação coletiva e sindicalismo',
+    taxa_sindicalizacao: 'Negociação coletiva e sindicalismo',
+    taxa_desocupacao: 'Emprego e renda (PNAD Contínua)',
+    populacao_ocupada: 'Emprego e renda (PNAD Contínua)',
+    rendimento_medio_real: 'Emprego e renda (PNAD Contínua)',
+    taxa_participacao: 'Emprego e renda (PNAD Contínua)',
+    desemprego_ilostat: 'Emprego e renda (PNAD Contínua)',
+
+    // inflacao
+    ipca: 'Índices de preços',
+    inpc: 'Índices de preços',
+    igpm: 'Índices de preços',
+    ipca_numero_indice: 'Índices de preços',
+    combustivel_gasolina: 'Combustíveis',
+    combustivel_diesel: 'Combustíveis',
+    combustivel_glp: 'Combustíveis',
+
+    // macroeconomia
+    balanca_exportacoes: 'Comércio exterior',
+    balanca_importacoes: 'Comércio exterior',
+    balanca_saldo: 'Comércio exterior',
+    commodities_geral: 'Índice de Commodities Brasil',
+    commodities_agropecuaria: 'Índice de Commodities Brasil',
+    commodities_energia: 'Índice de Commodities Brasil',
+    commodities_metal: 'Índice de Commodities Brasil',
+    pib_brasil: 'Atividade econômica',
+    pim_producao_industrial: 'Atividade econômica',
+    pmc_volume_vendas: 'Atividade econômica',
+    pms_volume_servicos: 'Atividade econômica',
+    taxa_investimento: 'Atividade econômica',
+
+    // monetario_credito
+    juros_pf_cheque_especial: 'Juros por modalidade',
+    juros_pf_credito_pessoal: 'Juros por modalidade',
+    juros_pj_veiculos: 'Juros por modalidade',
+    juros_pj_cartao_rotativo: 'Juros por modalidade',
+    saldo_credito_sfn_total: 'Crédito do SFN',
+    saldo_credito_sfn_pf: 'Crédito do SFN',
+    saldo_credito_sfn_pj: 'Crédito do SFN',
+    saldo_credito_sfn_recursos_direcionados: 'Crédito do SFN',
+    saldo_credito_sfn_recursos_livres: 'Crédito do SFN',
+    saldo_credito_sfn_livres_pf: 'Crédito do SFN',
+    endividamento_familias_acumulado_12m: 'Endividamento das famílias',
+    endividamento_familias_sem_imovel: 'Endividamento das famílias',
+    comprometimento_renda_com_ajuste: 'Endividamento das famílias',
+    comprometimento_renda_sem_ajuste: 'Endividamento das famílias',
+    comprometimento_renda_sem_imovel: 'Endividamento das famílias',
+
+    // mercados
+    ibovespa: 'Índices',
+    sp500: 'Índices',
+    nasdaq: 'Índices',
+    dow_jones: 'Índices',
+    bitcoin: 'Criptoativos',
+    ethereum: 'Criptoativos',
+    petr4: 'Ações',
+    vale3: 'Ações',
+    itub4: 'Ações'
+  };
+
+  function subgrupoDoIndicador(indicadorId) {
+    return SUBGRUPOS[indicadorId] || null;
+  }
 
   // Períodos de governo desde o início do Plano Real (01/07/1994) — usados
   // pela página "Dimensão Política" (politica.html) para desenhar marcadores
@@ -458,6 +549,8 @@
   window.DIEESE360 = window.DIEESE360 || {};
   window.DIEESE360.dados = {
     DIMENSOES: DIMENSOES,
+    dimensaoEfetiva: dimensaoEfetiva,
+    subgrupoDoIndicador: subgrupoDoIndicador,
     GOVERNOS: GOVERNOS,
     carregarIndicadores: carregarIndicadores,
     carregarSerie: carregarSerie,

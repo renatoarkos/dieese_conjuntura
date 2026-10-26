@@ -608,7 +608,6 @@ body.modal-ind-travado { overflow: hidden; }
 #dimensao-monetario_credito { border-top-color: var(--ouro); }
 #dimensao-inflacao { border-top-color: var(--verde); }
 #dimensao-mercado_trabalho { border-top-color: var(--azul-hover); }
-#dimensao-caged { border-top-color: var(--ouro-hover); }
 /* "Mercados financeiros" usa um tom deliberadamente mais neutro/discreto que
    as outras 5 (que são todas produção própria do DIEESE) — reforça
    visualmente que esta dimensão é referência externa de mercado, não um
@@ -618,7 +617,6 @@ body.modal-ind-travado { overflow: hidden; }
 #dimensao-monetario_credito .secao-dimensao-icone { background: var(--ouro-50); }
 #dimensao-inflacao .secao-dimensao-icone { background: var(--verde-50); }
 #dimensao-mercado_trabalho .secao-dimensao-icone { background: var(--azul-100); }
-#dimensao-caged .secao-dimensao-icone { background: var(--ouro-100); }
 #dimensao-mercados .secao-dimensao-icone { background: var(--fundo-suave); }
 .carrossel-cabecalho { margin-bottom: 20px; }
 
@@ -1023,6 +1021,11 @@ body.modal-ind-travado { overflow: hidden; }
 .lateral-link:hover { background: var(--azul-50); color: var(--azul); }
 .lateral-link.ativo { background: var(--azul-50); color: var(--azul); font-weight: 700; border-left-color: var(--azul); }
 .lateral-vazio { padding: 4px 10px 10px 18px; font-size: .8rem; color: var(--ink-muda); font-style: italic; }
+
+/* Subdimensão (ex. "Novo CAGED" dentro de "Mercado de trabalho") — rótulo
+   pequeno acima da sublista correspondente, ver D.subgrupoDoIndicador em
+   dados.js e js/barra-lateral.js. */
+.lateral-subgrupo { margin: 6px 0 2px 10px; font: 700 var(--fs-label) var(--fonte-titulo); color: var(--cinza-500); text-transform: uppercase; letter-spacing: .04em; }
 
 /* Barra inteira recolhida — vira uma tira estreita, só o botão de reabrir. */
 .layout-lateral.lateral-recolhida .barra-lateral { display: none; }

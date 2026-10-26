@@ -11,25 +11,53 @@
   'use strict';
   var esc = (window.Painel && window.Painel.esc) || function (s) { return String(s); };
 
+  // Monta a lista de indicadores de uma dimensão, separando quem tem
+  // subgrupo (rótulo + sublista, ex. "Novo CAGED" dentro de "Mercado de
+  // trabalho") de quem não tem (lista direta, como sempre foi). A ordem dos
+  // subgrupos é a ordem em que aparecem pela primeira vez na lista de
+  // indicadores (que já vem ordenada por nome do catálogo).
+  function montarCorpoDimensao(itens, idAtivo) {
+    var soltos = [];
+    var porSubgrupo = {};
+    var ordemSubgrupos = [];
+    itens.forEach(function (ind) {
+      var subgrupo = window.DIEESE360.dados.subgrupoDoIndicador(ind.id);
+      if (!subgrupo) { soltos.push(ind); return; }
+      if (!porSubgrupo[subgrupo]) { porSubgrupo[subgrupo] = []; ordemSubgrupos.push(subgrupo); }
+      porSubgrupo[subgrupo].push(ind);
+    });
+
+    function montarLista(lista) {
+      return '<ul class="lateral-lista">' + lista.map(function (ind) {
+        return '<li><a class="lateral-link' + (ind.id === idAtivo ? ' ativo' : '') + '" href="indicador.html?id=' + encodeURIComponent(ind.id) + '">' + esc(ind.nome) + '</a></li>';
+      }).join('') + '</ul>';
+    }
+
+    var partes = [];
+    if (soltos.length) partes.push(montarLista(soltos));
+    ordemSubgrupos.forEach(function (subgrupo) {
+      partes.push('<p class="lateral-subgrupo">' + esc(subgrupo) + '</p>' + montarLista(porSubgrupo[subgrupo]));
+    });
+    return partes.join('') || '<p class="lateral-vazio">Em breve</p>';
+  }
+
   function montarBarraLateral(container, indicadores, idAtivo) {
     var D = window.DIEESE360.dados;
     var porDimensao = {};
     Object.keys(D.DIMENSOES).forEach(function (c) { porDimensao[c] = []; });
-    indicadores.forEach(function (ind) { if (porDimensao[ind.dimensao]) porDimensao[ind.dimensao].push(ind); });
+    indicadores.forEach(function (ind) {
+      var chave = D.dimensaoEfetiva(ind.dimensao);
+      if (porDimensao[chave]) porDimensao[chave].push(ind);
+    });
 
     var html = Object.keys(D.DIMENSOES).map(function (chave) {
       var dim = D.DIMENSOES[chave];
       var itens = porDimensao[chave];
       var temAtivo = itens.some(function (ind) { return ind.id === idAtivo; });
-      var corpo = itens.length
-        ? '<ul class="lateral-lista">' + itens.map(function (ind) {
-            return '<li><a class="lateral-link' + (ind.id === idAtivo ? ' ativo' : '') + '" href="indicador.html?id=' + encodeURIComponent(ind.id) + '">' + esc(ind.nome) + '</a></li>';
-          }).join('') + '</ul>'
-        : '<p class="lateral-vazio">Em breve</p>';
       return (
         '<details class="lateral-secao"' + (temAtivo ? ' open' : '') + '>' +
         '<summary class="lateral-secao-titulo">' + esc(dim.nome) + '</summary>' +
-        corpo +
+        montarCorpoDimensao(itens, idAtivo) +
         '</details>'
       );
     }).join('');

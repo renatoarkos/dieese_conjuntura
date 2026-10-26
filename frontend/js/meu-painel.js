@@ -127,7 +127,10 @@
   function montarSeletor(indicadores) {
     var select = document.getElementById('meupainel-seletor');
     var porDimensao = {};
-    indicadores.forEach(function (i) { (porDimensao[i.dimensao] = porDimensao[i.dimensao] || []).push(i); });
+    indicadores.forEach(function (i) {
+      var chave = D.dimensaoEfetiva(i.dimensao);
+      (porDimensao[chave] = porDimensao[chave] || []).push(i);
+    });
     var html = '<option value="">+ Adicionar indicador…</option>';
     Object.keys(D.DIMENSOES).forEach(function (chave) {
       var itens = porDimensao[chave];

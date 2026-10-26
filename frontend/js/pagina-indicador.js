@@ -54,8 +54,9 @@
         '</ul></div>'
       : '';
 
+    var dimensaoEfetiva = D.dimensaoEfetiva(indicador.dimensao);
     return (
-      '<a class="indicador-voltar" href="painel.html#' + esc(indicador.dimensao) + '">← ' + esc((D.DIMENSOES[indicador.dimensao] || {}).nome || 'Painel') + '</a>' +
+      '<a class="indicador-voltar" href="painel.html#' + esc(dimensaoEfetiva) + '">← ' + esc((D.DIMENSOES[dimensaoEfetiva] || {}).nome || 'Painel') + '</a>' +
       '<div class="indicador-cabecalho">' +
       '<h1>' + esc(indicador.nome) + '</h1>' +
       '<div class="indicador-stat"><strong>' + esc(D.formatarValor(indicador, atual.valor)) + '</strong>' + chip + '</div>' +

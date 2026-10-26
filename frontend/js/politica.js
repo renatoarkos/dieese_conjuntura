@@ -39,7 +39,8 @@
     var seletor = document.getElementById('politica-seletor');
     var porDimensao = {};
     indicadores.forEach(function (ind) {
-      (porDimensao[ind.dimensao] = porDimensao[ind.dimensao] || []).push(ind);
+      var chave = D.dimensaoEfetiva(ind.dimensao);
+      (porDimensao[chave] = porDimensao[chave] || []).push(ind);
     });
     var html = '';
     Object.keys(porDimensao).forEach(function (dim) {

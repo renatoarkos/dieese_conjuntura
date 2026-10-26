@@ -64,7 +64,7 @@
     caixa.innerHTML =
       '<div class="modal-ind-topo">' +
         '<div class="modal-ind-meta">' +
-          '<span class="modal-ind-kicker">' + esc(indicador.dimensao || '') + '</span>' +
+          '<span class="modal-ind-kicker">' + esc((D.DIMENSOES[D.dimensaoEfetiva(indicador.dimensao)] || {}).nome || indicador.dimensao || '') + '</span>' +
           '<h2 class="modal-ind-titulo">' + esc(indicador.nome) + '</h2>' +
           '<div class="modal-ind-stat">' +
             '<strong class="modal-ind-valor">' + valorStr + '</strong>' +

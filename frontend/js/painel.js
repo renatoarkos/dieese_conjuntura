@@ -10,7 +10,9 @@
   var D = window.DIEESE360.dados;
   var esc = P.esc;
 
-  var ORDEM_DIMENSOES = ['macroeconomia', 'monetario_credito', 'inflacao', 'mercado_trabalho', 'caged', 'mercados'];
+  // "Novo CAGED" deixou de ser dimensão de primeiro nível (2026-10-26) —
+  // ver D.dimensaoEfetiva/D.subgrupoDoIndicador em dados.js.
+  var ORDEM_DIMENSOES = ['macroeconomia', 'monetario_credito', 'inflacao', 'mercado_trabalho', 'mercados'];
 
   // Mesmos ícones já gerados para os cartões de dimensão da home (ver
   // js/inicio.js) — reaproveitados aqui para nenhuma seção do painel ficar
@@ -19,8 +21,7 @@
     macroeconomia: 'assets/dimensoes/icone-macroeconomia.png',
     monetario_credito: 'assets/dimensoes/icone-monetario-credito.png',
     inflacao: 'assets/dimensoes/icone-inflacao.png',
-    mercado_trabalho: 'assets/dimensoes/icone-mercado-trabalho.png',
-    caged: 'assets/dimensoes/icone-caged.png'
+    mercado_trabalho: 'assets/dimensoes/icone-mercado-trabalho.png'
     // 'mercados' sem ícone próprio ainda — ver mesma nota em js/inicio.js.
   };
 
@@ -59,7 +60,10 @@
 
       var porDimensao = {};
       ORDEM_DIMENSOES.forEach(function (c) { porDimensao[c] = []; });
-      indicadores.forEach(function (i) { if (porDimensao[i.dimensao]) porDimensao[i.dimensao].push(i); });
+      indicadores.forEach(function (i) {
+        var chave = D.dimensaoEfetiva(i.dimensao);
+        if (porDimensao[chave]) porDimensao[chave].push(i);
+      });
 
       montarSecoesVazias();
       return Promise.all(ORDEM_DIMENSOES.map(function (chave) { return carregarEMontarGrade(chave, porDimensao[chave]); }));

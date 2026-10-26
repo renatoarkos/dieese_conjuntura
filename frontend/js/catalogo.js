@@ -14,7 +14,8 @@
   function montarFiltros(indicadores) {
     var dimensoesPresentes = [];
     indicadores.forEach(function (i) {
-      if (dimensoesPresentes.indexOf(i.dimensao) === -1) dimensoesPresentes.push(i.dimensao);
+      var chave = D.dimensaoEfetiva(i.dimensao);
+      if (dimensoesPresentes.indexOf(chave) === -1) dimensoesPresentes.push(chave);
     });
     var alvo = document.getElementById('catalogo-filtros');
     var botoes = [{ chave: 'todas', rotulo: 'Todas' }].concat(
@@ -36,7 +37,7 @@
   function linhasFiltradas() {
     var termo = estado.busca.trim().toLowerCase();
     return estado.indicadores.filter(function (i) {
-      if (estado.dimensao !== 'todas' && i.dimensao !== estado.dimensao) return false;
+      if (estado.dimensao !== 'todas' && D.dimensaoEfetiva(i.dimensao) !== estado.dimensao) return false;
       if (!termo) return true;
       return (i.nome + ' ' + i.fonte).toLowerCase().indexOf(termo) >= 0;
     });
@@ -54,10 +55,14 @@
       return;
     }
     corpo.innerHTML = linhas.map(function (i) {
+      var chaveDim = D.dimensaoEfetiva(i.dimensao);
+      var rotuloDim = (D.DIMENSOES[chaveDim] || {}).nome || chaveDim;
+      var subgrupo = D.subgrupoDoIndicador(i.id);
+      if (subgrupo) rotuloDim += ' (' + subgrupo + ')';
       return (
         '<tr>' +
         '<td><a href="indicador.html?id=' + esc(i.id) + '">' + esc(i.nome) + '</a></td>' +
-        '<td>' + esc((D.DIMENSOES[i.dimensao] || {}).nome || i.dimensao) + '</td>' +
+        '<td>' + esc(rotuloDim) + '</td>' +
         '<td>' + esc(i.fonte) + '</td>' +
         '<td>' + esc(i.periodicidade) + '</td>' +
         '<td><span class="catalogo-classif">' + esc(i.classificacao) + '</span></td>' +

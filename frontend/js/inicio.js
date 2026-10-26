@@ -13,14 +13,17 @@
   // tem página e diagramação próprias (mercados.html), no padrão de painel
   // de bolsa pedido pelo responsável do projeto, em vez do cartão-padrão das
   // outras 5 dimensões socioeconômicas.
-  var ORDEM_DIMENSOES = ['macroeconomia', 'monetario_credito', 'inflacao', 'mercado_trabalho', 'caged'];
+  // "Novo CAGED" deixou de ser dimensão de primeiro nível (2026-10-26) —
+  // agora é subdimensão de "Mercado de trabalho" (ver D.dimensaoEfetiva/
+  // D.subgrupoDoIndicador em dados.js). Os 2 indicadores do CAGED caem
+  // dentro do carrossel de "Mercado de trabalho" como qualquer outro.
+  var ORDEM_DIMENSOES = ['macroeconomia', 'monetario_credito', 'inflacao', 'mercado_trabalho'];
 
   var ICONES_DIMENSAO = {
     macroeconomia: 'assets/dimensoes/icone-macroeconomia.png',
     monetario_credito: 'assets/dimensoes/icone-monetario-credito.png',
     inflacao: 'assets/dimensoes/icone-inflacao.png',
-    mercado_trabalho: 'assets/dimensoes/icone-mercado-trabalho.png',
-    caged: 'assets/dimensoes/icone-caged.png'
+    mercado_trabalho: 'assets/dimensoes/icone-mercado-trabalho.png'
     // 'mercados' ainda sem ícone próprio gerado (ver frontend/img-prompts.json
     // para o padrão visual a seguir) — ICONES_DIMENSAO[chave] || '' já trata
     // a ausência sem quebrar o layout, só não mostra a imagem por enquanto.
@@ -33,8 +36,7 @@
     macroeconomia: 'Reúne os indicadores que descrevem o ritmo geral da economia brasileira: Produto Interno Bruto, comércio exterior, investimento, preços de commodities e contas públicas. É a base para situar qualquer leitura setorial dentro do ciclo econômico em curso.',
     monetario_credito: 'Cobre a taxa básica de juros, as taxas cobradas ao tomador final, o crédito concedido pelo sistema financeiro e o endividamento das famílias. Mostra como a política monetária se transmite ao custo do dinheiro no dia a dia de empresas e trabalhadores.',
     inflacao: 'Acompanha os principais índices de preços ao consumidor (IPCA, INPC, IGP-M) e itens sensíveis ao orçamento familiar, como combustíveis. É o contraponto necessário para ler qualquer variação nominal de salário ou renda em termos reais.',
-    mercado_trabalho: 'Reúne emprego, desocupação, rendimento, sindicalização e negociação coletiva: o núcleo da pauta histórica do DIEESE, onde a pesquisa socioeconômica se conecta diretamente à atuação sindical.',
-    caged: 'Admissões e desligamentos formais apurados por microdado todo mês, com granularidade menor que a RAIS anual. Antecipa movimentos do mercado de trabalho formal entre uma apuração anual e outra.',
+    mercado_trabalho: 'Reúne emprego, desocupação, rendimento, sindicalização e negociação coletiva: o núcleo da pauta histórica do DIEESE, onde a pesquisa socioeconômica se conecta diretamente à atuação sindical. Inclui o Novo CAGED, admissões e desligamentos formais por microdado, com granularidade menor que a RAIS anual.',
     mercados: 'Índices das principais bolsas de valores, criptoativos de maior volume e algumas das ações mais negociadas da B3, com fechamento diário. Dimensão separada do restante da plataforma: é referência de mercado, não um indicador socioeconômico produzido ou validado pelo DIEESE, e não deve ser lida como recomendação de investimento.'
   };
 
@@ -369,7 +371,10 @@
       var todosIds = indicadores.map(function (i) { return i.id; });
       var porDimensao = {};
       ORDEM_DIMENSOES.forEach(function (c) { porDimensao[c] = []; });
-      indicadores.forEach(function (i) { if (porDimensao[i.dimensao]) porDimensao[i.dimensao].push(i); });
+      indicadores.forEach(function (i) {
+        var chave = D.dimensaoEfetiva(i.dimensao);
+        if (porDimensao[chave]) porDimensao[chave].push(i);
+      });
       preencherArvoreDimensoes(porDimensao);
 
       // Rápido: só o ticker e os indicadores em destaque (poucos ids) —
