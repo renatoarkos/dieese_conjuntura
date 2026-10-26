@@ -1161,24 +1161,46 @@ body.modal-ind-travado { overflow: hidden; }
 .meupainel-cartao-corpo .grafico-linha-caixa { height: 100%; }
 .meupainel-cartao-corpo .grafico-linha { height: 100%; }
 
-/* ---------------------------------------------------------------- Catálogo Mestre */
+/* ---------------------------------------------------------------- Catálogo Mestre
+   Segmentado por dimensão, como grade de cartões com dado real — não tabela
+   de metadado cru (2026-10-26, ver js/catalogo.js). Cada dimensão é uma
+   seção própria (cabeçalho + descrição + grade de cartões), mesmo padrão de
+   dimensão/subgrupo já usado na barra lateral e no carrossel da home,
+   inspirado na categorização por dimensão do StatusInvest (ver
+   INVENTARIO_BENCHMARK_MERCADOS_FINANCEIROS.md, seção 3.12). Os cartões em
+   si reaproveitam .cartao-resumo (já definido acima, usado em painel.html) —
+   só o rodapé de fonte/classificação é específico do catálogo. */
 .catalogo-controles { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 14px; }
 .catalogo-busca { flex: 1 1 260px; font: 400 .92rem var(--fonte-texto); padding: 10px 14px; border: 1px solid var(--linha); border-radius: var(--raio); background: #fff; color: var(--ink); }
 .catalogo-busca:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px var(--azul-50); }
-.catalogo-filtros { display: flex; flex-wrap: wrap; gap: 6px; }
-.catalogo-filtro-botao { font: 600 .82rem var(--fonte-texto); padding: 7px 14px; border-radius: var(--raio); border: 1px solid var(--linha); background: #fff; color: var(--ink); cursor: pointer; }
-.catalogo-filtro-botao:hover { border-color: var(--azul-300); }
-.catalogo-filtro-botao.ativo { background: var(--azul); border-color: var(--azul); color: #fff; }
-.catalogo-contagem { font-size: .82rem; color: var(--ink-muda); margin-bottom: 10px; }
-.catalogo-tabela-caixa { overflow-x: auto; border: 1px solid var(--linha); border-radius: var(--raio); }
-.catalogo-tabela { width: 100%; border-collapse: collapse; font-size: .9rem; white-space: nowrap; }
-.catalogo-tabela th { text-align: left; padding: 10px 14px; background: var(--fundo-suave); color: var(--ink-muda); font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--linha); }
-.catalogo-tabela td { padding: 10px 14px; border-bottom: 1px solid var(--linha); white-space: normal; }
-.catalogo-tabela tr:last-child td { border-bottom: none; }
-.catalogo-tabela tr:hover td { background: var(--azul-50); }
-.catalogo-tabela a { font-weight: 700; text-decoration: none; }
-.catalogo-tabela a:hover { text-decoration: underline; }
-.catalogo-classif { display: inline-block; font: 700 .76rem var(--fonte-titulo); color: var(--ouro-hover); background: var(--ouro-50); padding: 2px 8px; border-radius: 4px; }
+.catalogo-indice { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.catalogo-indice-link {
+  font: 600 var(--fs-caption) var(--fonte-texto); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--linha);
+  background: #fff; color: var(--azul); text-decoration: none; transition: border-color .15s, background .15s;
+}
+.catalogo-indice-link:hover, .catalogo-indice-link:focus-visible { border-color: var(--azul-300); background: var(--azul-50); outline: none; }
+.catalogo-contagem { font-size: var(--fs-caption); color: var(--ink-muda); margin-bottom: 18px; }
+
+.catalogo-dimensao-secao { margin-bottom: 40px; scroll-margin-top: 90px; }
+.catalogo-dimensao-cabecalho { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.catalogo-dimensao-cabecalho h2 { color: var(--azul); margin: 0; }
+.catalogo-dimensao-contagem { font-size: var(--fs-caption); color: var(--ink-muda); }
+.catalogo-dimensao-desc { color: var(--cinza-700); max-width: 72ch; margin: 4px 0 18px; }
+
+.catalogo-subgrupo-titulo {
+  font: 700 var(--fs-label) var(--fonte-titulo); text-transform: uppercase; letter-spacing: .04em;
+  color: var(--cinza-500); margin: 22px 0 12px; padding-top: 14px; border-top: 1px dashed var(--linha);
+}
+.catalogo-grade { margin-bottom: 4px; }
+.catalogo-cartao-rodape {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px;
+  padding-top: 10px; border-top: 1px solid var(--linha);
+}
+.catalogo-cartao-fonte {
+  font-size: var(--fs-fine); color: var(--ink-muda); overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; min-width: 0;
+}
+.catalogo-classif { display: inline-block; flex: 0 0 auto; font: 700 .76rem var(--fonte-titulo); color: var(--ouro-hover); background: var(--ouro-50); padding: 2px 8px; border-radius: 4px; }
 
 /* ---------------------------------------------------------------- explorador de microdado (RAIS/CAGED) */
 .micro-controles { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; margin-bottom: 14px; }

@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=20261026j">
+  <link rel="stylesheet" href="css/styles.css?v=20261026k">
 </head>
 <body>
   <header class="cabecalho">
@@ -46,24 +46,11 @@
     <div class="container">
       <div class="catalogo-controles">
         <input type="search" id="catalogo-busca" class="catalogo-busca" placeholder="Buscar por nome ou fonte…" aria-label="Buscar indicador">
-        <div class="catalogo-filtros" id="catalogo-filtros" role="group" aria-label="Filtrar por dimensão"></div>
+        <nav class="catalogo-indice" id="catalogo-indice" aria-label="Ir para dimensão"></nav>
       </div>
       <p class="catalogo-contagem" id="catalogo-contagem" aria-live="polite"></p>
-      <div class="catalogo-tabela-caixa">
-        <table class="catalogo-tabela">
-          <thead>
-            <tr>
-              <th>Indicador</th>
-              <th>Dimensão</th>
-              <th>Fonte</th>
-              <th>Periodicidade</th>
-              <th>Classif.</th>
-            </tr>
-          </thead>
-          <tbody id="catalogo-corpo">
-            <tr><td colspan="5">Carregando catálogo…</td></tr>
-          </tbody>
-        </table>
+      <div id="catalogo-secoes">
+        <p class="aviso demo">Carregando catálogo…</p>
       </div>
     </div>
   </section>
@@ -76,9 +63,10 @@
   </footer>
 
   <script src="js/vendor/supabase.js"></script>
-  <script src="js/config.js?v=20261026j"></script>
-  <script src="js/app.js?v=20261026j"></script>
-  <script src="js/dados.js?v=20261026j"></script>
-  <script src="js/catalogo.js?v=20261026j"></script>
+  <script src="js/config.js?v=20261026k"></script>
+  <script src="js/app.js?v=20261026k"></script>
+  <script src="js/dados.js?v=20261026k"></script>
+  <script src="js/animacao-dash.js?v=20261026k"></script>
+  <script src="js/catalogo.js?v=20261026k"></script>
 </body>
 </html>
