@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=20261026h">
+  <link rel="stylesheet" href="css/styles.css?v=20261026i">
 </head>
 <body>
   <header class="cabecalho">
@@ -38,7 +38,7 @@
     <div class="container">
       <span class="hero-rotulo">Mercados financeiros</span>
       <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);max-width:28ch">Índices, criptoativos e ações, num painel de bolsa</h1>
-      <p class="lead" style="max-width:68ch">Fechamento diário dos principais índices de bolsa, de dois criptoativos de maior volume e de três das ações mais negociadas da B3.</p>
+      <p class="lead" style="max-width:68ch">Fechamento diário dos principais índices de bolsa, de dois criptoativos de maior volume e de todas as ações da B3 já cadastradas na plataforma, com busca por nome ou código.</p>
       <p class="aviso">Este painel é referência de mercado agregada pela Yahoo Finance, não um indicador socioeconômico produzido ou validado pelo DIEESE, e não deve ser lido como recomendação de investimento. Ver <a href="catalogo.html">metodologia de cada ativo no catálogo</a>.</p>
       <p class="mercados-atualizado">Carregando…</p>
     </div>
@@ -84,22 +84,33 @@
 
       <div class="mercados-grupo">
         <h2>Ações da B3</h2>
-        <p>Preço de fechamento do pregão mais recente disponível, entre as ações mais negociadas da bolsa brasileira.</p>
-        <div class="mercados-tabela-caixa">
-          <table class="mercados-tabela">
-            <thead>
-              <tr>
-                <th>Ativo</th>
-                <th>Gráfico (3 meses)</th>
-                <th class="mercados-col-valor">Último</th>
-                <th class="mercados-col-variacao">Variação</th>
-                <th class="mercados-col-variacao">Variação %</th>
-              </tr>
-            </thead>
-            <tbody id="mercados-corpo-acoes">
-              <tr><td colspan="5">Carregando…</td></tr>
-            </tbody>
-          </table>
+        <p>Todas as ações da B3 já cadastradas na plataforma, com histórico diário desde outubro de 2025. Busque pelo nome ou pelo código para ver o preço e o gráfico de qualquer uma — não só as mais negociadas.</p>
+
+        <div class="mercados-busca-caixa">
+          <label for="mercados-busca-acao" class="sr-only">Buscar ação por nome ou código</label>
+          <input type="search" id="mercados-busca-acao" class="mercados-busca-input" placeholder="Buscar ação por nome ou código (ex. Petrobras, PETR4)" autocomplete="off">
+          <div class="mercados-busca-resultados" id="mercados-busca-resultados" hidden></div>
+        </div>
+
+        <div class="mercados-acao-detalhe" id="mercados-acao-detalhe" hidden></div>
+
+        <div class="resumo-variacoes mercados-ranking-b3" id="mercados-ranking-b3">
+          <div class="variacoes-coluna-bloco altas">
+            <div class="variacoes-cabecalho">
+              <div class="variacoes-tag-topo tag-alta">▲ Aumentos</div>
+              <h4>Maiores Altas</h4>
+              <span class="variacoes-desc">Maiores variações positivas do dia</span>
+            </div>
+            <ul class="resumo-variacoes-lista" id="mercados-ranking-altas"><li>Carregando…</li></ul>
+          </div>
+          <div class="variacoes-coluna-bloco baixas">
+            <div class="variacoes-cabecalho">
+              <div class="variacoes-tag-topo tag-baixa">▼ Reduções</div>
+              <h4>Maiores Baixas</h4>
+              <span class="variacoes-desc">Maiores quedas do dia</span>
+            </div>
+            <ul class="resumo-variacoes-lista" id="mercados-ranking-baixas"><li>Carregando…</li></ul>
+          </div>
         </div>
       </div>
     </div>
@@ -113,11 +124,12 @@
   </footer>
 
   <script src="js/vendor/supabase.js"></script>
-  <script src="js/config.js?v=20261026h"></script>
-  <script src="js/app.js?v=20261026h"></script>
-  <script src="js/dados.js?v=20261026h"></script>
-  <script src="js/animacao-dash.js?v=20261026h"></script>
-  <script src="js/treemap.js?v=20261026h"></script>
-  <script src="js/mercados.js?v=20261026h"></script>
+  <script src="js/config.js?v=20261026i"></script>
+  <script src="js/app.js?v=20261026i"></script>
+  <script src="js/dados.js?v=20261026i"></script>
+  <script src="js/animacao-dash.js?v=20261026i"></script>
+  <script src="js/treemap.js?v=20261026i"></script>
+  <script src="js/grafico-linha.js?v=20261026i"></script>
+  <script src="js/mercados.js?v=20261026i"></script>
 </body>
 </html>

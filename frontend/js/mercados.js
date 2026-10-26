@@ -21,8 +21,13 @@
 
   var INDICES = ['ibovespa', 'sp500', 'nasdaq', 'dow_jones'];
   var CRIPTO = ['bitcoin', 'ethereum'];
-  var ACOES = ['petr4', 'vale3', 'itub4'];
-  var TODOS = INDICES.concat(CRIPTO, ACOES);
+  // petr4/vale3/itub4 continuam cadastrados como indicadores avulsos (fonte
+  // Yahoo, ~1 ano de histórico) — não removidos ainda, mas a tabela de 3
+  // ações que os exibia foi substituída pela busca sobre as ~300 ações da
+  // B3 (fonte brapi.dev + Yahoo, ver carregarMapaB3/carregarSerieB3 abaixo,
+  // 2026-10-26). Decisão de aposentar esses 3 indicadores fica para depois
+  // de confirmar que o histórico bate (ver plano aprovado desta sessão).
+  var TODOS = INDICES.concat(CRIPTO);
 
   function diasDesdeInicioDoAno() {
     var hoje = new Date();
@@ -287,10 +292,159 @@
     if (alvoAmplitude) alvoAmplitude.innerHTML = montarAmplitude(ativos);
   }
 
+  // ------------------------------------------------------------------
+  // Busca + maiores altas/baixas sobre as ~300 ações da B3 (2026-10-26,
+  // pedido do responsável do projeto: "eu quero todas as ações... traga
+  // um local de busca"). Reaproveita o mesmo `ativos` já carregado por
+  // carregarMapaB3 — não faz uma segunda consulta ao banco. Ranking
+  // reaproveita o mesmo padrão visual (.resumo-variacoes-linha/.rank-pos)
+  // já usado no resumo do dia da home (ver js/inicio.js).
+  // ------------------------------------------------------------------
+  function montarRankingB3(ativos, direcao, limite) {
+    var comVariacao = ativos.filter(function (a) { return a.variacaoPct != null; });
+    var filtrados = comVariacao.filter(function (a) { return direcao === 'alta' ? a.variacaoPct > 0 : a.variacaoPct < 0; });
+    filtrados.sort(function (a, b) { return Math.abs(b.variacaoPct) - Math.abs(a.variacaoPct); });
+    filtrados = filtrados.slice(0, limite);
+    if (!filtrados.length) {
+      return '<li><span class="nome">Nenhuma variação ' + (direcao === 'alta' ? 'positiva' : 'negativa') + ' publicada hoje.</span></li>';
+    }
+    return filtrados.map(function (a, idx) {
+      var seta = direcao === 'alta' ? '▲ +' : '▼ -';
+      return '<li><button type="button" class="resumo-variacoes-linha ' + direcao + '" data-ticker="' + esc(a.ticker) + '">' +
+        '<span class="rank-pos rank-' + direcao + '">#' + (idx + 1) + '</span>' +
+        '<span class="nome">' + esc(a.nome) + '<span class="vs-periodo">' + esc(a.ticker) + (a.setor ? ' · ' + esc(a.setor) : '') + '</span></span>' +
+        '<span class="percentual ' + direcao + '">' + seta + esc(D.formatarNumero(Math.abs(a.variacaoPct), 2)) + '%</span>' +
+        '</button></li>';
+    }).join('');
+  }
+
+  // Busca por nome ou ticker — client-side simples (lista cabe inteira na
+  // memória, ~300 itens, não justifica busca no servidor). Mostra até 20
+  // resultados para não virar uma lista longa demais na tela.
+  function montarResultadosBusca(ativos, termo) {
+    var alvo = document.getElementById('mercados-busca-resultados');
+    if (!alvo) return;
+    var t = termo.trim().toLowerCase();
+    if (!t) { alvo.hidden = true; alvo.innerHTML = ''; return; }
+    var encontrados = ativos.filter(function (a) {
+      return a.nome.toLowerCase().indexOf(t) >= 0 || a.ticker.toLowerCase().indexOf(t) >= 0;
+    }).slice(0, 20);
+    alvo.hidden = false;
+    if (!encontrados.length) {
+      alvo.innerHTML = '<p class="mercados-busca-vazio">Nenhuma ação encontrada para "' + esc(termo) + '".</p>';
+      return;
+    }
+    alvo.innerHTML = encontrados.map(function (a) {
+      var dir = a.variacaoPct > 0 ? 'alta' : (a.variacaoPct < 0 ? 'baixa' : 'estavel');
+      var sinal = a.variacaoPct > 0 ? '+' : '';
+      return '<button type="button" class="mercados-busca-item" data-ticker="' + esc(a.ticker) + '">' +
+        '<span class="mercados-busca-item-nome">' + esc(a.nome) + '<span class="mercados-busca-item-ticker">' + esc(a.ticker) + '</span></span>' +
+        (a.preco != null ? '<span class="mercados-busca-item-preco">' + esc(D.formatarValor({ unidade: 'R$' }, a.preco)) + '</span>' : '') +
+        (a.variacaoPct != null ? '<span class="mercados-variacao ' + dir + '">' + sinal + esc(D.formatarNumero(a.variacaoPct, 2)) + '%</span>' : '<span class="mercados-sem-dado">—</span>') +
+        '</button>';
+    }).join('');
+  }
+
+  // Série histórica de uma ação da B3 — mercado_b3_serie, não
+  // indicadores_serie (tabelas separadas de propósito, ver migração 0011).
+  // Mapeia `preco` para `valor` só para reaproveitar montarGraficoLinha
+  // (js/grafico-linha.js), que não sabe nada sobre essa tabela.
+  function carregarSerieB3(ticker) {
+    return P.sb.from('mercado_b3_serie').select('data_referencia,preco')
+      .eq('ticker', ticker).order('data_referencia', { ascending: true })
+      .then(function (r) {
+        if (r.error) throw r.error;
+        return (r.data || []).map(function (p) { return { data_referencia: p.data_referencia, valor: p.preco }; });
+      });
+  }
+
+  function abrirDetalheAcao(ticker, ativosPorTicker) {
+    var alvo = document.getElementById('mercados-acao-detalhe');
+    var ativo = ativosPorTicker[ticker];
+    if (!alvo || !ativo) return;
+    var indicadorFake = { unidade: 'R$', nome: ativo.nome };
+    var dir = ativo.variacaoPct > 0 ? 'alta' : (ativo.variacaoPct < 0 ? 'baixa' : 'estavel');
+    var sinal = ativo.variacaoPct > 0 ? '+' : '';
+
+    alvo.hidden = false;
+    alvo.innerHTML =
+      '<div class="mercados-acao-detalhe-topo">' +
+      '<div><strong class="mercados-acao-detalhe-nome">' + esc(ativo.nome) + '</strong>' +
+      '<span class="mercados-acao-detalhe-ticker">' + esc(ativo.ticker) + (ativo.setor ? ' · ' + esc(ativo.setor) : '') + '</span></div>' +
+      '<div class="mercados-acao-detalhe-valores">' +
+      '<strong>' + esc(D.formatarValor(indicadorFake, ativo.preco)) + '</strong>' +
+      (ativo.variacaoPct != null ? '<span class="mercados-variacao ' + dir + '">' + sinal + esc(D.formatarNumero(ativo.variacaoPct, 2)) + '%</span>' : '') +
+      '</div>' +
+      '<button type="button" class="mercados-acao-detalhe-fechar" aria-label="Fechar detalhe">×</button>' +
+      '</div>' +
+      '<div class="grafico-linha-caixa mercados-acao-detalhe-grafico" id="mercados-acao-detalhe-grafico"><p class="aviso demo">Carregando histórico…</p></div>';
+
+    alvo.querySelector('.mercados-acao-detalhe-fechar').addEventListener('click', function () {
+      alvo.hidden = true;
+      alvo.innerHTML = '';
+    });
+    alvo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    carregarSerieB3(ticker).then(function (serie) {
+      var container = document.getElementById('mercados-acao-detalhe-grafico');
+      if (!container) return;
+      if (serie.length < 2) {
+        container.innerHTML = '<p class="aviso demo">Histórico insuficiente ainda para este ativo — vai crescendo a cada coleta diária.</p>';
+        return;
+      }
+      container.innerHTML = '';
+      window.DIEESE360.montarGraficoLinha(container, serie, {
+        formatarValor: function (v) { return D.formatarValor(indicadorFake, v); },
+        formatarData: D.formatarDataCurta
+      });
+    }).catch(function (erro) {
+      var container = document.getElementById('mercados-acao-detalhe-grafico');
+      if (container) container.innerHTML = '<p class="aviso demo">' + esc(P.mensagemErro(erro)) + '</p>';
+    });
+  }
+
   function iniciar() {
-    carregarMapaB3().then(montarMapaCalor).catch(function (erro) {
+    carregarMapaB3().then(function (ativos) {
+      montarMapaCalor(ativos);
+
+      var ativosPorTicker = {};
+      ativos.forEach(function (a) { ativosPorTicker[a.ticker] = a; });
+
+      var alvoAltas = document.getElementById('mercados-ranking-altas');
+      var alvoBaixas = document.getElementById('mercados-ranking-baixas');
+      if (alvoAltas) alvoAltas.innerHTML = montarRankingB3(ativos, 'alta', 5);
+      if (alvoBaixas) alvoBaixas.innerHTML = montarRankingB3(ativos, 'baixa', 5);
+
+      var ranking = document.getElementById('mercados-ranking-b3');
+      if (ranking) {
+        ranking.addEventListener('click', function (e) {
+          var botao = e.target.closest('[data-ticker]');
+          if (botao) abrirDetalheAcao(botao.getAttribute('data-ticker'), ativosPorTicker);
+        });
+      }
+
+      var inputBusca = document.getElementById('mercados-busca-acao');
+      var resultadosBusca = document.getElementById('mercados-busca-resultados');
+      if (inputBusca && resultadosBusca) {
+        inputBusca.addEventListener('input', function () { montarResultadosBusca(ativos, inputBusca.value); });
+        resultadosBusca.addEventListener('click', function (e) {
+          var botao = e.target.closest('[data-ticker]');
+          if (!botao) return;
+          abrirDetalheAcao(botao.getAttribute('data-ticker'), ativosPorTicker);
+          resultadosBusca.hidden = true;
+          inputBusca.value = '';
+        });
+        document.addEventListener('click', function (e) {
+          if (!resultadosBusca.hidden && !e.target.closest('.mercados-busca-caixa')) resultadosBusca.hidden = true;
+        });
+      }
+    }).catch(function (erro) {
       var caixa = document.querySelector('.mercados-mapa-caixa');
       if (caixa) caixa.innerHTML = '<p class="aviso demo">' + esc(P.mensagemErro(erro)) + '</p>';
+      ['mercados-ranking-altas', 'mercados-ranking-baixas'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.innerHTML = '<li><span class="nome">' + esc(P.mensagemErro(erro)) + '</span></li>';
+      });
     });
 
     D.carregarIndicadores().then(function (indicadores) {
@@ -306,7 +460,6 @@
           return porId[id] ? montarCardHero(porId[id], series[id] || []) : '';
         }).join('');
         montarTabela('mercados-corpo-cripto', CRIPTO, porId, series);
-        montarTabela('mercados-corpo-acoes', ACOES, porId, series);
         document.querySelectorAll('.mercados-atualizado').forEach(function (el) {
           var pontos = series[INDICES[0]] || [];
           if (!pontos.length) return;

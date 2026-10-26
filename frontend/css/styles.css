@@ -1317,6 +1317,47 @@ body.modal-ind-travado { overflow: hidden; }
 .mercados-amplitude-barra span { display: block; height: 100%; background: var(--status-boa); }
 .mercados-amplitude-nota { display: block; font-size: var(--fs-fine); line-height: 1.4; color: var(--ink-muda); margin-top: 4px; }
 
+/* Busca + maiores altas/baixas sobre as ~300 ações da B3 (2026-10-26) —
+   ver js/mercados.js (montarRankingB3/montarResultadosBusca/abrirDetalheAcao). */
+.mercados-busca-caixa { position: relative; max-width: 480px; margin: 18px 0 20px; }
+.mercados-busca-input {
+  width: 100%; font: 400 .95rem var(--fonte-texto); padding: 10px 14px; border: 2px solid var(--linha);
+  border-radius: 8px; background: #fff; color: var(--ink);
+}
+.mercados-busca-input:focus { border-color: var(--azul); outline: none; box-shadow: 0 0 0 3px var(--azul-100); }
+.mercados-busca-resultados {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 6; max-height: 360px; overflow-y: auto;
+  background: #fff; border: 1px solid var(--linha); border-radius: 8px; box-shadow: 0 12px 28px rgba(3, 0, 134, .14);
+}
+.mercados-busca-vazio { padding: 14px; color: var(--ink-muda); font-size: var(--fs-caption); margin: 0; }
+.mercados-busca-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%;
+  padding: 9px 14px; border: none; border-bottom: 1px solid var(--linha); background: none; color: var(--ink);
+  font: inherit; text-align: left; cursor: pointer;
+}
+.mercados-busca-item:last-child { border-bottom: none; }
+.mercados-busca-item:hover, .mercados-busca-item:focus-visible { background: var(--fundo-suave); outline: none; }
+.mercados-busca-item-nome { display: flex; flex-direction: column; font-size: var(--fs-caption); font-weight: 600; min-width: 0; }
+.mercados-busca-item-ticker { font-weight: 400; font-size: var(--fs-fine); color: var(--ink-muda); font-variant-numeric: tabular-nums; }
+.mercados-busca-item-preco { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.mercados-acao-detalhe {
+  background: #fff; border: 1px solid var(--linha); border-radius: var(--raio); padding: 18px 20px; margin-bottom: 20px;
+}
+.mercados-acao-detalhe-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.mercados-acao-detalhe-nome { display: block; font: 700 1.1rem var(--fonte-titulo); color: var(--azul); }
+.mercados-acao-detalhe-ticker { display: block; font-size: var(--fs-caption); color: var(--ink-muda); margin-top: 2px; }
+.mercados-acao-detalhe-valores { display: flex; align-items: baseline; gap: 10px; font: 800 1.4rem var(--fonte-titulo); color: var(--ink); font-variant-numeric: tabular-nums; }
+.mercados-acao-detalhe-valores .mercados-variacao { font-size: 1rem; }
+.mercados-acao-detalhe-fechar {
+  width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--linha); background: #fff; color: var(--cinza-700);
+  font-size: 1.1rem; line-height: 1; cursor: pointer; flex: 0 0 auto;
+}
+.mercados-acao-detalhe-fechar:hover { background: var(--fundo-suave); }
+.mercados-acao-detalhe-grafico { margin-top: 14px; min-height: 220px; }
+
+.mercados-ranking-b3 { margin-top: 20px; }
+
 /* Faixa de prévia de mercados na home — fundo azul da marca, com cartões
    compactos de dado real (não só texto estático), cada um linkando para a
    página própria (mercados.html). Pedido explícito, 2026-10-23. */
