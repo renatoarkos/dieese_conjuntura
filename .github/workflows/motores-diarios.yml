@@ -46,6 +46,20 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_6_mercados/coleta_b3_brapi.py
 
+      # Histórico diário de TODAS as ações da B3 já catalogadas (não só 3) —
+      # pedido do responsável do projeto, 2026-10-26: "eu preciso de todas
+      # [as ações]... vá populando o banco de dados com a série histórica".
+      # ~300 chamadas individuais à Yahoo Finance (mesma fonte já usada
+      # acima), com intervalo entre elas — ver docstring do script para o
+      # raciocínio completo. Lê a lista de tickers de mercado_b3_ativos
+      # (populada pelo CURATED de "Mapa de calor B3" acima, no dia
+      # anterior — a lista de empresas muda raramente, defasagem de 1 dia
+      # é aceitável e não vale reordenar a separação ingestão/curated só
+      # por isso).
+      - name: Histórico diário — todas as ações da B3 (Yahoo Finance)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_6_mercados/coleta_b3_historico_yahoo.py
+
       # --- Camada CURATED (ADR 0005). Focus não tem transformação ainda —
       # é insumo bruto de nowcasting (milhares de projeções por indicador),
       # publicar um único número exigiria escolher uma convenção de
@@ -61,6 +75,10 @@ jobs:
       - name: "CURATED: Mapa de calor B3"
         continue-on-error: true
         run: python3 pipelines/curated/transformar_b3_brapi.py
+
+      - name: "CURATED: Histórico diário — ações da B3"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_b3_historico_yahoo.py
 
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4
