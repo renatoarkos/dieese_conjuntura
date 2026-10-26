@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=20261015l">
+  <link rel="stylesheet" href="css/styles.css?v=20261026b">
 </head>
 <body>
   <header class="cabecalho">
@@ -47,6 +47,17 @@
     <div class="container">
       <div class="mercados-hero" id="mercados-hero">
         <p class="aviso demo">Carregando índices…</p>
+      </div>
+
+      <div class="mercados-grupo">
+        <h2>Mapa de calor — ações da B3</h2>
+        <p>Cada bloco é uma empresa listada na B3, agrupada por setor. O tamanho do bloco é a capitalização de mercado; a cor é a variação do preço no dia (verde para alta, vermelho para queda). Passe o mouse sobre um bloco para ver o nome completo, preço e variação.</p>
+        <div class="mercados-mapa-caixa">
+          <svg class="mercados-mapa-svg" id="mercados-mapa-svg" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa de calor de ações da B3 por setor e capitalização de mercado">
+            <text x="500" y="280" text-anchor="middle" class="mercados-mapa-carregando">Carregando mapa de calor…</text>
+          </svg>
+        </div>
+        <div id="mercados-amplitude-caixa"></div>
       </div>
 
       <div class="mercados-grupo">
@@ -101,10 +112,11 @@
   </footer>
 
   <script src="js/vendor/supabase.js"></script>
-  <script src="js/config.js?v=20261015l"></script>
-  <script src="js/app.js?v=20261015l"></script>
-  <script src="js/dados.js?v=20261015l"></script>
-  <script src="js/animacao-dash.js?v=20261015l"></script>
-  <script src="js/mercados.js?v=20261015l"></script>
+  <script src="js/config.js?v=20261026b"></script>
+  <script src="js/app.js?v=20261026b"></script>
+  <script src="js/dados.js?v=20261026b"></script>
+  <script src="js/animacao-dash.js?v=20261026b"></script>
+  <script src="js/treemap.js?v=20261026b"></script>
+  <script src="js/mercados.js?v=20261026b"></script>
 </body>
 </html>

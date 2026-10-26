@@ -22,6 +22,7 @@ jobs:
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      BRAPI_TOKEN: ${{ secrets.BRAPI_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -41,6 +42,10 @@ jobs:
         continue-on-error: true
         run: python3 pipelines/ingestao/bloco_6_mercados/coleta_mercados_yahoo.py
 
+      - name: Mapa de calor B3 (brapi.dev — ver ADR 0010 Fase 2)
+        continue-on-error: true
+        run: python3 pipelines/ingestao/bloco_6_mercados/coleta_b3_brapi.py
+
       # --- Camada CURATED (ADR 0005). Focus não tem transformação ainda —
       # é insumo bruto de nowcasting (milhares de projeções por indicador),
       # publicar um único número exigiria escolher uma convenção de
@@ -52,6 +57,10 @@ jobs:
       - name: "CURATED: Mercados financeiros"
         continue-on-error: true
         run: python3 pipelines/curated/transformar_mercados_yahoo.py
+
+      - name: "CURATED: Mapa de calor B3"
+        continue-on-error: true
+        run: python3 pipelines/curated/transformar_b3_brapi.py
 
       - name: Publicar dados coletados como artifact
         uses: actions/upload-artifact@v4

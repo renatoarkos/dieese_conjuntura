@@ -26,16 +26,18 @@ Actions.
 ===============================================================================
 COMO FUNCIONA O ENDPOINT
 ===============================================================================
-GET /v8/finance/chart/<ticker>?interval=1d&range=3mo
+GET /v8/finance/chart/<ticker>?interval=1d&range=1y
 Devolve `chart.result[0]` com:
   - `meta`: símbolo, moeda, nome, preço mais recente.
   - `timestamp`: lista de timestamps Unix (um por candle diário).
   - `indicators.quote[0].close`: lista de preços de fechamento, mesma ordem
     dos timestamps (pode conter `null` em dias sem pregão, ex. feriado).
-`range=3mo` (não `1d`) é usado de propósito: cada coleta já traz ~3 meses de
-histórico, o que preenche o sparkline e permite calcular variação (ponto
+`range=1y` (não `1d`) é usado de propósito: cada coleta já traz ~1 ano de
+histórico, o que preenche o sparkline, permite calcular variação (ponto
 mais recente vs. ponto anterior, mesmo mecanismo já usado em todo o resto da
-plataforma) desde a primeira execução, sem esperar dias de coleta
+plataforma) e, desde 2026-10-23, o retorno em janelas mais longas (1 mês, no
+ano, 12 meses — ver `transformar_mercados_yahoo.py` e `frontend/js/mercados.js`)
+desde a primeira execução, sem esperar dias de coleta
 acumularem histórico.
 
 ===============================================================================
@@ -85,7 +87,7 @@ _CABECALHOS = {"User-Agent": "Mozilla/5.0 (compatible; DIEESE360-bot/1.0)"}
 # PASSO 1 — buscar o gráfico de um ticker
 # ------------------------------------------------------------------------
 def _buscar_dados(ticker_codificado: str) -> dict:
-    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker_codificado}?interval=1d&range=3mo"
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker_codificado}?interval=1d&range=1y"
     req = urllib.request.Request(url, headers=_CABECALHOS)
     with urllib.request.urlopen(req, timeout=30) as resposta:
         return json.loads(resposta.read().decode("utf-8"))

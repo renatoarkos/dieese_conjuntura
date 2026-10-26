@@ -38,6 +38,12 @@
     mercados: 'Índices das principais bolsas de valores, criptoativos de maior volume e algumas das ações mais negociadas da B3, com fechamento diário. Dimensão separada do restante da plataforma: é referência de mercado, não um indicador socioeconômico produzido ou validado pelo DIEESE, e não deve ser lida como recomendação de investimento.'
   };
 
+  // Prévia compacta da dimensão "mercados" na home (não entra no fetch geral
+  // de TICKER/DESTAQUES porque é uma dimensão à parte, ver ADR 0010) — um
+  // índice nacional, um global, um criptoativo e uma ação B3, representando
+  // as 3 categorias da página própria (mercados.html).
+  var PREVIEW_MERCADOS = ['ibovespa', 'sp500', 'bitcoin', 'petr4'];
+
   var TICKER = ['selic', 'cambio_dolar', 'ipca', 'commodities_geral', 'balanca_saldo', 'taxa_desocupacao', 'bndes_desembolsos'];
   // Indicadores em destaque no resumo do dia: 8 séries chave distribuídas em grid completo
   var DESTAQUES = [
@@ -316,6 +322,40 @@
     });
   }
 
+  // Prévia da dimensão "mercados" na home: cartões compactos (valor +
+  // variação + sparkline), cada um já linkando para a página própria
+  // (mercados.html) — pedido explícito do responsável do projeto (2026-10-23):
+  // a seção da home não pode ser só texto estático, precisa mostrar um
+  // resumo real de indicadores antes de levar para a página interna.
+  function preencherPreviewMercados(indicadores, series) {
+    var grade = document.getElementById('mercados-teaser-grade');
+    if (!grade) return;
+    var porId = {};
+    indicadores.forEach(function (i) { porId[i.id] = i; });
+    var cartoes = PREVIEW_MERCADOS.map(function (id) {
+      var indicador = porId[id];
+      var serieAsc = series[id] || [];
+      if (!indicador || !serieAsc.length) return '';
+      var atual = serieAsc[serieAsc.length - 1];
+      var variacao = D.calcularVariacao(indicador, serieAsc);
+      var chip = variacao
+        ? '<span class="chip-tendencia ' + (variacao.valor > 0 ? 'boa' : (variacao.valor < 0 ? 'ruim' : 'neutra')) + '">' +
+          (variacao.valor > 0 ? '▲' : (variacao.valor < 0 ? '▼' : '—')) + ' ' + esc(D.formatarNumero(Math.abs(variacao.valor), 2)) + '%</span>'
+        : '';
+      return (
+        '<a class="mercados-teaser-card" href="mercados.html">' +
+        '<span class="mercados-teaser-card-nome">' + esc(indicador.nome) + '</span>' +
+        '<strong class="mercados-teaser-card-valor">' + esc(D.formatarValor(indicador, atual.valor)) + '</strong>' +
+        chip +
+        D.montarSparkline(serieAsc) +
+        '</a>'
+      );
+    }).filter(Boolean);
+    grade.innerHTML = cartoes.length
+      ? cartoes.join('')
+      : '<p class="aviso demo">Nenhum dado de mercado publicado ainda.</p>';
+  }
+
   function iniciar() {
     montarGradeDimensoes();
     montarEstruturaResumoDia();
@@ -345,6 +385,12 @@
       // uma só chamada), preenchida assim que voltar.
       D.carregarSeriesPorIndicadores(todosIds, 2).then(function (series) {
         preencherVariacoes(indicadores, series);
+      });
+
+      // Prévia de mercados: fetch independente e leve (só 4 ids), preenche
+      // assim que chegar, sem depender do resto da home.
+      D.carregarSeriesPorIndicadores(PREVIEW_MERCADOS, 24).then(function (series) {
+        preencherPreviewMercados(indicadores, series);
       });
 
       // Cada dimensão busca sua própria série (uma chamada por dimensão, não

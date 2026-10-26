@@ -9,7 +9,7 @@ sob o mesmo `script`, então é preciso distinguir pelo nome do arquivo
 ===============================================================================
 COMO OS PONTOS (DATA, VALOR) SÃO ESCOLHIDOS DENTRO DO RAW
 ===============================================================================
-O RAW de cada ticker traz ~3 meses de candles diários (`range=3mo`, ver
+O RAW de cada ticker traz ~1 ano de candles diários (`range=1y`, ver
 docstring do script de coleta). Este script grava TODOS os candles com
 `close` não nulo (alguns dias vêm com `close: null` quando não houve pregão,
 ex. feriado) — não só o mais recente. Isso preenche o histórico desde a
@@ -25,6 +25,19 @@ da coleta — podem divergir em 1 dia perto da virada UTC/horário de mercado.
 Simplificação deliberada e documentada: não é feita conversão para o fuso
 horário de cada bolsa (B3/NYSE/Nasdaq fecham todos ainda dentro do mesmo dia
 UTC na prática, mas isso não foi verificado caso a caso).
+
+===============================================================================
+CAMPOS EXTRAS NO `metadata` DO PONTO MAIS RECENTE (2026-10-23)
+===============================================================================
+O mesmo RAW já traz, em `chart.result[0].meta`, campos que antes não eram
+aproveitados: volume do dia, máxima/mínima do dia, faixa de 52 semanas e
+fechamento anterior. Testado e confirmado nesta sessão para ação B3 e
+criptoativo — os mesmos campos populam para os dois tipos de ativo (exceto
+`marketCap`, ausente no endpoint gratuito para qualquer tipo de ativo). Só o
+PONTO MAIS RECENTE de cada execução grava esses campos em `metadata` — são
+uma "foto do dia" (refletem o estado no momento da coleta), não uma série
+histórica desses campos; os pontos mais antigos do histórico de 1 ano
+continuam só com `data_referencia`/`valor`.
 """
 
 import json
@@ -67,8 +80,29 @@ def _baixar_raw(nome_curto: str) -> dict:
 
 
 # ------------------------------------------------------------------------
-# PASSO 2 — extrair todos os candles válidos (close não nulo)
+# PASSO 2 — extrair todos os candles válidos (close não nulo) + metadata
+# extra (volume, faixa do dia, faixa de 52 semanas, fechamento anterior) no
+# ponto mais recente, lida de chart.result[0].meta.
 # ------------------------------------------------------------------------
+_CAMPOS_META = {
+    "regularMarketVolume": "volume",
+    "regularMarketDayHigh": "maxima_dia",
+    "regularMarketDayLow": "minima_dia",
+    "fiftyTwoWeekHigh": "maxima_52_semanas",
+    "fiftyTwoWeekLow": "minima_52_semanas",
+    "chartPreviousClose": "fechamento_anterior",
+}
+
+
+def _metadata_extra(meta: dict) -> dict:
+    extra = {}
+    for campo_origem, campo_destino in _CAMPOS_META.items():
+        valor = meta.get(campo_origem)
+        if valor is not None:
+            extra[campo_destino] = valor
+    return extra
+
+
 def _pontos_validos(dados: dict) -> list[dict]:
     resultado = (dados.get("chart") or {}).get("result") or []
     if not resultado:
@@ -81,6 +115,9 @@ def _pontos_validos(dados: dict) -> list[dict]:
         if close is not None:
             data = datetime.fromtimestamp(ts, tz=timezone.utc).date().isoformat()
             pontos.append({"data_referencia": data, "valor": round(float(close), 4)})
+    extra = _metadata_extra(r.get("meta") or {})
+    if pontos and extra:
+        pontos[-1]["metadata"] = extra
     return pontos
 
 
