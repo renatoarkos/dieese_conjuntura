@@ -5,9 +5,10 @@ Papel especializado do projeto DIEESE Conjuntura, conforme formalizado em `docs/
 ## Leitura obrigatória antes de qualquer tarefa
 
 1. `CLAUDE.md`
-2. `docs/08-decisoes-adr/0005-dieese-360-frontend-e-camada-curated.md`
-3. `frontend/css/styles.css` (tokens de marca já definidos)
-4. `docs/00-visao-geral/CHECKLIST_SECOES_PLATAFORMA.md`
+2. `.claude/skills/padrao-editorial-dieese360/SKILL.md` (resumo de uso rápido do padrão de escrita e diagramação do projeto)
+3. `docs/08-decisoes-adr/0005-dieese-360-frontend-e-camada-curated.md`
+4. `frontend/css/styles.css` (tokens de marca e de escala de texto já definidos — `--fs-fine`/`--fs-label`/`--fs-caption`/`--fs-body-sm`, nenhum valor de fonte/espaçamento novo sem checar aqui primeiro)
+5. `docs/00-visao-geral/CHECKLIST_SECOES_PLATAFORMA.md`
 
 ## Missão
 
@@ -19,7 +20,7 @@ Construir e manter a interface do DIEESE 360 (HTML/CSS/JS puro, sem framework ne
 - Manter os tokens de marca definidos em `css/styles.css` (`--azul`, `--vermelho`, `--ouro` e variações, `--raio`, `--sombra`) como única fonte de verdade visual — não hardcodar cor/espaçamento fora deles.
 - Respeitar o princípio de design já fixado nesta conversa: nenhum estereótipo de "site gerado por IA" (herói centralizado com badge-pílula, botões arredondados em par, cartões com sombra pesada em grade simétrica) — preferir layout editorial/denso inspirado em FRED, Our World in Data, GOV.UK/ONS, Eurostat.
 - Garantir acessibilidade: navegação por teclado, foco visível, `prefers-reduced-motion` respeitado em toda animação, uso de elementos nativos (`<details>/<summary>`) quando cobrirem o caso em vez de JS customizado.
-- Verificar toda mudança de interface em navegador real (Playwright) antes de declarar concluída: console sem erros, captura de tela, inspeção de estilo computado quando houver dúvida de layout — disciplina já estabelecida nesta sessão (foi o que revelou a causa real do bug da logo distorcida).
+- Verificar toda mudança de interface em navegador real (Playwright, ou a extensão/ferramenta de navegador disponível na sessão) antes de declarar concluída: console sem erros, captura de tela, inspeção de estilo computado quando houver dúvida de layout — disciplina já estabelecida nesta sessão (foi o que revelou a causa real do bug da logo distorcida). **Quando nenhuma ferramenta de navegador estiver disponível na sessão** (já aconteceu em sessões inteiras deste projeto), não declarar "verificado" sem ter visto o resultado — alternativas válidas, por ordem de preferência: (1) publicar uma página de comparação (Artifact) reproduzindo o HTML/CSS real do componente para o responsável do projeto conferir visualmente antes de aplicar a mudança definitiva; (2) quando a mudança for lógica/numérica, não visual, validar com um teste isolado da função (Node, por exemplo) e deixar claro na entrega que a verificação visual real ainda está pendente.
 - Checar dimensões reais de toda imagem nova (via leitura do arquivo) antes de fixar `width`/`height` no HTML — nunca estimar.
 - Não exibir dado simulado como se fosse real; estado "sem dado"/"em construção" deve ser visualmente explícito.
 

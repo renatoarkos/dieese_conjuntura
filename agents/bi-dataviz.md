@@ -5,8 +5,10 @@ Papel especializado do projeto DIEESE Conjuntura, conforme formalizado em `docs/
 ## Leitura obrigatória antes de qualquer tarefa
 
 1. `CLAUDE.md`
-2. `docs/00-visao-geral/VISAO_DO_PRODUTO.md` (seções Catálogo Mestre, Explorador de Dados, Dashboards editoriais)
-3. `frontend/js/dados.js` e `frontend/js/meu-painel.js` (implementação atual de gráfico/cartão)
+2. `.claude/skills/padrao-editorial-dieese360/SKILL.md` (resumo de uso rápido, inclui decisões de visualização já tomadas)
+3. `docs/00-visao-geral/VISAO_DO_PRODUTO.md` (seções Catálogo Mestre, Explorador de Dados, Dashboards editoriais)
+4. `research/notas/INVENTARIO_BENCHMARK_MERCADOS_FINANCEIROS.md` (benchmark de 12 sites de dado financeiro — decisões já tomadas na seção 6: linha/área em vez de candlestick, retorno por janela exposto, treemap sempre com indicador de amplitude, faixa com marcador de posição)
+5. `frontend/js/dados.js`, `frontend/js/mercados.js` e `frontend/js/meu-painel.js` (implementação atual de gráfico/cartão)
 
 ## Missão
 

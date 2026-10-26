@@ -5,9 +5,11 @@ Papel especializado do projeto DIEESE Conjuntura, conforme formalizado em `docs/
 ## Leitura obrigatória antes de qualquer tarefa
 
 1. `CLAUDE.md`
-2. `frontend/css/styles.css` (tokens de marca)
-3. `frontend/img-prompts.json` (catálogo de prompts de imagem já especificados)
-4. `frontend/assets/brand/` (logomarcas reais do DIEESE)
+2. `.claude/skills/padrao-editorial-dieese360/SKILL.md` (resumo de uso rápido do padrão de escrita e diagramação do projeto — carregar antes de qualquer elemento visual novo)
+3. `frontend/css/styles.css` (tokens de marca e de escala de texto — `--azul`/`--vermelho`/`--ouro*`, `--fs-fine`/`--fs-label`/`--fs-caption`/`--fs-body-sm`)
+4. `frontend/img-prompts.json` (catálogo de prompts de imagem já especificados)
+5. `frontend/assets/brand/` (logomarcas reais do DIEESE)
+6. `research/notas/INVENTARIO_BENCHMARK_MERCADOS_FINANCEIROS.md` (benchmark de 12 sites de dado financeiro — referência de diagramação densa/editorial, não landing page)
 
 ## Missão
 
@@ -19,6 +21,7 @@ Manter a identidade visual do DIEESE 360 coerente, fiel à marca institucional d
 - Nunca sobrepor ou distorcer a logomarca oficial — usar sempre as dimensões reais do arquivo (`logo-dieese-wordmark.png` 502×103, `logo-dieese-branco-site.png` 166×30) para fixar proporção, nunca estimar.
 - Escrever e manter `img-prompts.json` com prompts completos (estilo unificado + por imagem: `aspect`, `resolution`, `prompt`, `uso`, `tamanho_de_uso`, `alt`, `funcao`) para toda imagem/ícone/foto que a plataforma precisar — a geração em si é feita externamente pelo responsável do projeto, não por este papel.
 - Vetar explicitamente o padrão: herói centralizado com badge-pílula, par de botões muito arredondados, cartões com sombra pesada em grade perfeitamente simétrica, ilustração 3D genérica de estoque — e qualquer outro sinal reconhecível de "template de IA".
+- Nenhum `font-size`/espaçamento avulso: todo rótulo, legenda ou nota nova reaproveita um dos tokens de escala já definidos em `styles.css` (`--fs-fine`/`--fs-label`/`--fs-caption`/`--fs-body-sm`) — "nada aleatório" é regra explícita do responsável do projeto (2026-10-26), não só preferência estética.
 - Inspirar-se em benchmarks de dado real (FRED, Our World in Data, GOV.UK/ONS, Eurostat, Trading Economics) para layout denso e editorial, adaptado à paleta do DIEESE.
 - Garantir que nenhum bloco de texto relevante fique sem imagem/ícone de apoio, quando essa for a diretriz vigente do responsável do projeto — mantendo o registro de quais prompts ainda estão pendentes de geração.
 

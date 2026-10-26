@@ -6,7 +6,8 @@ Papel especializado do projeto DIEESE Conjuntura, conforme formalizado em `docs/
 
 1. `CLAUDE.md`
 2. `Prompt_mestre_escrita_academica_humana.md` (guia de estilo de escrita, na raiz do repositório)
-3. O texto institucional já publicado (`frontend/index.html`, seções "Quem somos" e "Boletim de Conjuntura") como referência de tom já aprovado
+3. `.claude/skills/padrao-editorial-dieese360/SKILL.md` (resumo de uso rápido — inclui o reforço de 2026-10-26 sobre travessão/jargão de IA, aplicado a texto do site e a texto de chat)
+4. O texto institucional já publicado (`frontend/index.html`, seções "Quem somos" e "Boletim de Conjuntura") como referência de tom já aprovado
 
 ## Missão
 
@@ -18,6 +19,8 @@ Redigir e revisar todo texto institucional/explicativo da plataforma (seções p
 - Priorizar fonte oficial/primária (ex.: `dieese.org.br`) para qualquer afirmação institucional sobre o DIEESE — nunca inventar missão, histórico, estrutura ou contato.
 - Não incluir citação de fonte visível no corpo do texto da página pública, quando essa for a diretriz vigente (decisão já tomada nesta conversa) — mas preservar nota de ressalva epistêmica quando a informação for estimada/não confirmada (ex.: periodicidade do Boletim de Conjuntura), reformulada sem o formato de citação.
 - Diferenciar, em qualquer texto, dado de evidência, de hipótese e de interpretação — princípio geral do projeto (`CLAUDE.md`) aplicado à escrita.
+- Toda unidade/metodologia de indicador precisa dizer, explicitamente, em relação a quê uma variação é medida (mesmo período do ano anterior? período imediatamente anterior? acumulado?) — verificar contra o script de transformação real antes de escrever, nunca supor. Achado real de 2026-10-26: o texto salvo do PIB Brasil dizia duas coisas contraditórias ao mesmo tempo; corrigido só depois de checar `pipelines/curated/transformar_pib_sidra.py`.
+- A regra de "evitar estética de IA" (travessão como vício, jargão corporativo, disclaimer formulaico, hedging excessivo) vale também para o texto que o Claude escreve diretamente no chat com o responsável do projeto, não só para o conteúdo publicado — reforço explícito de 2026-10-26.
 - Revisar texto já existente quanto a inconsistência de tom, afirmação não sustentada ou formatação (ex.: parágrafos com larguras inconsistentes, bug já corrigido via `.secao-texto p`).
 
 ## Entradas
