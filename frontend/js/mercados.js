@@ -101,6 +101,17 @@
     return '<span class="mercados-volume">Volume: ' + esc(D.formatarNumero(volume, 0)) + '</span>';
   }
 
+  // Comparações com métricas padrão de mercado (média móvel, volatilidade,
+  // sequência, faixa de 52 semanas) — ver D.montarComparacoesMercado em
+  // dados.js. Aqui só a versão compacta, uma linha por ativo; a versão
+  // completa, com cada item separado, fica na página do indicador
+  // (indicador.html), que tem mais espaço.
+  function montarAnaliseCompacta(indicador, serieAsc) {
+    var frases = D.montarComparacoesMercado(indicador, serieAsc);
+    if (!frases.length) return '';
+    return '<span class="mercados-analise-compacta" title="' + esc(frases.join('. ')) + '">' + esc(frases[0]) + '</span>';
+  }
+
   // Selo lembrando que a fonte é um agregador de mercado (Yahoo Finance),
   // não um indicador produzido/validado pelo DIEESE — recomendação 5 do
   // inventário, mesmo padrão visual de badge já usado em .catalogo-classif.
@@ -118,6 +129,7 @@
       '<span class="mercados-hero-variacoes">' + formatarVariacaoAbs(indicador, serieAsc) + formatarVariacaoPct(indicador, serieAsc) + '</span>' +
       montarRetornos(serieAsc) +
       D.montarSparkline(serieAsc) +
+      montarAnaliseCompacta(indicador, serieAsc) +
       '</a>'
     );
   }
@@ -133,6 +145,7 @@
       '<span>' + esc(indicador.fonte.replace(/^Yahoo Finance \(ticker /, '').replace(/\)$/, '')) + '</span>' +
       montarSeloFonte() +
       montarVolume(atual) +
+      montarAnaliseCompacta(indicador, serieAsc) +
       '</td>' +
       '<td class="mercados-col-grafico">' + D.montarSparkline(serieAsc) + montarRetornos(serieAsc) + '</td>' +
       '<td class="mercados-col-valor">' + esc(D.formatarValor(indicador, atual.valor)) + montarFaixas(indicador, atual) + '</td>' +

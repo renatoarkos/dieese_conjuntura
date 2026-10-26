@@ -232,6 +232,104 @@
     return { percentual: percentual, base: base, atual: atual };
   }
 
+  // Média móvel simples dos últimos `janela` pontos da série (ex.: 20
+  // pregões) — a mesma conta usada por qualquer site de mercado para
+  // marcar se o preço atual está "acima" ou "abaixo" da própria média
+  // recente. Sem histórico suficiente, devolve null (não estima com
+  // menos pontos do que a janela pede).
+  function calcularMediaMovel(serieAsc, janela) {
+    if (serieAsc.length < janela) return null;
+    var fatia = serieAsc.slice(serieAsc.length - janela);
+    var soma = fatia.reduce(function (acc, p) { return acc + p.valor; }, 0);
+    return soma / janela;
+  }
+
+  // Volatilidade: desvio padrão das variações percentuais diárias dentro
+  // da janela pedida — a mesma métrica que a literatura de mercado usa
+  // para medir o quanto um ativo oscila, independente da direção.
+  function calcularVolatilidade(serieAsc, janela) {
+    if (serieAsc.length < janela + 1) return null;
+    var fatia = serieAsc.slice(serieAsc.length - janela - 1);
+    var retornos = [];
+    for (var i = 1; i < fatia.length; i++) {
+      if (!fatia[i - 1].valor) continue;
+      retornos.push((fatia[i].valor - fatia[i - 1].valor) / fatia[i - 1].valor);
+    }
+    if (retornos.length < 2) return null;
+    var media = retornos.reduce(function (a, b) { return a + b; }, 0) / retornos.length;
+    var variancia = retornos.reduce(function (acc, r) { return acc + Math.pow(r - media, 2); }, 0) / (retornos.length - 1);
+    return Math.sqrt(variancia) * 100;
+  }
+
+  // Quantos pontos consecutivos, a partir do mais recente, mantêm a mesma
+  // direção (alta ou baixa) — equivalente ao "streak" que corretoras e
+  // sites de mercado mostram ao lado da cotação.
+  function calcularSequencia(serieAsc) {
+    if (serieAsc.length < 2) return null;
+    var direcao = null, contagem = 0;
+    for (var i = serieAsc.length - 1; i > 0; i--) {
+      var diff = serieAsc[i].valor - serieAsc[i - 1].valor;
+      var sinal = diff > 0 ? 'alta' : (diff < 0 ? 'baixa' : null);
+      if (!sinal) break;
+      if (direcao === null) direcao = sinal;
+      if (sinal !== direcao) break;
+      contagem++;
+    }
+    if (!direcao || contagem === 0) return null;
+    return { direcao: direcao, dias: contagem };
+  }
+
+  // Posição do valor atual dentro da faixa [mínimo, máximo] — 0 = na
+  // mínima, 100 = na máxima do período. Usado para comparar o preço de
+  // hoje com a faixa de 52 semanas (ou qualquer outra janela).
+  function calcularPosicaoFaixa(valorAtual, minimo, maximo) {
+    if (minimo == null || maximo == null || maximo === minimo) return null;
+    return ((valorAtual - minimo) / (maximo - minimo)) * 100;
+  }
+
+  // Comparações com as próprias métricas que a literatura de mercado usa
+  // (média móvel, volatilidade, sequência de altas/baixas, posição na
+  // faixa de 52 semanas) — pedido do responsável do projeto (2026-10-26):
+  // "mostrar uma análise do que aconteceu fazendo comparações de acordo
+  // com as métricas que a literatura usa". Cada frase sai só de número já
+  // armazenado, sem narrativa sobre causa — não inventa motivo nem notícia,
+  // só compara o dado de hoje com o próprio histórico do ativo. Atualiza
+  // sozinho a cada novo ponto que a coleta diária publica, sem trabalho
+  // manual.
+  function montarComparacoesMercado(indicador, serieAsc) {
+    if (serieAsc.length < 6) return [];
+    var atual = serieAsc[serieAsc.length - 1];
+    var frases = [];
+
+    var sma20 = calcularMediaMovel(serieAsc, 20);
+    if (sma20) {
+      var diff = ((atual.valor - sma20) / sma20) * 100;
+      if (Math.abs(diff) < 0.05) {
+        frases.push('Preço praticamente na média móvel de 20 pregões (' + formatarValor(indicador, sma20) + ')');
+      } else {
+        frases.push('Preço ' + formatarNumero(Math.abs(diff), 1) + '% ' + (diff > 0 ? 'acima' : 'abaixo') + ' da média móvel de 20 pregões (' + formatarValor(indicador, sma20) + ')');
+      }
+    }
+
+    var vol30 = calcularVolatilidade(serieAsc, 30);
+    if (vol30 != null) {
+      frases.push('Volatilidade diária nos últimos 30 pregões: ' + formatarNumero(vol30, 1) + '%');
+    }
+
+    var seq = calcularSequencia(serieAsc);
+    if (seq && seq.dias >= 2) {
+      frases.push(seq.dias + ' pregões seguidos em ' + seq.direcao);
+    }
+
+    var meta = atual.metadata || {};
+    var posFaixa = calcularPosicaoFaixa(atual.valor, meta.minima_52_semanas, meta.maxima_52_semanas);
+    if (posFaixa != null) {
+      frases.push('A ' + formatarNumero(Math.max(0, Math.min(100, posFaixa)), 0) + '% da faixa entre mínima e máxima de 52 semanas');
+    }
+
+    return frases;
+  }
+
   // ------------------------------------------------------------------
   // Sparkline — SVG inline. Linha 2px suavizada (curva Catmull-Rom, não
   // segmentos retos entre pontos — fica menos "serrilhada" com poucos
@@ -372,6 +470,11 @@
     calcularVariacaoPercentual: calcularVariacaoPercentual,
     calcularVariacao: calcularVariacao,
     calcularRetornoPeriodo: calcularRetornoPeriodo,
+    calcularMediaMovel: calcularMediaMovel,
+    calcularVolatilidade: calcularVolatilidade,
+    calcularSequencia: calcularSequencia,
+    calcularPosicaoFaixa: calcularPosicaoFaixa,
+    montarComparacoesMercado: montarComparacoesMercado,
     montarCartao: montarCartao,
     montarCartaoVazio: montarCartaoVazio,
     montarCartaoDimensaoPendente: montarCartaoDimensaoPendente,

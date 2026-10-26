@@ -43,6 +43,17 @@
       ? tendencia.seta + ' ' + D.formatarValor(indicador, Math.abs(tendencia.delta)) + ' no período, comparado a ' + D.formatarDataReferencia(tendencia.anterior.data_referencia, indicador.periodicidade)
       : 'Ainda não há ponto anterior para comparar.';
 
+    // Comparações de mercado (média móvel, volatilidade, sequência, faixa
+    // de 52 semanas) — só para a dimensão mercados, onde essas métricas
+    // fazem sentido; atualiza sozinho a cada ponto novo publicado, sem
+    // depender de redação manual (ver D.montarComparacoesMercado).
+    var comparacoesMercado = indicador.dimensao === 'mercados' ? D.montarComparacoesMercado(indicador, serieAsc) : [];
+    var blocoComparacoes = comparacoesMercado.length
+      ? '<div class="indicador-comparacoes-mercado"><strong>Comparações</strong><ul>' +
+        comparacoesMercado.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') +
+        '</ul></div>'
+      : '';
+
     return (
       '<a class="indicador-voltar" href="painel.html#' + esc(indicador.dimensao) + '">← ' + esc((D.DIMENSOES[indicador.dimensao] || {}).nome || 'Painel') + '</a>' +
       '<div class="indicador-cabecalho">' +
@@ -56,7 +67,8 @@
       '<dt>Periodicidade</dt><dd>' + esc(indicador.periodicidade) + '</dd>' +
       '<dt>Classificação</dt><dd>' + esc(indicador.classificacao) + '</dd>' +
       '<dt>Comparação mais recente</dt><dd>' + esc(comparacao) + '</dd>' +
-      '</dl>'
+      '</dl>' +
+      blocoComparacoes
     );
   }
 
