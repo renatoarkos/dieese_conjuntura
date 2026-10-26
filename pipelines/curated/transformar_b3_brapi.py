@@ -5,28 +5,30 @@ a partir do RAW gravado por `pipelines/ingestao/bloco_6_mercados/coleta_b3_brapi
 ===============================================================================
 LIMPEZA FEITA AQUI (não na coleta — a coleta grava o bruto sem filtrar)
 ===============================================================================
-O RAW tem 776 tickers brutos, mas isso não é 776 empresas: a B3 lista mais de
-uma classe de ação por empresa (ex. PETR3 = ordinária, PETR4 = preferencial) e
-um mercado fracionário espelhado para cada classe (sufixo "F", ex. PETR4F) —
-testado e confirmado nesta sessão: PETR3/PETR4/PETR4F devolvem o MESMO
-`marketCap` nos 3, porque é a capitalização da empresa inteira, não da classe.
-Incluir as 3 no mapa de calor contaria a mesma empresa três vezes.
+O RAW tem ~780 tickers brutos, mas isso não é ~780 empresas: a B3 lista mais
+de uma classe de ação por empresa (ex. PETR3 = ordinária, PETR4 =
+preferencial) e um mercado fracionário espelhado para cada classe (sufixo
+"F", ex. PETR4F) — testado e confirmado nesta sessão: PETR3/PETR4/PETR4F
+devolvem o MESMO `marketCap`, porque é a capitalização da empresa inteira,
+não da classe.
 
-Duas regras de limpeza, nessa ordem:
-1. Descarta qualquer ticker terminado em "F" (mercado fracionário — não é a
-   linha principal de negociação).
-2. Agrupa o que sobrou pela "raiz" do ticker (letras antes do número, ex.
-   "PETR" para PETR3/PETR4) e mantém só a classe de MAIOR VOLUME de cada
-   empresa — é a classe mais líquida/representativa, mesmo critério que
-   justifica escolher uma ação "mais negociada" em vez de outra em qualquer
-   lista deste tipo.
+Só uma regra de limpeza aqui: descarta qualquer ticker terminado em "F"
+(mercado fracionário — não é a linha principal de negociação) e qualquer
+ticker sem capitalização de mercado (dado incompleto). Mantém TODAS as
+classes de cada empresa (ex. PETR3 e PETR4 separadas) — pedido explícito do
+responsável do projeto em 2026-10-26: "eu quero todas as ações... todas as
+classes de cada empresa", revertendo uma decisão anterior desta mesma sessão
+que mantinha só a classe de maior volume por empresa.
 
-Testado nesta sessão com o RAW real: 776 brutos → 373 sem fracionário → 291
-empresas distintas após a limpeza, 0 sem setor.
+Como o `marketCap` se repete em cada classe da mesma empresa, agrupar por
+empresa para não contar a mesma capitalização duas vezes passou a ser
+responsabilidade de quem CONSOME este dado para algo sensível a isso — hoje,
+só o mapa de calor (`frontend/js/mercados.js`, `montarMapaCalor`), que
+deduplica por raiz de ticker na hora de montar o treemap. Busca e ranking de
+altas/baixas usam a lista completa, com todas as classes.
 """
 
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -52,7 +54,6 @@ _SUPABASE_URL = _ENV.get("SUPABASE_URL") or os.environ.get("SUPABASE_URL")
 _SUPABASE_SERVICE_ROLE_KEY = _ENV.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 
 SCRIPT_ORIGEM = "pipelines/ingestao/bloco_6_mercados/coleta_b3_brapi.py"
-_RE_RAIZ = re.compile(r"^[A-Z]+")
 
 
 # ------------------------------------------------------------------------
@@ -73,18 +74,7 @@ def _baixar_raw() -> dict:
 def _limpar(resultados: list[dict]) -> list[dict]:
     sem_fracionario = [r for r in resultados if not r["symbol"].endswith("F")]
     com_marketcap = [r for r in sem_fracionario if (r.get("quote") or {}).get("marketCap")]
-
-    por_raiz: dict[str, dict] = {}
-    for r in com_marketcap:
-        m = _RE_RAIZ.match(r["symbol"])
-        if not m:
-            continue
-        raiz = m.group(0)
-        volume_atual = (r.get("quote") or {}).get("volume") or 0
-        existente = por_raiz.get(raiz)
-        if existente is None or volume_atual > (existente.get("quote") or {}).get("volume", 0):
-            por_raiz[raiz] = r
-    return list(por_raiz.values())
+    return com_marketcap
 
 
 # ------------------------------------------------------------------------

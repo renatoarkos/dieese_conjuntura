@@ -199,7 +199,7 @@
       if (!data) return [];
       return P.sb.from('mercado_b3_ativos').select('ticker,nome,setor').then(function (rAtivos) {
         if (rAtivos.error) throw rAtivos.error;
-        return P.sb.from('mercado_b3_serie').select('ticker,preco,variacao_pct,market_cap')
+        return P.sb.from('mercado_b3_serie').select('ticker,preco,variacao_pct,market_cap,volume')
           .eq('data_referencia', data).then(function (rSerie) {
             if (rSerie.error) throw rSerie.error;
             var porTicker = {};
@@ -209,12 +209,35 @@
               if (!p || p.market_cap == null) return null;
               return {
                 ticker: a.ticker, nome: a.nome, setor: a.setor || 'Outros',
-                valor: Number(p.market_cap), preco: p.preco, variacaoPct: p.variacao_pct
+                valor: Number(p.market_cap), preco: p.preco, variacaoPct: p.variacao_pct,
+                volume: p.volume
               };
             }).filter(Boolean);
           });
       });
     });
+  }
+
+  // Agrupa classes da mesma empresa (ex. PETR3/PETR4) pela raiz do ticker,
+  // mantendo só a de maior volume — usado SÓ para montar os blocos do mapa
+  // de calor: como o market cap se repete em cada classe da mesma empresa
+  // (é a capitalização da empresa inteira, não da classe — ver
+  // transformar_b3_brapi.py), somar todas as classes dobraria o espaço
+  // visual da empresa no treemap. Busca e ranking (mais abaixo neste
+  // arquivo) usam a lista completa, sem essa deduplicação — lá cada classe
+  // é um ativo negociável à parte, com preço e variação próprios, pedido
+  // explícito do responsável do projeto (2026-10-26): "eu quero todas as
+  // ações... todas as classes de cada empresa".
+  var RE_RAIZ_TICKER = /^[A-Z]+/;
+  function deduplicarPorEmpresa(ativos) {
+    var porRaiz = {};
+    ativos.forEach(function (a) {
+      var m = RE_RAIZ_TICKER.exec(a.ticker);
+      var raiz = m ? m[0] : a.ticker;
+      var existente = porRaiz[raiz];
+      if (!existente || (a.volume || 0) > (existente.volume || 0)) porRaiz[raiz] = a;
+    });
+    return Object.keys(porRaiz).map(function (k) { return porRaiz[k]; });
   }
 
   function corPorVariacao(pct) {
@@ -249,8 +272,12 @@
     var T = window.DIEESE360.treemap;
     var LARGURA = 1000, ALTURA = 560;
 
+    // Só os blocos do treemap deduplicam por empresa (ver
+    // deduplicarPorEmpresa acima) — a amplitude, logo abaixo, continua
+    // usando a lista completa com todas as classes.
+    var ativosTreemap = deduplicarPorEmpresa(ativos);
     var porSetor = {};
-    ativos.forEach(function (a) {
+    ativosTreemap.forEach(function (a) {
       (porSetor[a.setor] = porSetor[a.setor] || []).push(a);
     });
     var setores = Object.keys(porSetor).map(function (nome) {
